@@ -318,11 +318,39 @@ def print_questions(questions: List[Question]) -> None:
     for idx, q in enumerate(questions, start=1):
         page_str = ",".join(str(p + 1) for p in q.pages)  # back to 1-based for display
         header = f"[문제 #{idx}" + (f" | 추정번호 {q.qno}" if q.qno is not None else "") + f" | pages {page_str}]"
+        passage, choices = split_passage_and_choices(q.text)
+
         print("=" * 100)
         print(header)
         print("-" * 100)
-        print(q.text)
+        print("[지문]")
+        print(passage if passage else "(없음)")
         print()
+        print("[선택지]")
+        print(choices if choices else "(없음)")
+        print()
+
+
+def split_passage_and_choices(question_text: str) -> Tuple[str, str]:
+    """
+    Split one question text into passage and choices.
+    - passage: content before the first choice marker line
+    - choices: content from the first choice marker line to the end
+    """
+    lines = question_text.splitlines()
+    first_choice_index = None
+
+    for i, line in enumerate(lines):
+        if CHOICE_LINE_RE.match(line) or ALT_CHOICE_RE.match(line):
+            first_choice_index = i
+            break
+
+    if first_choice_index is None:
+        return question_text.strip(), ""
+
+    passage = "\n".join(lines[:first_choice_index]).strip()
+    choices = "\n".join(lines[first_choice_index:]).strip()
+    return passage, choices
 
 
 def main():
