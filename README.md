@@ -38,6 +38,54 @@
 python ./1_extract_text_and_print.py --pdf ./test.pdf --pages "1-3"
 ```
 
+## 스크립트 설명 (1~5)
+
+1. `1_extract_text_and_print.py`
+- 역할: 지정한 페이지 범위에서 텍스트를 추출하고 문항 단위로 콘솔 출력
+- 특징: 문항 시작 패턴 인식 + 지문/선택지 분리 출력
+- 예시:
+```bash
+python ./1_extract_text_and_print.py --pdf ./level1.pdf --pages "1-3"
+```
+
+2. `2_extract_all_text_and_print.py`
+- 역할: PDF 전체 페이지의 텍스트를 추출해 페이지별로 콘솔 출력
+- 특징: 전체 문서 텍스트를 빠르게 점검할 때 사용
+- 예시:
+```bash
+python ./2_extract_all_text_and_print.py --pdf ./level2.pdf
+```
+
+3. `3_extract_all_text_and_save_latex.py`
+- 역할: PDF 페이지(또는 문항 영역)를 PNG로 렌더링하고, 이미지를 포함한 LaTeX 파일 생성
+- 특징: 텍스트 추출보다 원본 수식/레이아웃 보존이 중요할 때 사용
+- 예시:
+```bash
+python ./3_extract_all_text_and_save_latex.py --pdf ./level3.pdf
+```
+
+4. `4_extract_all_text_and_save_latex.py`
+- 역할: 3번 기능 + 문항 텍스트를 문제/선택지로 분리하여 txt 파일 저장
+- 출력:
+  - LaTeX: `./output/output.tex`
+  - 이미지: `./output/latex_pages/`
+  - 텍스트: `./output/question_texts/question_XXX_problem.txt`, `question_XXX_choices.txt`
+- 예시:
+```bash
+python ./4_extract_all_text_and_save_latex.py --pdf ./level4.pdf
+```
+
+5. `5_extract_all_text_and_save_latex_split_images.py`
+- 역할: 4번 기능 + LaTeX용 PNG 이미지도 문제/선택지로 분리 저장
+- 출력:
+  - 문제 이미지: `question_XXX_problem_part_YY.png`
+  - 선택지 이미지: `question_XXX_choices_part_YY.png`
+  - 분리 텍스트: `question_XXX_problem.txt`, `question_XXX_choices.txt`
+- 예시:
+```bash
+python ./5_extract_all_text_and_save_latex_split_images.py --pdf ./level5.pdf
+```
+
 ## 앞으로 추가할 항목
 
 1. OCR 기반 추출
