@@ -1,12 +1,15 @@
 import importlib.util
+import sys
 from pathlib import Path
 
 
 def load_module():
+    module_name = "extract_module"
     module_path = Path(__file__).resolve().parents[1] / "1_extract_text_and_print.py"
-    spec = importlib.util.spec_from_file_location("extract_module", str(module_path))
+    spec = importlib.util.spec_from_file_location(module_name, str(module_path))
     module = importlib.util.module_from_spec(spec)
     assert spec is not None and spec.loader is not None
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return module
 

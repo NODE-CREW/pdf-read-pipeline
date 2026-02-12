@@ -3,7 +3,7 @@
 
 """
 Usage:
-  python ./1_extract_text_and_print.py --pdf ./test.pdf --pages "1-3"
+  python ./1_extract_text_and_print.py --pdf ./level1.pdf --pages "1-3"
 
 Notes:
 - pages are 1-based in CLI (human-friendly). Internally converted to 0-based.
