@@ -186,6 +186,29 @@ def normalize_two_columns(columns: List[tuple[float, float]]) -> List[tuple[floa
     return [left_fixed, right_fixed]
 
 
+def expand_column_bounds(
+    columns: List[tuple[float, float]],
+    column_index: int,
+    page_width: float,
+    margin: float = 18.0,
+    gap_guard: float = 2.0,
+) -> tuple[float, float]:
+    x0, x1 = columns[column_index]
+    expanded_x0 = max(0.0, x0 - margin)
+    expanded_x1 = min(page_width, x1 + margin)
+
+    if column_index > 0:
+        prev_x1 = columns[column_index - 1][1]
+        expanded_x0 = max(expanded_x0, prev_x1 + gap_guard)
+    if column_index < len(columns) - 1:
+        next_x0 = columns[column_index + 1][0]
+        expanded_x1 = min(expanded_x1, next_x0 - gap_guard)
+
+    if expanded_x1 <= expanded_x0 + 4.0:
+        return x0, x1
+    return expanded_x0, expanded_x1
+
+
 def refine_clip_y_to_text_blocks(
     raw_y0: float,
     raw_y1: float,
@@ -217,9 +240,18 @@ def refine_clip_x_to_text_blocks(
     text_x0 = min(x0 for x0, _, _, _ in text_block_boxes)
     text_x1 = max(x1 for _, _, x1, _ in text_block_boxes)
 
-    pad = 3.0
-    refined_x0 = max(raw_x0, text_x0 - pad)
-    refined_x1 = min(raw_x1, text_x1 + pad)
+    # 블록 bbox 오차로 문장 우측 끝이 잘리는 경우를 막기 위해
+    # 여백이 충분히 큰 경우에만 x축을 줄인다.
+    pad = 12.0
+    trim_threshold = 24.0
+
+    refined_x0 = raw_x0
+    refined_x1 = raw_x1
+
+    if (text_x0 - raw_x0) > trim_threshold:
+        refined_x0 = max(raw_x0, text_x0 - pad)
+    if (raw_x1 - text_x1) > trim_threshold:
+        refined_x1 = min(raw_x1, text_x1 + pad)
 
     if refined_x1 <= refined_x0 + 4.0:
         return raw_x0, raw_x1
@@ -559,7 +591,11 @@ def _render_pdf_questions_with_text(
                 page = doc.load_page(segment.page_index)
                 page_width = float(page.rect.width)
                 page_height = float(page.rect.height)
-                col_x0, col_x1 = page_columns[segment.page_index][segment.column]
+                col_x0, col_x1 = expand_column_bounds(
+                    columns=page_columns[segment.page_index],
+                    column_index=segment.column,
+                    page_width=page_width,
+                )
 
                 raw_y0, raw_y1 = compute_raw_clip_bounds(
                     segment_start_y=segment.start_y,

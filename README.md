@@ -38,7 +38,7 @@
 python ./1_extract_text_and_print.py --pdf ./test.pdf --pages "1-3"
 ```
 
-## 스크립트 설명 (1~5)
+## 스크립트 설명 (1~6)
 
 1. `1_extract_text_and_print.py`
 - 역할: 지정한 페이지 범위에서 텍스트를 추출하고 문항 단위로 콘솔 출력
@@ -84,6 +84,25 @@ python ./4_extract_all_text_and_save_latex.py --pdf ./level4.pdf
 - 예시:
 ```bash
 python ./5_extract_all_text_and_save_latex_split_images.py --pdf ./level5.pdf
+```
+
+6. `6_extract_all_text_and_save_latex_split_images.py`
+- 역할: 5번 기능 + 여러 PDF를 한 번에 처리하여 PDF별 결과 폴더로 저장
+- 입력:
+  - 기본: GUI 파일 선택창에서 PDF 여러 개 선택
+  - 옵션: `--pdf`로 여러 PDF 경로 직접 전달 가능
+- 출력:
+  - `./output/<pdf파일명>/output.tex`
+  - `./output/<pdf파일명>/latex_pages/`
+  - `./output/<pdf파일명>/question_texts/`
+  - 같은 이름 폴더가 이미 있으면 `_<숫자>`를 붙여 충돌 방지
+- 예시(GUI):
+```bash
+python ./6_extract_all_text_and_save_latex_split_images.py
+```
+- 예시(CLI):
+```bash
+python ./6_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
 ```
 
 ## 앞으로 추가할 항목
