@@ -17,14 +17,30 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import os
+import re
+import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, List
 
 
 OUTPUT_ROOT = Path("./output")
+SHARED_PASSAGE_RE = re.compile(
+    r"\[\s*(\d{1,3})\s*[~\-]\s*(\d{1,3})\s*\]\s*다음\s*글을\s*읽고\s*물음에\s*답하시오\.?",
+)
+
+
+@dataclass
+class SharedPassageSet:
+    passage_id: str
+    start_qno: int
+    end_qno: int
+    text: str
+    image_paths: List[str]
 
 
 def load_module_5():
@@ -235,16 +251,138 @@ def prepare_output_paths(pdf_path: str, output_root: Path) -> tuple[Path, Path, 
     return target_dir, image_dir, text_dir, out_tex
 
 
-def process_one_pdf(module5, pdf_path: str, output_root: Path, dpi: int) -> Path:
-    target_dir, image_dir, text_dir, out_tex = prepare_output_paths(pdf_path, output_root)
-    target_dir.mkdir(parents=True, exist_ok=True)
+def clone_question_images(module5, question_images):
+    return [
+        module5.QuestionImageSet(
+            index=item.index,
+            qno=item.qno,
+            problem_image_paths=list(item.problem_image_paths),
+            choices_image_paths=list(item.choices_image_paths),
+        )
+        for item in question_images
+    ]
 
-    question_images, question_texts = module5._render_pdf_questions_with_text(
-        pdf_path=str(pdf_path),
-        image_dir=str(image_dir),
-        dpi=dpi,
-    )
 
+def clone_question_texts(module5, question_texts):
+    return [
+        module5.QuestionTextSet(
+            index=item.index,
+            qno=item.qno,
+            question_text=item.question_text,
+            choices_text=item.choices_text,
+        )
+        for item in question_texts
+    ]
+
+
+def _build_combined_text(question_text: str, choices_text: str) -> str:
+    if question_text and choices_text:
+        return f"{question_text}\n{choices_text}"
+    if question_text:
+        return question_text
+    return choices_text
+
+
+def _split_pre_shared_text(module5, pre_shared_text: str) -> tuple[str, str]:
+    split_fn = getattr(module5, "split_question_and_choices", None)
+    if split_fn is None:
+        return pre_shared_text.strip(), ""
+    question_text, choices_text = split_fn(pre_shared_text.strip())
+    return question_text.strip(), choices_text.strip()
+
+
+def _extract_shared_image(
+    source_image_item,
+    image_dir: Path,
+    passage_id: str,
+) -> List[str]:
+    if source_image_item is None:
+        return []
+
+    candidate_path: str | None = None
+    if len(source_image_item.problem_image_paths) >= 2:
+        candidate_path = source_image_item.problem_image_paths[-1]
+        source_image_item.problem_image_paths = source_image_item.problem_image_paths[:-1]
+    elif source_image_item.choices_image_paths:
+        candidate_path = source_image_item.choices_image_paths[-1]
+        source_image_item.choices_image_paths = source_image_item.choices_image_paths[:-1]
+
+    if not candidate_path:
+        return []
+
+    source_path = Path(candidate_path)
+    if not source_path.exists():
+        return []
+
+    dest_path = image_dir / f"{passage_id}_part_01.png"
+    shutil.copyfile(source_path, dest_path)
+    return [str(dest_path)]
+
+
+def extract_shared_passages(module5, question_images, question_texts, image_dir: Path):
+    question_images_out = clone_question_images(module5, question_images)
+    question_texts_out = clone_question_texts(module5, question_texts)
+
+    image_by_index = {item.index: item for item in question_images_out}
+    qno_set = {item.qno for item in question_texts_out if item.qno is not None}
+    shared_passages: List[SharedPassageSet] = []
+    shared_map: dict[int, str] = {}
+
+    for text_item in question_texts_out:
+        combined_text = _build_combined_text(text_item.question_text, text_item.choices_text).strip()
+        if not combined_text:
+            continue
+
+        match = SHARED_PASSAGE_RE.search(combined_text)
+        if match is None:
+            continue
+
+        start_qno = int(match.group(1))
+        end_qno = int(match.group(2))
+        if start_qno > end_qno:
+            start_qno, end_qno = end_qno, start_qno
+
+        target_qnos = [qno for qno in range(start_qno, end_qno + 1) if qno in qno_set]
+        if not target_qnos:
+            continue
+
+        passage_id = f"shared_passage_{start_qno:03d}_{end_qno:03d}"
+        if any(item.passage_id == passage_id for item in shared_passages):
+            continue
+
+        pre_shared_text = combined_text[:match.start()].strip()
+        shared_text = combined_text[match.start():].strip()
+        if not shared_text:
+            continue
+
+        # 공통 지문 이전 텍스트를 다시 problem/choices로 분해해 원 문항에 반영한다.
+        question_text, choices_text = _split_pre_shared_text(module5, pre_shared_text)
+        text_item.question_text = question_text
+        text_item.choices_text = choices_text
+
+        source_image_item = image_by_index.get(text_item.index)
+        shared_image_paths = _extract_shared_image(
+            source_image_item=source_image_item,
+            image_dir=image_dir,
+            passage_id=passage_id,
+        )
+
+        shared_passages.append(
+            SharedPassageSet(
+                passage_id=passage_id,
+                start_qno=start_qno,
+                end_qno=end_qno,
+                text=shared_text,
+                image_paths=shared_image_paths,
+            )
+        )
+        for qno in target_qnos:
+            shared_map[qno] = passage_id
+
+    return question_images_out, question_texts_out, shared_passages, shared_map
+
+
+def relativize_question_images(module5, question_images, out_tex: Path):
     question_images_for_tex = []
     for item in question_images:
         problem_rel_paths = [
@@ -261,18 +399,201 @@ def process_one_pdf(module5, pdf_path: str, output_root: Path, dpi: int) -> Path
                 choices_image_paths=choices_rel_paths,
             )
         )
+    return question_images_for_tex
 
-    latex_content = module5.build_latex_document(
+
+def relativize_shared_passages(
+    shared_passages: List[SharedPassageSet],
+    out_tex: Path,
+) -> List[SharedPassageSet]:
+    out: List[SharedPassageSet] = []
+    for item in shared_passages:
+        out.append(
+            SharedPassageSet(
+                passage_id=item.passage_id,
+                start_qno=item.start_qno,
+                end_qno=item.end_qno,
+                text=item.text,
+                image_paths=[os.path.relpath(path, start=out_tex.parent) for path in item.image_paths],
+            )
+        )
+    return out
+
+
+def build_shared_passage_tex_block(item: SharedPassageSet, mapped_qnos: List[int]) -> List[str]:
+    qno_text = ",".join(f"q{qno}" for qno in mapped_qnos)
+    lines: List[str] = [
+        rf"% {qno_text} -> {item.passage_id}.txt",
+        rf"\subsection*{{Shared Passage (No. {item.start_qno}-{item.end_qno})}}",
+    ]
+
+    if not item.image_paths:
+        lines.append(r"% shared passage image unavailable")
+        lines.append("")
+        return lines
+
+    for rel_path in item.image_paths:
+        latex_path = rel_path.replace(os.sep, "/")
+        lines.extend(
+            [
+                r"\begin{figure}[H]",
+                r"\centering",
+                rf"\includegraphics[width=\textwidth]{{{latex_path}}}",
+                r"\end{figure}",
+                r"",
+            ]
+        )
+    return lines
+
+
+def _question_section_title_line(item) -> str:
+    if item.qno is None:
+        return rf"\section*{{Question {item.index}}}"
+    return rf"\section*{{Question {item.index} (No. {item.qno})}}"
+
+
+def build_latex_document(
+    module5,
+    pdf_name: str,
+    question_images,
+    shared_passages: List[SharedPassageSet],
+    shared_map: dict[int, str],
+) -> str:
+    base_tex = module5.build_latex_document(pdf_name=pdf_name, question_images=question_images)
+    if not shared_passages:
+        return base_tex
+
+    shared_by_id = {item.passage_id: item for item in shared_passages}
+    qnos_by_passage: dict[str, List[int]] = {}
+    for qno, passage_id in shared_map.items():
+        qnos_by_passage.setdefault(passage_id, []).append(qno)
+
+    anchor_by_section_line: dict[str, List[str]] = {}
+    anchored_passage_ids: set[str] = set()
+    for q_item in question_images:
+        if q_item.qno is None:
+            continue
+        passage_id = shared_map.get(q_item.qno)
+        if passage_id is None or passage_id in anchored_passage_ids:
+            continue
+        line = _question_section_title_line(q_item)
+        anchor_by_section_line.setdefault(line, []).append(passage_id)
+        anchored_passage_ids.add(passage_id)
+
+    inserted: set[str] = set()
+    out_lines: List[str] = []
+    for line in base_tex.splitlines():
+        if line in anchor_by_section_line:
+            for passage_id in anchor_by_section_line[line]:
+                passage = shared_by_id.get(passage_id)
+                if passage is None or passage_id in inserted:
+                    continue
+                out_lines.extend(
+                    build_shared_passage_tex_block(
+                        item=passage,
+                        mapped_qnos=sorted(qnos_by_passage.get(passage_id, [])),
+                    )
+                )
+                inserted.add(passage_id)
+
+        if line == r"\end{document}":
+            # 대응 문항을 찾지 못한 shared_passage는 문서 끝에 추가한다.
+            for passage in shared_passages:
+                if passage.passage_id in inserted:
+                    continue
+                out_lines.extend(
+                    build_shared_passage_tex_block(
+                        item=passage,
+                        mapped_qnos=sorted(qnos_by_passage.get(passage.passage_id, [])),
+                    )
+                )
+                inserted.add(passage.passage_id)
+
+        out_lines.append(line)
+
+    return "\n".join(out_lines) + "\n"
+
+
+def save_split_texts(
+    module5,
+    out_dir: Path,
+    question_texts,
+    shared_passages: List[SharedPassageSet],
+    shared_map: dict[int, str],
+) -> None:
+    module5.save_split_texts(out_dir, question_texts)
+    if not shared_passages:
+        return
+
+    for item in shared_passages:
+        passage_text_path = out_dir / f"{item.passage_id}.txt"
+        passage_text_path.write_text(item.text, encoding="utf-8")
+
+    payload = {
+        str(qno): {"shared_passage": f"{passage_id}.txt"}
+        for qno, passage_id in sorted(shared_map.items())
+    }
+    mapping_path = out_dir / "question_passage_map.json"
+    mapping_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def process_one_pdf(module5, pdf_path: str, output_root: Path, dpi: int) -> Path:
+    target_dir, image_dir, text_dir, out_tex = prepare_output_paths(pdf_path, output_root)
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    question_images, question_texts = module5._render_pdf_questions_with_text(
+        pdf_path=str(pdf_path),
+        image_dir=str(image_dir),
+        dpi=dpi,
+    )
+
+    (
+        question_images,
+        question_texts,
+        shared_passages,
+        shared_map,
+    ) = extract_shared_passages(
+        module5=module5,
+        question_images=question_images,
+        question_texts=question_texts,
+        image_dir=image_dir,
+    )
+
+    question_images_for_tex = relativize_question_images(
+        module5=module5,
+        question_images=question_images,
+        out_tex=out_tex,
+    )
+    shared_passages_for_tex = relativize_shared_passages(
+        shared_passages=shared_passages,
+        out_tex=out_tex,
+    )
+
+    latex_content = build_latex_document(
+        module5=module5,
         pdf_name=Path(pdf_path).name,
         question_images=question_images_for_tex,
+        shared_passages=shared_passages_for_tex,
+        shared_map=shared_map,
     )
     out_tex.write_text(latex_content, encoding="utf-8")
-    module5.save_split_texts(text_dir, question_texts)
+    save_split_texts(
+        module5=module5,
+        out_dir=text_dir,
+        question_texts=question_texts,
+        shared_passages=shared_passages,
+        shared_map=shared_map,
+    )
 
     print(f"[완료] {Path(pdf_path).name}")
     print(f"  - 저장 폴더: {target_dir}")
     print(f"  - LaTeX: {out_tex}")
     print(f"  - 문항 수: {len(question_images)}")
+    if shared_passages:
+        print(f"  - 공통 지문 수: {len(shared_passages)}")
     return target_dir
 
 
