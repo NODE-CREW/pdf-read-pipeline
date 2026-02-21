@@ -132,11 +132,12 @@ python ./6-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf 
 
 
 6-2. `6-2_extract_all_text_and_save_latex_split_images.py`
-- 역할: 6-1 기능 + 스캔본 대비 OCR fallback(문항 텍스트 길이 임계치 기반)
+- 역할: 6-1 기능 + 스캔본 대비 OCR fallback(문항 텍스트 부재 시)
 - OCR 동작:
-  - 문항 텍스트(문제+선택지)가 짧으면 이미지(`problem/choices`)에서 OCR 재추출 시도
+  - 문항 텍스트(문제+선택지)가 비어 있으면 이미지(`problem/choices`)에서 OCR 재추출 시도
+  - OCR 전처리(그레이스케일/이진화) 후 `psm 6` 우선, 실패 시 `psm 11`로 1회 재시도
   - OCR 성공 시 기존 문항 분리 규칙으로 `question_text/choices_text` 재구성
-  - `pytesseract` 또는 `Pillow` 미설치 시 OCR 단계는 자동 건너뜀
+  - `pytesseract` 또는 `Pillow` 미설치, `tesseract` 미설치 시 OCR 단계는 자동 건너뜀(경고 출력)
 - 출력:
   - `./output/<pdf파일명>/output.tex`
   - `./output/<pdf파일명>/latex_pages/`
@@ -180,8 +181,9 @@ python ./7-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 7-2. `7-2_extract_all_text_and_save_latex_split_images.py`
 - 역할: 7-1 기능 + OCR fallback으로 빈약한 텍스트 보강
 - OCR 동작:
-  - 추출 텍스트가 너무 짧은 문항은 문항 이미지에 OCR 적용 후 문제/선택지 재분리
-  - `pytesseract` + `Pillow` 환경이 없으면 OCR 단계는 자동 건너뜀
+  - 추출 텍스트가 비어 있는 문항은 문항 이미지에 OCR 적용 후 문제/선택지 재분리
+  - OCR 전처리(그레이스케일/이진화) 후 `psm 6` 우선, 실패 시 `psm 11`로 1회 재시도
+  - `pytesseract` + `Pillow` + `tesseract` 환경이 없으면 OCR 단계는 자동 건너뜀(경고 출력)
 - 추가 출력:
   - `./output/<pdf파일명>/question_texts/questions_db_ready.jsonl`
 - 예시:
@@ -203,6 +205,24 @@ python ./7-2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
   - `6-2`: DB-ready + OCR fallback
   - `7-1`: image refine + DB-ready
   - `7-2`: image refine + DB-ready + OCR fallback
+
+## OCR 실행 환경 (6-2, 7-2 공통)
+
+- 필수:
+  - Python 패키지: `pytesseract`, `Pillow`
+  - 시스템 바이너리: `tesseract`
+  - 한글 OCR 데이터: `kor` (`kor+eng` 사용)
+- macOS(Homebrew) 설치 예시:
+```bash
+brew install tesseract tesseract-lang
+python3 -m pip install pytesseract pillow
+```
+- 설치 확인:
+```bash
+which tesseract
+tesseract --list-langs | rg "kor|eng"
+python3 -c "import pytesseract; from PIL import Image; print('ok')"
+```
 
 ## 앞으로 추가할 항목
 

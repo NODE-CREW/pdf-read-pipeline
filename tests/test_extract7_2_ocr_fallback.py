@@ -14,10 +14,10 @@ def load_module():
     return module
 
 
-def test_should_use_ocr_fallback_when_text_too_short():
+def test_should_use_ocr_fallback_only_when_text_missing():
     module = load_module()
     assert module.should_use_ocr_fallback("\n \t", min_chars=30)
-    assert module.should_use_ocr_fallback("짧은 텍스트", min_chars=30)
+    assert not module.should_use_ocr_fallback("짧은 텍스트", min_chars=30)
     assert not module.should_use_ocr_fallback("가" * 31, min_chars=30)
 
 
@@ -57,7 +57,7 @@ def test_enhance_question_texts_with_ocr_replaces_short_text(monkeypatch):
     assert "① 보기A" in combined
 
 
-def test_enhance_question_texts_with_ocr_keeps_existing_long_text(monkeypatch):
+def test_enhance_question_texts_with_ocr_keeps_existing_non_empty_text(monkeypatch):
     module = load_module()
     module5 = module.load_module_5()
 
@@ -69,9 +69,9 @@ def test_enhance_question_texts_with_ocr_keeps_existing_long_text(monkeypatch):
             choices_image_paths=[],
         )
     ]
-    long_text = "이 문항은 충분히 긴 텍스트를 가지고 있어서 OCR fallback이 필요하지 않습니다."
+    short_text = "짧은 텍스트"
     texts = [
-        module5.QuestionTextSet(index=1, qno=1, question_text=long_text, choices_text="")
+        module5.QuestionTextSet(index=1, qno=1, question_text=short_text, choices_text="")
     ]
 
     called = {"value": False}
@@ -90,5 +90,5 @@ def test_enhance_question_texts_with_ocr_keeps_existing_long_text(monkeypatch):
         ocr_lang="kor+eng",
     )
 
-    assert out[0].question_text == long_text
+    assert out[0].question_text == short_text
     assert called["value"] is False

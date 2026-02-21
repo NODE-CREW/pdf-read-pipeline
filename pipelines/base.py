@@ -35,6 +35,7 @@ SHARED_PASSAGE_RE = re.compile(
     r"\[\s*(\d{1,3})\s*[~\-]\s*(\d{1,3})\s*\]\s*다음\s*글을\s*읽고\s*물음에\s*답하시오\.?",
 )
 _PIL_IMAGE_AVAILABLE: bool | None = None
+_OCR_WARNED_KEYS: set[str] = set()
 
 
 @dataclass
@@ -1001,7 +1002,30 @@ def save_split_texts(
 
 
 def should_use_ocr_fallback(text: str, min_chars: int = 30) -> bool:
-    return len(normalize_text_for_hash(text)) < int(min_chars)
+    _ = min_chars  # 하위 호환을 위해 시그니처는 유지한다.
+    return normalize_text_for_hash(text) == ""
+
+
+def _warn_ocr_once(key: str, message: str) -> None:
+    if key in _OCR_WARNED_KEYS:
+        return
+    _OCR_WARNED_KEYS.add(key)
+    print(message, file=sys.stderr)
+
+
+def _preprocess_image_for_ocr(image):
+    # 스캔본에서 명암 대비를 단순화해 OCR 인식률을 높인다.
+    gray = image.convert("L")
+    return gray.point(lambda v: 0 if v < 180 else 255)
+
+
+def _ocr_from_single_image(pytesseract, image, ocr_lang: str) -> str:
+    primary = pytesseract.image_to_string(image, lang=ocr_lang, config="--oem 1 --psm 6")
+    if normalize_text_for_hash(primary):
+        return primary.strip()
+
+    retry = pytesseract.image_to_string(image, lang=ocr_lang, config="--oem 1 --psm 11")
+    return (retry or "").strip()
 
 
 def ocr_text_from_image_paths(image_paths, ocr_lang: str = "kor+eng") -> str:
@@ -1009,14 +1033,33 @@ def ocr_text_from_image_paths(image_paths, ocr_lang: str = "kor+eng") -> str:
         import pytesseract
         from PIL import Image
     except Exception:
+        _warn_ocr_once(
+            "ocr_python_deps_missing",
+            "[OCR] pytesseract/Pillow를 불러오지 못했습니다. "
+            "OCR을 건너뜁니다. (pip install pytesseract pillow)",
+        )
+        return ""
+
+    if shutil.which("tesseract") is None:
+        _warn_ocr_once(
+            "ocr_tesseract_missing",
+            "[OCR] tesseract 실행 파일을 찾지 못했습니다. "
+            "OCR을 건너뜁니다. (macOS: brew install tesseract tesseract-lang)",
+        )
         return ""
 
     ocr_parts = []
     for image_path in image_paths:
         try:
             with Image.open(image_path) as img:
-                ocr_text = pytesseract.image_to_string(img, lang=ocr_lang)
-        except Exception:
+                preprocessed = _preprocess_image_for_ocr(img)
+                ocr_text = _ocr_from_single_image(pytesseract, preprocessed, ocr_lang=ocr_lang)
+        except Exception as exc:
+            _warn_ocr_once(
+                "ocr_runtime_error",
+                f"[OCR] OCR 처리 중 오류가 발생했습니다: {type(exc).__name__}. "
+                "해당 이미지 OCR을 건너뜁니다.",
+            )
             ocr_text = ""
         if ocr_text and ocr_text.strip():
             ocr_parts.append(ocr_text.strip())
