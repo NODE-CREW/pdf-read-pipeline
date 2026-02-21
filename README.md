@@ -2,6 +2,12 @@
 
 현재 이 프로젝트는 **텍스트 레이어가 있는 PDF**를 대상으로, 지정한 페이지에서 텍스트를 추출하고 문항 단위로 분리해 출력합니다.
 
+## 프로젝트 목표와 범위
+
+- 최종 서비스 목표는 추출/분리 결과를 DB에 저장해 활용하는 것입니다.
+- 다만 **이 저장소의 범위는 DB 저장 직전 단계(추출/정제/구조화 결과 생성)까지**입니다.
+- 즉, 본 프로젝트에서는 DB 연결/INSERT를 직접 수행하지 않습니다.
+
 ## 현재 지원하는 PDF 유형
 
 - 텍스트 기반 PDF (디지털 문서, 텍스트 선택/복사가 가능한 PDF)
@@ -38,7 +44,7 @@
 python ./1_extract_text_and_print.py --pdf ./test.pdf --pages "1-3"
 ```
 
-## 스크립트 설명 (1~6)
+## 스크립트 설명 (1~7)
 
 1. `1_extract_text_and_print.py`
 - 역할: 지정한 페이지 범위에서 텍스트를 추출하고 문항 단위로 콘솔 출력
@@ -103,6 +109,44 @@ python ./6_extract_all_text_and_save_latex_split_images.py
 - 예시(CLI):
 ```bash
 python ./6_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
+```
+
+
+6-1. `6-1_extract_all_text_and_save_latex_split_images.py`
+- 역할: 6번 기능 + DB 적재 직전 표준 JSONL(`questions_db_ready.jsonl`) 생성
+- 출력(기존 유지 + 추가):
+  - `./output/<pdf파일명>/output.tex`
+  - `./output/<pdf파일명>/latex_pages/`
+  - `./output/<pdf파일명>/question_texts/`
+  - `./output/<pdf파일명>/question_texts/questions_db_ready.jsonl`
+- JSONL 스키마(문항 1건):
+  - `schema_version`, `record_id`, `source_pdf_name`, `source_pdf_stem`
+  - `question_index`, `question_number`, `question_text`, `choices_text`
+  - `shared_passage_id`, `shared_passage_text`
+  - `problem_image_paths`, `choices_image_paths`, `shared_passage_image_paths`
+  - `content_hash`
+- 예시(CLI):
+```bash
+python ./6-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
+```
+
+7. `7_extract_all_text_and_save_latex_split_images.py`
+- 역할: 6번 기능 + 생성된 문항/선택지/공통지문 이미지의 페이지 경계선(상·하단 잔선) refine
+- refine 동작:
+  - 이미지 상단/하단 edge row를 스캔해 경계선처럼 보이는 행을 감지하면 자동 crop
+  - 이미지 본문 손실을 막기 위해 최대 trim 픽셀과 최소 높이 보호 조건 적용
+  - Pillow 미설치 환경에서는 refine 단계를 건너뛰고 기존 6번 동작과 동일하게 처리
+- 출력:
+  - `./output/<pdf파일명>/output.tex`
+  - `./output/<pdf파일명>/latex_pages/`
+  - `./output/<pdf파일명>/question_texts/`
+- 예시(GUI):
+```bash
+python ./7_extract_all_text_and_save_latex_split_images.py
+```
+- 예시(CLI):
+```bash
+python ./7_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
 ```
 
 ## 앞으로 추가할 항목
