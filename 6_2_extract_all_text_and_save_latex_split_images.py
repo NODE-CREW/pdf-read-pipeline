@@ -36,14 +36,14 @@ def process_one_pdf(module5, pdf_path: str, output_root: Path, dpi: int) -> Path
         pdf_path=pdf_path,
         output_root=output_root,
         dpi=dpi,
-        enable_refine=True,
+        enable_refine=False,
         enable_ocr=True,
         enable_db_ready=True,
     )
 
 
 def main() -> None:
-    _pipeline.main(enable_refine=True, enable_ocr=True, enable_db_ready=True)
+    _pipeline.main(enable_refine=False, enable_ocr=True, enable_db_ready=True)
 
 
 if __name__ == "__main__":

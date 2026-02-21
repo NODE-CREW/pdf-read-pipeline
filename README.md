@@ -131,7 +131,7 @@ python ./6-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf 
 ```
 
 
-6_2. `6_2_extract_all_text_and_save_latex_split_images.py`
+6-2. `6-2_extract_all_text_and_save_latex_split_images.py`
 - 역할: 6-1 기능 + 스캔본 대비 OCR fallback(문항 텍스트 길이 임계치 기반)
 - OCR 동작:
   - 문항 텍스트(문제+선택지)가 짧으면 이미지(`problem/choices`)에서 OCR 재추출 시도
@@ -144,7 +144,7 @@ python ./6-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf 
   - `./output/<pdf파일명>/question_texts/questions_db_ready.jsonl`
 - 예시(CLI):
 ```bash
-python ./6_2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
+python ./6-2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
 ```
 
 7. `7_extract_all_text_and_save_latex_split_images.py`
@@ -166,7 +166,7 @@ python ./7_extract_all_text_and_save_latex_split_images.py
 python ./7_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
 ```
 
-7_1. `7_1_extract_all_text_and_save_latex_split_images.py`
+7-1. `7-1_extract_all_text_and_save_latex_split_images.py`
 - 역할: 7번 기능 + DB 저장 직전 적재 포맷(JSONL) 생성
 - 추가 출력:
   - `./output/<pdf파일명>/question_texts/questions_db_ready.jsonl`
@@ -174,11 +174,11 @@ python ./7_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./
   - 문항 인덱스/번호, 문제/선택지 텍스트, 공통 지문 매핑, 이미지 상대경로, content hash
 - 예시:
 ```bash
-python ./7_1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
+python ./7-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 ```
 
-7_2. `7_2_extract_all_text_and_save_latex_split_images.py`
-- 역할: 7_1 기능 + OCR fallback으로 빈약한 텍스트 보강
+7-2. `7-2_extract_all_text_and_save_latex_split_images.py`
+- 역할: 7-1 기능 + OCR fallback으로 빈약한 텍스트 보강
 - OCR 동작:
   - 추출 텍스트가 너무 짧은 문항은 문항 이미지에 OCR 적용 후 문제/선택지 재분리
   - `pytesseract` + `Pillow` 환경이 없으면 OCR 단계는 자동 건너뜀
@@ -186,8 +186,23 @@ python ./7_1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
   - `./output/<pdf파일명>/question_texts/questions_db_ready.jsonl`
 - 예시:
 ```bash
-python ./7_2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
+python ./7-2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 ```
+
+## 파이프라인 공통 모듈
+
+- `6-1`, `6-2`, `7-1`, `7-2`는 `pipelines/` 패키지의 공통 구현을 공유합니다.
+- 모듈 구성:
+  - `pipelines/base.py`: 공통 추출/렌더/문서화 오케스트레이션
+  - `pipelines/refine.py`: 이미지 경계선 refine 관련 함수
+  - `pipelines/db_ready.py`: DB-ready JSONL 생성 관련 함수
+  - `pipelines/ocr.py`: OCR fallback 관련 함수
+  - `pipelines/split_images_pipeline.py`: 하위 모듈을 재노출하는 호환 façade
+- 각 스크립트는 기능 조합만 다릅니다.
+  - `6-1`: DB-ready
+  - `6-2`: DB-ready + OCR fallback
+  - `7-1`: image refine + DB-ready
+  - `7-2`: image refine + DB-ready + OCR fallback
 
 ## 앞으로 추가할 항목
 
