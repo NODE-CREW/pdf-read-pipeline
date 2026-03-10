@@ -76,3 +76,18 @@ def test_7_2_main_delegates_with_expected_flags(monkeypatch):
 
     assert seen == {"enable_refine": True, "enable_ocr": True, "enable_db_ready": True}
 
+
+def test_8_main_delegates_with_expected_flags(monkeypatch):
+    module = load_module(
+        "8_extract_all_text_and_save_latex_split_images.py",
+        "entry_8",
+    )
+    seen = {}
+
+    def fake_main(**kwargs):
+        seen.update(kwargs)
+
+    monkeypatch.setattr(module._pipeline, "main", fake_main)
+    module.main()
+
+    assert seen == {"enable_refine": True, "enable_ocr": True, "enable_db_ready": True}

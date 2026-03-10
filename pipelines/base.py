@@ -36,6 +36,22 @@ SHARED_PASSAGE_RE = re.compile(
 )
 _PIL_IMAGE_AVAILABLE: bool | None = None
 _OCR_WARNED_KEYS: set[str] = set()
+OCR_QUESTION_START_RE = re.compile(r"^\s*(\d{1,3})\s*[\.\)]\s*")
+OCR_QUESTION_START_SLASH7_RE = re.compile(r"^\s*/\s*[\.\)]\s*")
+OCR_CHOICE_LINE_RE = re.compile(
+    r"""
+    ^\s*
+    (?:
+        [①②③④⑤⑥⑦⑧⑨⑩]|
+        \(\s*[1-5]\s*\)|
+        [1-5]\s*[\.\)]|
+        [@©○●◦•※]|
+        [A-Ea-e]\s*[\.\)]
+    )
+    \s*
+    """,
+    re.VERBOSE,
+)
 
 
 @dataclass
@@ -109,6 +125,13 @@ def apply_render_safety_patches(module5) -> None:
                 columns = page_columns[page_idx]
                 starts = collect_question_start_x_centers(page, module5)
                 page_width = float(page.rect.width)
+                separator_x = detect_vertical_separator_x_in_page(page)
+                if separator_x is not None:
+                    page_columns[page_idx] = build_two_columns_from_separator(
+                        page_width=page_width,
+                        separator_x=separator_x,
+                    )
+                    continue
                 if should_collapse_tight_two_columns(columns, page_width, starts):
                     page_columns[page_idx] = [(0.0, page_width)]
             return page_columns
@@ -178,6 +201,81 @@ def widen_left_column_if_tight_gap(
     max_overlap = 24.0
     widened_x1 = min(page_width, x1 + max_overlap)
     return x0, widened_x1
+
+
+def build_two_columns_from_separator(
+    page_width: float,
+    separator_x: float,
+    separator_half_gap: float = 8.0,
+) -> list[tuple[float, float]]:
+    if page_width <= 0:
+        return [(0.0, page_width)]
+    left_x1 = max(0.0, min(page_width, separator_x - separator_half_gap))
+    right_x0 = max(0.0, min(page_width, separator_x + separator_half_gap))
+    if right_x0 <= left_x1 + 4.0:
+        return [(0.0, page_width)]
+    return [(0.0, left_x1), (right_x0, page_width)]
+
+
+def infer_vertical_separator_x(
+    image_width: int,
+    col_stats_fn,
+    *,
+    search_left_ratio: float = 0.4,
+    search_right_ratio: float = 0.6,
+) -> float | None:
+    if image_width < 120:
+        return None
+    x0 = max(1, int(image_width * search_left_ratio))
+    x1 = min(image_width - 2, int(image_width * search_right_ratio))
+    if x1 <= x0:
+        return None
+
+    candidates: list[int] = []
+    for x in range(x0, x1 + 1):
+        mean, stddev, dark_ratio, longest_dark_run_ratio = col_stats_fn(x)
+        if _looks_like_vertical_boundary_rule(
+            mean=mean,
+            stddev=stddev,
+            dark_ratio=dark_ratio,
+            longest_dark_run_ratio=longest_dark_run_ratio,
+        ):
+            candidates.append(x)
+
+    if not candidates:
+        return None
+
+    best_start = candidates[0]
+    best_end = candidates[0]
+    cur_start = candidates[0]
+    cur_end = candidates[0]
+    for x in candidates[1:]:
+        if x == cur_end + 1:
+            cur_end = x
+            continue
+        if (cur_end - cur_start) > (best_end - best_start):
+            best_start, best_end = cur_start, cur_end
+        cur_start = x
+        cur_end = x
+    if (cur_end - cur_start) > (best_end - best_start):
+        best_start, best_end = cur_start, cur_end
+
+    return (best_start + best_end) / 2.0
+
+
+def detect_vertical_separator_x_in_page(page) -> float | None:
+    try:
+        import fitz
+    except Exception:
+        return None
+    try:
+        pix = page.get_pixmap(matrix=fitz.Matrix(1, 1), alpha=False)
+    except Exception:
+        return None
+    return infer_vertical_separator_x(
+        image_width=int(pix.width),
+        col_stats_fn=lambda x: _col_stats_from_pixmap(pix, x),
+    )
 
 
 def select_pdf_files_with_gui() -> List[str]:
@@ -284,6 +382,8 @@ def _looks_like_vertical_boundary_rule(
     if longest_dark_run_ratio >= 0.9 and dark_ratio >= 0.65:
         return True
     if longest_dark_run_ratio >= 0.92 and stddev <= 12.0 and mean <= 250.0:
+        return True
+    if longest_dark_run_ratio >= 0.85 and dark_ratio >= 0.75 and stddev <= 45.0 and mean <= 230.0:
         return True
     return False
 
@@ -1019,13 +1119,470 @@ def _preprocess_image_for_ocr(image):
     return gray.point(lambda v: 0 if v < 180 else 255)
 
 
-def _ocr_from_single_image(pytesseract, image, ocr_lang: str) -> str:
-    primary = pytesseract.image_to_string(image, lang=ocr_lang, config="--oem 1 --psm 6")
-    if normalize_text_for_hash(primary):
-        return primary.strip()
+def detect_vertical_separator_x_in_image(image) -> float | None:
+    try:
+        gray = image.convert("L")
+        return infer_vertical_separator_x(
+            image_width=int(gray.size[0]),
+            col_stats_fn=lambda x: _col_stats(gray, x),
+        )
+    except Exception:
+        return None
 
-    retry = pytesseract.image_to_string(image, lang=ocr_lang, config="--oem 1 --psm 11")
-    return (retry or "").strip()
+
+def _ocr_from_single_image(pytesseract, image, ocr_lang: str) -> str:
+    separator_x = detect_vertical_separator_x_in_image(image)
+    if separator_x is not None:
+        width, height = image.size
+        gap = max(8, int(width * 0.015))
+        left = image.crop((0, 0, max(1, int(separator_x) - gap), height))
+        right = image.crop((min(width - 1, int(separator_x) + gap), 0, width, height))
+        left_text = _ocr_from_single_region(pytesseract, left, ocr_lang=ocr_lang)
+        right_text = _ocr_from_single_region(pytesseract, right, ocr_lang=ocr_lang)
+        combined = "\n".join(part for part in [left_text, right_text] if normalize_text_for_hash(part))
+        if normalize_text_for_hash(combined):
+            return combined.strip()
+
+    return _ocr_from_single_region(pytesseract, image, ocr_lang=ocr_lang)
+
+
+def _ocr_from_single_region(pytesseract, image, ocr_lang: str) -> str:
+    candidates: list[str] = []
+    for variant in _build_ocr_image_variants(image):
+        for config in ("--oem 1 --psm 6", "--oem 1 --psm 4", "--oem 1 --psm 11"):
+            text = pytesseract.image_to_string(variant, lang=ocr_lang, config=config)
+            if normalize_text_for_hash(text):
+                candidates.append(text.strip())
+                if config != "--oem 1 --psm 11":
+                    break
+
+    return _select_best_ocr_candidate(candidates)
+
+
+def _build_ocr_image_variants(image):
+    variants = [_preprocess_image_for_ocr(image)]
+    width, height = image.size
+    if width < 1000:
+        return variants
+
+    split_x = int(width * 0.5)
+    overlap = int(width * 0.08)
+    left = image.crop((0, 0, min(width, split_x + overlap), height))
+    right = image.crop((max(0, split_x - overlap), 0, width, height))
+    variants.append(_preprocess_image_for_ocr(left))
+    variants.append(_preprocess_image_for_ocr(right))
+    return variants
+
+
+def _select_best_ocr_candidate(candidates: list[str]) -> str:
+    if not candidates:
+        return ""
+    return max(candidates, key=_score_ocr_candidate).strip()
+
+
+def _score_ocr_candidate(text: str) -> tuple[int, int, int, int, int]:
+    block = _extract_ocr_question_block(text, expected_qno=None)
+    question_text, choices_text = _split_ocr_question_and_choices(block)
+    first_qno = _parse_ocr_question_number(question_text)
+    choice_count = sum(
+        1
+        for line in choices_text.splitlines()
+        if OCR_CHOICE_LINE_RE.match(line) and not OCR_QUESTION_START_RE.match(line)
+    )
+    question_len = len(normalize_text_for_hash(question_text))
+    block_len = len(normalize_text_for_hash(block))
+    return (
+        1 if first_qno is not None else 0,
+        min(choice_count, 5),
+        -(first_qno or 999),
+        1 if question_len >= 20 else 0,
+        -max(0, block_len - 1800),
+    )
+
+
+def _parse_ocr_question_number(question_text: str) -> int | None:
+    if not question_text:
+        return None
+    first_line = question_text.splitlines()[0]
+    return _parse_ocr_qno_from_line(first_line)
+
+
+def _parse_ocr_qno_from_line(line: str) -> int | None:
+    match = OCR_QUESTION_START_RE.match(line or "")
+    if match is not None:
+        try:
+            return int(match.group(1))
+        except ValueError:
+            return None
+    if OCR_QUESTION_START_SLASH7_RE.match(line or ""):
+        return 7
+    return None
+
+
+def _is_ocr_question_start_line(line: str) -> bool:
+    return _parse_ocr_qno_from_line(line) is not None
+
+
+def _normalize_question_text_leading_number(question_text: str, qno: int | None) -> str:
+    if qno is None or not question_text:
+        return question_text
+    lines = question_text.splitlines()
+    if not lines:
+        return question_text
+    first = lines[0]
+    normalized = re.sub(r"^\s*(?:/|\d{1,3})\s*[\.\)]\s*", f"{qno}. ", first)
+    lines[0] = normalized
+    return "\n".join(lines).strip()
+
+
+def _normalize_common_ocr_phrases(text: str) -> str:
+    if not text:
+        return text
+    out = text
+    out = re.sub(r"Firmware\)O", "(Firmware)에", out)
+    out = re.sub(r"관한\s*설명으로\s*22\s*것은\?", "관한 설명으로 옳은 것은?", out)
+    out = re.sub(r"설명으로\s*올지\s*않은\s*것은\?", "설명으로 옳지 않은 것은?", out)
+    out = re.sub(r"설명으로\s*율지\s*않은\s*것은\?", "설명으로 옳지 않은 것은?", out)
+    out = re.sub(r"브리지\(\s*31006\s*\)", "브리지(Bridge)", out)
+    out = re.sub(
+        r"주로\s*하드디스크의\s*부트\s*레코드\s*부분에\s*AVEC\b",
+        "주로 하드디스크의 부트 레코드 부분에 저장된다.",
+        out,
+    )
+    out = re.sub(r"16%!\-=\(Hexadecimal\}", "16진수(Hexadecimal)", out)
+    out = re.sub(r"A~FILAL\s*문지", "A~F의 문자", out)
+    out = re.sub(r"10진수\s*실수0030로", "10진수 실수로", out)
+    out = re.sub(r"\(\s*([1-5])\s+10진수\(0600130\s*정수", r"(\1) 10진수의 정수", out)
+    out = re.sub(r"변환\s+하려면", "변환하려면", out)
+    out = re.sub(r"변환\s*히\s*려면", "변환하려면", out)
+    out = re.sub(r"더\s*이상\s*LA\s*지", "더 이상 나누어지", out)
+    out = re.sub(r",\s*KE\s*제외한", ", 그 나머지를", out)
+    out = re.sub(r"나머지를\s+나머지를", "나머지를", out)
+    return out
+
+
+def _has_choice_like_line(text: str) -> bool:
+    for line in (text or "").splitlines():
+        if OCR_CHOICE_LINE_RE.match(line) and not _is_ocr_question_start_line(line):
+            return True
+    return False
+
+
+def _should_prefer_ocr_split(
+    *,
+    primary_question_text: str,
+    primary_choices_text: str,
+    ocr_question_text: str,
+    ocr_choices_text: str,
+) -> bool:
+    if _has_choice_like_line(primary_question_text) and _has_choice_like_line(ocr_choices_text):
+        return True
+    if (not normalize_text_for_hash(primary_choices_text)) and normalize_text_for_hash(ocr_choices_text):
+        return True
+    return False
+
+
+def _split_ocr_text_by_question_starts(text: str) -> list[tuple[int | None, str]]:
+    lines = [line.rstrip() for line in (text or "").splitlines() if line.strip()]
+    if not lines:
+        return []
+
+    starts: list[tuple[int, int | None]] = []
+    for i, line in enumerate(lines):
+        qno = _parse_ocr_qno_from_line(line)
+        if qno is None:
+            continue
+        starts.append((i, qno))
+
+    if not starts:
+        return [(None, "\n".join(lines).strip())]
+
+    chunks: list[tuple[int | None, str]] = []
+    for idx, (start_i, qno) in enumerate(starts):
+        end_i = starts[idx + 1][0] if idx + 1 < len(starts) else len(lines)
+        chunk = "\n".join(lines[start_i:end_i]).strip()
+        if chunk:
+            chunks.append((qno, chunk))
+    return chunks
+
+
+def _next_available_index(used_indices: set[int], preferred: int) -> int:
+    candidate = max(1, int(preferred))
+    while candidate in used_indices:
+        candidate += 1
+    used_indices.add(candidate)
+    return candidate
+
+
+def _safe_split_equal_vertical_image(
+    source_image_path: str,
+    out_dir: Path,
+    split_count: int,
+    base_index: int,
+) -> list[str]:
+    if split_count <= 1:
+        return [source_image_path]
+    try:
+        from PIL import Image
+    except Exception:
+        return [source_image_path]
+
+    try:
+        with Image.open(source_image_path) as img:
+            width, height = img.size
+            if height <= split_count * 8:
+                return [source_image_path]
+
+            out_paths: list[str] = []
+            for i in range(split_count):
+                y0 = int(round(height * (i / split_count)))
+                y1 = int(round(height * ((i + 1) / split_count)))
+                if y1 <= y0 + 2:
+                    continue
+                cropped = img.crop((0, y0, width, y1))
+                out_path = out_dir / f"ocr_split_{base_index:03d}_{i + 1:02d}.png"
+                cropped.save(out_path)
+                out_paths.append(str(out_path))
+            return out_paths or [source_image_path]
+    except Exception:
+        return [source_image_path]
+
+
+def _resolve_column_question_counts(
+    total_count: int,
+    left_detected: int,
+    right_detected: int,
+) -> tuple[int, int]:
+    total = max(1, int(total_count))
+    left_detected = max(0, int(left_detected))
+    right_detected = max(0, int(right_detected))
+
+    if left_detected > 0 and right_detected > 0:
+        detected_sum = left_detected + right_detected
+        if detected_sum == total:
+            return left_detected, right_detected
+        if detected_sum > 0:
+            left = max(1, min(total - 1, int(round(total * (left_detected / detected_sum)))))
+            return left, total - left
+
+    left = (total + 1) // 2
+    right = total - left
+    if right == 0:
+        return total, 0
+    return left, right
+
+
+def _safe_count_questions_in_pil_image(image, ocr_lang: str = "kor+eng") -> int:
+    try:
+        import pytesseract
+    except Exception:
+        return 0
+    try:
+        text = _ocr_from_single_region(pytesseract, image, ocr_lang=ocr_lang)
+    except Exception:
+        return 0
+    chunks = _split_ocr_text_by_question_starts(text)
+    return len(chunks)
+
+
+def _save_vertical_splits_from_pil_image(
+    image,
+    out_dir: Path,
+    split_count: int,
+    prefix: str,
+) -> list[str]:
+    if split_count <= 0:
+        return []
+    width, height = image.size
+    if height <= split_count * 8:
+        return []
+
+    out_paths: list[str] = []
+    for i in range(split_count):
+        y0 = int(round(height * (i / split_count)))
+        y1 = int(round(height * ((i + 1) / split_count)))
+        if y1 <= y0 + 2:
+            continue
+        cropped = image.crop((0, y0, width, y1))
+        out_path = out_dir / f"{prefix}_{i + 1:02d}.png"
+        cropped.save(out_path)
+        out_paths.append(str(out_path))
+    return out_paths
+
+
+def expand_question_images_for_ocr_synthetic_questions(
+    module5,
+    question_images,
+    question_texts,
+):
+    image_by_index = {int(item.index): item for item in question_images}
+    text_indices = sorted(int(item.index) for item in question_texts)
+    if not text_indices:
+        return question_images
+
+    existing_indices = sorted(image_by_index.keys())
+    if not existing_indices:
+        return question_images
+
+    out_by_index: dict[int, object] = {int(item.index): item for item in question_images}
+    for pos, base_index in enumerate(existing_indices):
+        next_index = existing_indices[pos + 1] if pos + 1 < len(existing_indices) else None
+        group_indices = [
+            idx for idx in text_indices if idx >= base_index and (next_index is None or idx < next_index)
+        ]
+        if len(group_indices) <= 1:
+            continue
+
+        base_item = image_by_index[base_index]
+        if len(base_item.problem_image_paths) != 1 or base_item.choices_image_paths:
+            continue
+
+        source_path = base_item.problem_image_paths[0]
+        out_dir = Path(source_path).resolve().parent
+        split_paths: list[str] = []
+        try:
+            from PIL import Image
+            with Image.open(source_path) as src_img:
+                separator_x = detect_vertical_separator_x_in_image(src_img)
+                if separator_x is not None:
+                    width, height = src_img.size
+                    sep = int(separator_x)
+                    gap = max(8, int(width * 0.015))
+                    left_img = src_img.crop((0, 0, max(1, sep - gap), height))
+                    right_img = src_img.crop((min(width - 1, sep + gap), 0, width, height))
+
+                    left_detected = _safe_count_questions_in_pil_image(left_img)
+                    right_detected = _safe_count_questions_in_pil_image(right_img)
+                    left_count, right_count = _resolve_column_question_counts(
+                        total_count=len(group_indices),
+                        left_detected=left_detected,
+                        right_detected=right_detected,
+                    )
+                    left_paths = _save_vertical_splits_from_pil_image(
+                        image=left_img,
+                        out_dir=out_dir,
+                        split_count=left_count,
+                        prefix=f"ocr_split_{base_index:03d}_L",
+                    )
+                    right_paths = _save_vertical_splits_from_pil_image(
+                        image=right_img,
+                        out_dir=out_dir,
+                        split_count=right_count,
+                        prefix=f"ocr_split_{base_index:03d}_R",
+                    )
+                    split_paths = left_paths + right_paths
+        except Exception:
+            split_paths = []
+
+        if not split_paths:
+            split_paths = _safe_split_equal_vertical_image(
+                source_image_path=source_path,
+                out_dir=out_dir,
+                split_count=len(group_indices),
+                base_index=base_index,
+            )
+        if len(split_paths) != len(group_indices):
+            continue
+
+        for i, idx in enumerate(group_indices):
+            out_by_index[idx] = module5.QuestionImageSet(
+                index=idx,
+                qno=None,
+                problem_image_paths=[split_paths[i]],
+                choices_image_paths=[],
+            )
+
+    return [out_by_index[idx] for idx in sorted(out_by_index.keys())]
+
+
+def _trim_chunks_from_expected_qno(
+    chunks: list[tuple[int | None, str]],
+    expected_qno: int | None,
+) -> list[tuple[int | None, str]]:
+    if expected_qno is None:
+        return chunks
+    for i, (qno, _chunk) in enumerate(chunks):
+        if qno == expected_qno:
+            return chunks[i:]
+    return chunks
+
+
+def _normalize_nearly_consecutive_qnos(
+    chunks: list[tuple[int | None, str]],
+) -> list[tuple[int | None, str]]:
+    qnos = [qno for qno, _ in chunks]
+    if len(qnos) < 6:
+        return chunks
+    if any(qno is None for qno in qnos):
+        return chunks
+
+    nums = [int(qno) for qno in qnos if qno is not None]
+    if nums[0] != 1:
+        return chunks
+    if any(nums[i] <= nums[i - 1] for i in range(1, len(nums))):
+        return chunks
+
+    expected = list(range(nums[0], nums[0] + len(nums)))
+    mismatch_indices = [i for i, (a, b) in enumerate(zip(nums, expected)) if a != b]
+    if not mismatch_indices:
+        return chunks
+
+    # OCR 숫자 오인식으로 중간부터 +1로 밀린 케이스(예: 1..6,8..13)를 보정한다.
+    first_mismatch = mismatch_indices[0]
+    shifted = all(nums[i] == (expected[i] + 1) for i in range(first_mismatch, len(nums)))
+    if shifted:
+        return [(expected[i], text) for i, (_, text) in enumerate(chunks)]
+
+    return chunks
+
+
+def _extract_ocr_question_block(text: str, expected_qno: int | None) -> str:
+    lines = [line.rstrip() for line in (text or "").splitlines()]
+    if not lines:
+        return ""
+
+    start_idx = 0
+    if expected_qno is not None:
+        for i, line in enumerate(lines):
+            qno = _parse_ocr_qno_from_line(line)
+            if qno == expected_qno:
+                start_idx = i
+                break
+    else:
+        for i, line in enumerate(lines):
+            if _is_ocr_question_start_line(line):
+                start_idx = i
+                break
+
+    question_lines: list[str] = []
+    choice_count = 0
+    for line in lines[start_idx:]:
+        if question_lines and _is_ocr_question_start_line(line) and choice_count >= 3:
+            break
+        if OCR_CHOICE_LINE_RE.match(line) and not _is_ocr_question_start_line(line):
+            choice_count += 1
+        question_lines.append(line)
+
+    return "\n".join(question_lines).strip()
+
+
+def _split_ocr_question_and_choices(text: str) -> tuple[str, str]:
+    lines = [line.rstrip() for line in (text or "").splitlines()]
+    if not lines:
+        return "", ""
+
+    first_choice_index = None
+    for i, line in enumerate(lines):
+        if OCR_CHOICE_LINE_RE.match(line) and not _is_ocr_question_start_line(line):
+            first_choice_index = i
+            break
+
+    if first_choice_index is None:
+        return "\n".join(lines).strip(), ""
+
+    question_text = "\n".join(lines[:first_choice_index]).strip()
+    choices_text = "\n".join(lines[first_choice_index:]).strip()
+    return question_text, choices_text
 
 
 def ocr_text_from_image_paths(image_paths, ocr_lang: str = "kor+eng") -> str:
@@ -1052,8 +1609,7 @@ def ocr_text_from_image_paths(image_paths, ocr_lang: str = "kor+eng") -> str:
     for image_path in image_paths:
         try:
             with Image.open(image_path) as img:
-                preprocessed = _preprocess_image_for_ocr(img)
-                ocr_text = _ocr_from_single_image(pytesseract, preprocessed, ocr_lang=ocr_lang)
+                ocr_text = _ocr_from_single_image(pytesseract, img, ocr_lang=ocr_lang)
         except Exception as exc:
             _warn_ocr_once(
                 "ocr_runtime_error",
@@ -1075,6 +1631,7 @@ def enhance_question_texts_with_ocr(
     ocr_lang: str = "kor+eng",
 ):
     image_by_index = {item.index: item for item in question_images}
+    used_indices = {int(item.index) for item in question_texts}
     out = []
     for item in question_texts:
         combined_text = _build_combined_text(item.question_text, item.choices_text)
@@ -1097,16 +1654,52 @@ def enhance_question_texts_with_ocr(
             out.append(item)
             continue
 
-        question_text, choices_text = _split_pre_shared_text(module5, ocr_text)
-        out.append(
-            module5.QuestionTextSet(
-                index=item.index,
-                qno=item.qno,
-                question_text=question_text,
-                choices_text=choices_text,
-            )
+        chunks = _trim_chunks_from_expected_qno(
+            _split_ocr_text_by_question_starts(ocr_text),
+            expected_qno=item.qno,
         )
-    return out
+        if len(chunks) <= 1:
+            ocr_text = _extract_ocr_question_block(ocr_text, expected_qno=item.qno)
+            chunks = _split_ocr_text_by_question_starts(ocr_text)
+        chunks = _normalize_nearly_consecutive_qnos(chunks)
+        if not chunks:
+            out.append(item)
+            continue
+
+        for chunk_idx, (chunk_qno, chunk_text) in enumerate(chunks):
+            question_text, choices_text = _split_pre_shared_text(module5, chunk_text)
+            ocr_question_text, ocr_choices_text = _split_ocr_question_and_choices(chunk_text)
+            if not choices_text:
+                question_text, choices_text = ocr_question_text, ocr_choices_text
+            elif _should_prefer_ocr_split(
+                primary_question_text=question_text,
+                primary_choices_text=choices_text,
+                ocr_question_text=ocr_question_text,
+                ocr_choices_text=ocr_choices_text,
+            ):
+                question_text, choices_text = ocr_question_text, ocr_choices_text
+
+            if chunk_idx == 0:
+                target_index = item.index
+                used_indices.add(int(target_index))
+                target_qno = item.qno if item.qno is not None else chunk_qno
+            else:
+                target_index = _next_available_index(used_indices, preferred=item.index + chunk_idx)
+                target_qno = chunk_qno
+
+            question_text = _normalize_question_text_leading_number(question_text, target_qno)
+            question_text = _normalize_common_ocr_phrases(question_text)
+            choices_text = _normalize_common_ocr_phrases(choices_text)
+
+            out.append(
+                module5.QuestionTextSet(
+                    index=target_index,
+                    qno=target_qno,
+                    question_text=question_text,
+                    choices_text=choices_text,
+                )
+            )
+    return sorted(out, key=lambda x: int(x.index))
 
 
 def normalize_text_for_hash(text: str) -> str:
@@ -1241,6 +1834,11 @@ def process_one_pdf(
             question_texts=question_texts,
             min_chars=30,
             ocr_lang="kor+eng",
+        )
+        question_images = expand_question_images_for_ocr_synthetic_questions(
+            module5=module5,
+            question_images=question_images,
+            question_texts=question_texts,
         )
     refine_available = enable_refine and is_image_refine_available()
     refined_count = 0

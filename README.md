@@ -22,6 +22,7 @@
   3. `pypdf`
 - 문항 분리(heuristic):
   - `문 1`, `제 1 문`, `1.`, `1)` 등의 시작 패턴 인식
+  - 페이지 중앙 부근에 세로 구분선이 감지되면 좌/우 컬럼을 강제 분리해 문항 경계 계산
   - 선택지(①②③..., `(1)`, `(2)` ...) 라인 유지
   - 페이지를 넘는 문항 이어붙이기(기본 병합 로직)
 - 출력:
@@ -44,7 +45,7 @@
 python ./1_extract_text_and_print.py --pdf ./test.pdf --pages "1-3"
 ```
 
-## 스크립트 설명 (1~7_2)
+## 스크립트 설명 (1~8-1)
 
 1. `1_extract_text_and_print.py`
 - 역할: 지정한 페이지 범위에서 텍스트를 추출하고 문항 단위로 콘솔 출력
@@ -135,7 +136,12 @@ python ./6-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf 
 - 역할: 6-1 기능 + 스캔본 대비 OCR fallback(문항 텍스트 부재 시)
 - OCR 동작:
   - 문항 텍스트(문제+선택지)가 비어 있으면 이미지(`problem/choices`)에서 OCR 재추출 시도
+  - OCR 결과에서 `1.`, `2.` 같은 문항 시작 라인을 감지하면 단일 OCR 결과를 다문항으로 재구성
+  - 세로 구분선이 감지되면 OCR도 좌/우 영역을 분리 인식한 뒤 결과를 병합
   - OCR 전처리(그레이스케일/이진화) 후 `psm 6` 우선, 실패 시 `psm 11`로 1회 재시도
+  - 큰 폭 이미지(2단 의심)는 좌/우 분할 OCR 후보도 함께 평가해 최적 후보 선택
+  - OCR 결과에 다음 문항이 섞이면 선택지 패턴(최소 3개) 이후의 다음 문항 시작 라인에서 자동 절단
+  - OCR 선택지 마커는 `①~⑩`, `(1)~(5)`, `1.)~5.)`, `@` 패턴까지 허용
   - OCR 성공 시 기존 문항 분리 규칙으로 `question_text/choices_text` 재구성
   - `pytesseract` 또는 `Pillow` 미설치, `tesseract` 미설치 시 OCR 단계는 자동 건너뜀(경고 출력)
 - 출력:
@@ -182,7 +188,12 @@ python ./7-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 - 역할: 7-1 기능 + OCR fallback으로 빈약한 텍스트 보강
 - OCR 동작:
   - 추출 텍스트가 비어 있는 문항은 문항 이미지에 OCR 적용 후 문제/선택지 재분리
+  - OCR 결과에서 `1.`, `2.` 같은 문항 시작 라인을 감지하면 단일 OCR 결과를 다문항으로 재구성
+  - 세로 구분선이 감지되면 OCR도 좌/우 영역을 분리 인식한 뒤 결과를 병합
   - OCR 전처리(그레이스케일/이진화) 후 `psm 6` 우선, 실패 시 `psm 11`로 1회 재시도
+  - 큰 폭 이미지(2단 의심)는 좌/우 분할 OCR 후보도 함께 평가해 최적 후보 선택
+  - OCR 결과에 다음 문항이 섞이면 선택지 패턴(최소 3개) 이후의 다음 문항 시작 라인에서 자동 절단
+  - OCR 선택지 마커는 `①~⑩`, `(1)~(5)`, `1.)~5.)`, `@` 패턴까지 허용
   - `pytesseract` + `Pillow` + `tesseract` 환경이 없으면 OCR 단계는 자동 건너뜀(경고 출력)
 - 추가 출력:
   - `./output/<pdf파일명>/question_texts/questions_db_ready.jsonl`
@@ -191,9 +202,33 @@ python ./7-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 python ./7-2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 ```
 
+8. `8_extract_all_text_and_save_latex_split_images.py`
+- 역할: 7-2의 후속 버전. OCR 적용 + 문제/선택지 분리 보강(세로 구분선 기준 컬럼 분리 포함)
+- 동작:
+  - image refine + DB-ready + OCR fallback
+  - 세로 구분선 감지 시 좌/우 컬럼을 분리 인식하여 문항 분리
+  - OCR 결과에서 문항 시작 패턴을 재탐지해 문제/선택지 텍스트를 재구성
+- 예시:
+```bash
+python ./8_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
+```
+
+8-1. `8-1_extract_all_text_and_save_latex_split_images.py`
+- 역할: 8번 기능 + SaaS OCR 우선 사용(실패/미설정 시 기존 Tesseract OCR fallback)
+- 동작:
+  - `OCR_SAAS_ENDPOINT`, `OCR_SAAS_API_KEY`가 설정되면 이미지 Base64를 SaaS OCR API로 전송
+  - SaaS 응답에서 텍스트를 추출해 문항 분리 로직에 연결
+  - SaaS 호출 실패(HTTP 오류/타임아웃/파싱 오류) 또는 미설정 시 기존 로컬 OCR(`pytesseract`) 자동 fallback
+- 예시:
+```bash
+OCR_SAAS_ENDPOINT="https://your-ocr-saas.example/v1/ocr" \
+OCR_SAAS_API_KEY="***" \
+python ./8-1_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
+```
+
 ## 파이프라인 공통 모듈
 
-- `6-1`, `6-2`, `7-1`, `7-2`는 `pipelines/` 패키지의 공통 구현을 공유합니다.
+- `6-1`, `6-2`, `7-1`, `7-2`, `8`, `8-1`은 `pipelines/` 패키지의 공통 구현을 공유합니다.
 - 모듈 구성:
   - `pipelines/base.py`: 공통 추출/렌더/문서화 오케스트레이션
   - `pipelines/refine.py`: 이미지 경계선 refine 관련 함수
@@ -205,8 +240,10 @@ python ./7-2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
   - `6-2`: DB-ready + OCR fallback
   - `7-1`: image refine + DB-ready
   - `7-2`: image refine + DB-ready + OCR fallback
+  - `8`: image refine + DB-ready + OCR fallback (컬럼 분리/문항-선택지 분리 보강)
+  - `8-1`: image refine + DB-ready + SaaS OCR 우선 + OCR fallback
 
-## OCR 실행 환경 (6-2, 7-2 공통)
+## OCR 실행 환경 (6-2, 7-2, 8, 8-1 공통)
 
 - 필수:
   - Python 패키지: `pytesseract`, `Pillow`
@@ -223,6 +260,12 @@ which tesseract
 tesseract --list-langs | rg "kor|eng"
 python3 -c "import pytesseract; from PIL import Image; print('ok')"
 ```
+
+## SaaS OCR 환경 변수 (8-1)
+
+- `OCR_SAAS_ENDPOINT`: SaaS OCR HTTP API endpoint (POST JSON)
+- `OCR_SAAS_API_KEY`: SaaS API key (`Authorization: Bearer ...`로 전송)
+- `OCR_SAAS_TIMEOUT_SEC`(선택): 요청 타임아웃(초), 기본 `30`
 
 ## 앞으로 추가할 항목
 

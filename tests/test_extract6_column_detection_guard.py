@@ -43,3 +43,30 @@ def test_widen_left_column_if_tight_gap():
 
     assert x0 == 0.0
     assert x1 > 334.3
+
+
+def test_build_two_columns_from_separator():
+    import pipelines.base as base
+
+    cols = base.build_two_columns_from_separator(page_width=700.0, separator_x=350.0)
+
+    assert len(cols) == 2
+    assert cols[0][1] < 350.0
+    assert cols[1][0] > 350.0
+
+
+def test_infer_vertical_separator_x_detects_center_band():
+    import pipelines.base as base
+
+    def fake_col_stats(x: int):
+        if 345 <= x <= 355:
+            return 120.0, 2.0, 0.95, 0.98
+        return 250.0, 50.0, 0.02, 0.05
+
+    split_x = base.infer_vertical_separator_x(
+        image_width=700,
+        col_stats_fn=fake_col_stats,
+    )
+
+    assert split_x is not None
+    assert 345.0 <= split_x <= 355.0

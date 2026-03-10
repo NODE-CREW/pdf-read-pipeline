@@ -5,10 +5,15 @@ import pipelines.base as base
 
 
 class _FakeImage:
+    size = (800, 1200)
+
     def convert(self, _mode):
         return self
 
     def point(self, _fn):
+        return self
+
+    def crop(self, _box):
         return self
 
 
@@ -49,7 +54,7 @@ def test_ocr_retries_with_second_psm_when_first_result_empty(monkeypatch):
         calls.append(config)
         if config == "--oem 1 --psm 6":
             return " \n "
-        if config == "--oem 1 --psm 11":
+        if config == "--oem 1 --psm 4":
             return "재시도 성공"
         return ""
 
@@ -64,4 +69,4 @@ def test_ocr_retries_with_second_psm_when_first_result_empty(monkeypatch):
     text = base.ocr_text_from_image_paths(["/tmp/q1.png"], ocr_lang="kor+eng")
 
     assert text == "재시도 성공"
-    assert calls == ["--oem 1 --psm 6", "--oem 1 --psm 11"]
+    assert calls == ["--oem 1 --psm 6", "--oem 1 --psm 4"]
