@@ -1,5 +1,6 @@
 data
 output
+.env
 *.pdf
 __pycache__
 .DS_Store
