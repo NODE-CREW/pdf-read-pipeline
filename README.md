@@ -327,6 +327,21 @@ python3 ./9-1_generate_exam_concepts_json_to_txt.py \
 - 스마트 따옴표 포함 여부 검사와 JSON 파싱 실패 시 자동 재시도
 - 최종 결과를 2칸 들여쓰기 pretty JSON으로 `.txt` 저장
 
+모든 입력 이미지에 대해 공통 학습 개념을 반드시 1개만 생성하도록 강제하려면 아래 스크립트를 사용합니다.
+
+```bash
+python3 ./9-2_generate_exam_concepts_json_to_txt.py \
+  --image ./problem-4.png \
+  --image ./problem-25.png \
+  --output ./output/level5/concept_result2.txt
+```
+
+이 스크립트는 아래를 추가로 강제합니다.
+
+- `concepts` 배열 길이 1 고정
+- 입력된 모든 `question_id`가 하나의 동일한 `concept_id`에 정확히 한 번씩만 매핑
+- 모델이 여러 concept를 반환하면 검증 실패로 재시도
+
 실행 전 준비:
 
 ```bash
