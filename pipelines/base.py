@@ -52,6 +52,17 @@ OCR_CHOICE_LINE_RE = re.compile(
     """,
     re.VERBOSE,
 )
+PAGE_TOP_NOISE_PATTERNS = (
+    re.compile(r"컴퓨터활용능력"),
+    re.compile(r"기출문제"),
+    re.compile(r"전자문제집\s*CBT"),
+    re.compile(r"www\.comcbt\.com", re.IGNORECASE),
+)
+PAGE_BOTTOM_NOISE_PATTERNS = (
+    re.compile(r"^\s*\d+\s*과목\s*:\s*"),
+    re.compile(r"최강\s*자격증.*전자문제집\s*CBT", re.IGNORECASE),
+    re.compile(r"www\.comcbt\.com", re.IGNORECASE),
+)
 
 
 @dataclass
@@ -61,6 +72,173 @@ class SharedPassageSet:
     end_qno: int
     text: str
     image_paths: List[str]
+
+
+def _normalize_block_text(text: str) -> str:
+    return " ".join((text or "").split())
+
+
+def _is_top_page_noise_block(
+    text: str,
+    *,
+    y0: float,
+    y1: float,
+) -> bool:
+    normalized = _normalize_block_text(text)
+    if not normalized:
+        return False
+    if y0 > 48.0 and y1 > 56.0:
+        return False
+    return any(pattern.search(normalized) for pattern in PAGE_TOP_NOISE_PATTERNS)
+
+
+def _is_bottom_page_noise_block(
+    text: str,
+    *,
+    y0: float,
+    y1: float,
+    page_height: float,
+) -> bool:
+    normalized = _normalize_block_text(text)
+    if not normalized:
+        return False
+    if any(pattern.search(normalized) for pattern in PAGE_BOTTOM_NOISE_PATTERNS):
+        return True
+    if (page_height - y1) > 28.0 and (page_height - y0) > 40.0:
+        return False
+    return False
+
+
+def filter_page_noise_blocks(
+    text_blocks: list[tuple[float, float, float, float, str]],
+    *,
+    page_height: float,
+) -> list[tuple[float, float, float, float, str]]:
+    filtered: list[tuple[float, float, float, float, str]] = []
+    for x0, y0, x1, y1, text in text_blocks:
+        normalized = (text or "").strip()
+        if not normalized:
+            continue
+        if _is_top_page_noise_block(normalized, y0=y0, y1=y1):
+            continue
+        if _is_bottom_page_noise_block(normalized, y0=y0, y1=y1, page_height=page_height):
+            continue
+        filtered.append((x0, y0, x1, y1, normalized))
+    return filtered
+
+
+def collect_text_blocks_with_text_for_clip(
+    page,
+    *,
+    clip_x0: float,
+    clip_x1: float,
+    raw_y0: float,
+    raw_y1: float,
+) -> list[tuple[float, float, float, float, str]]:
+    blocks: list[tuple[float, float, float, float, str]] = []
+    for row in page.get_text("blocks", sort=True):
+        if len(row) < 5:
+            continue
+        x0, y0, x1, y1, text = row[0], row[1], row[2], row[3], row[4]
+        x0 = float(x0)
+        y0 = float(y0)
+        x1 = float(x1)
+        y1 = float(y1)
+        if x1 <= x0 or y1 <= y0:
+            continue
+
+        x_overlap = min(x1, clip_x1) - max(x0, clip_x0)
+        y_overlap = min(y1, raw_y1) - max(y0, raw_y0)
+        if x_overlap <= 0 or y_overlap <= 0:
+            continue
+        if x_overlap / (x1 - x0) < 0.3:
+            continue
+
+        normalized = str(text or "").strip()
+        if not normalized:
+            continue
+        blocks.append((x0, y0, x1, y1, normalized))
+    return blocks
+
+
+def _join_text_from_blocks(text_blocks: list[tuple[float, float, float, float, str]]) -> str:
+    return "\n".join(text.strip() for *_coords, text in text_blocks if text.strip()).strip()
+
+
+def split_segment_text_for_state(
+    module5,
+    *,
+    clip_text: str,
+    choices_started: bool,
+) -> tuple[str, str, bool]:
+    normalized = (clip_text or "").strip()
+    if not normalized:
+        return "", "", choices_started
+    if choices_started:
+        return "", normalized, True
+
+    split_fn = getattr(module5, "split_question_and_choices", None)
+    if split_fn is None:
+        return normalized, "", False
+
+    question_text, choices_text = split_fn(normalized)
+    question_text = question_text.strip()
+    choices_text = choices_text.strip()
+    return question_text, choices_text, bool(choices_text)
+
+
+def _split_problem_and_choices_clip_by_choice_blocks_fallback(
+    *,
+    clip_y0: float,
+    clip_y1: float,
+    text_blocks: list[tuple[float, float, float, float, str]],
+) -> tuple[tuple[float, float] | None, tuple[float, float] | None]:
+    choice_starts: list[float] = []
+    for _x0, block_y0, _x1, _y1, block_text in text_blocks:
+        for line in block_text.splitlines():
+            if OCR_CHOICE_LINE_RE.match(line):
+                choice_starts.append(max(clip_y0, block_y0))
+                break
+
+    if not choice_starts:
+        return (clip_y0, clip_y1), None
+
+    split_y = min(choice_starts)
+    problem_end = min(clip_y1, split_y - 1.0)
+    choices_start = max(clip_y0, split_y)
+    problem_clip = (clip_y0, problem_end) if problem_end > clip_y0 + 4.0 else None
+    choices_clip = (choices_start, clip_y1) if clip_y1 > choices_start + 4.0 else None
+    if problem_clip is None and choices_clip is None:
+        return (clip_y0, clip_y1), None
+    return problem_clip, choices_clip
+
+
+def resolve_segment_clips_for_state(
+    *,
+    clip_y0: float,
+    clip_y1: float,
+    text_blocks: list[tuple[float, float, float, float, str]],
+    choices_started: bool,
+    split_clip_fn=None,
+) -> tuple[tuple[float, float] | None, tuple[float, float] | None, bool]:
+    if not text_blocks:
+        return None, None, choices_started
+    if choices_started:
+        return None, (clip_y0, clip_y1), True
+
+    if split_clip_fn is None:
+        problem_clip, choices_clip = _split_problem_and_choices_clip_by_choice_blocks_fallback(
+            clip_y0=clip_y0,
+            clip_y1=clip_y1,
+            text_blocks=text_blocks,
+        )
+    else:
+        problem_clip, choices_clip = split_clip_fn(
+            clip_y0=clip_y0,
+            clip_y1=clip_y1,
+            text_blocks=[(y0, y1, text) for _x0, y0, _x1, y1, text in text_blocks],
+        )
+    return problem_clip, choices_clip, choices_started or (choices_clip is not None)
 
 
 def load_module_5():
@@ -1797,6 +1975,192 @@ def save_db_ready_jsonl(out_dir: Path | str, records) -> Path:
     return out_path
 
 
+def render_pdf_questions_with_text(
+    module5,
+    *,
+    pdf_path: str,
+    image_dir: str,
+    dpi: int = 200,
+):
+    try:
+        import fitz
+    except ImportError as exc:
+        raise RuntimeError(
+            "PyMuPDF(fitz)가 필요합니다. 설치: python -m pip install pymupdf"
+        ) from exc
+
+    image_dir_path = Path(image_dir)
+    image_dir_path.mkdir(parents=True, exist_ok=True)
+    scale = dpi / 72.0
+    matrix = fitz.Matrix(scale, scale)
+    top_padding = 1.0
+    boundary_gap = 2.0
+    # 고정 footer margin으로 페이지 하단 실제 선택지가 잘리는 케이스가 있어
+    # 하단 여백 컷은 비활성화하고, 대신 노이즈 블록 필터가 footer/banner를 제거하도록 한다.
+    footer_margin = 0.0
+
+    with fitz.open(pdf_path) as doc:
+        page_columns = module5.detect_page_columns(doc)
+        page_heights = [float(page.rect.height) for page in doc]
+        starts = module5.get_question_starts(doc, page_columns=page_columns)
+        spans = module5.build_question_spans(starts, page_heights, page_columns=page_columns)
+
+        if not spans:
+            page_images = module5.render_pdf_pages_to_png(doc, image_dir=image_dir, dpi=dpi)
+            question_images = [
+                module5.QuestionImageSet(
+                    index=i + 1,
+                    qno=None,
+                    problem_image_paths=[path],
+                    choices_image_paths=[],
+                )
+                for i, path in enumerate(page_images)
+            ]
+            question_texts = []
+            for i, page in enumerate(doc, start=1):
+                raw_text = (page.get_text("text") or "").strip()
+                question_text, choices_text = module5.split_question_and_choices(raw_text)
+                question_texts.append(
+                    module5.QuestionTextSet(
+                        index=i,
+                        qno=None,
+                        question_text=question_text,
+                        choices_text=choices_text,
+                    )
+                )
+            return question_images, question_texts
+
+        question_images = []
+        question_texts = []
+        for span in spans:
+            problem_paths: list[str] = []
+            choices_paths: list[str] = []
+            question_text_parts: list[str] = []
+            choices_text_parts: list[str] = []
+            choices_started = False
+
+            for segment_part, segment in enumerate(span.segments, start=1):
+                page = doc.load_page(segment.page_index)
+                page_width = float(page.rect.width)
+                page_height = float(page.rect.height)
+                col_x0, col_x1 = module5.expand_column_bounds(
+                    columns=page_columns[segment.page_index],
+                    column_index=segment.column,
+                    page_width=page_width,
+                )
+
+                raw_y0, raw_y1 = module5.compute_raw_clip_bounds(
+                    segment_start_y=segment.start_y,
+                    segment_end_y=segment.end_y,
+                    page_height=page_height,
+                    part_index=segment_part,
+                    top_padding=top_padding,
+                    boundary_gap=boundary_gap,
+                    footer_margin=footer_margin,
+                )
+                clip_x0 = max(0.0, col_x0)
+                clip_x1 = min(page_width, col_x1)
+
+                raw_blocks = collect_text_blocks_with_text_for_clip(
+                    page,
+                    clip_x0=clip_x0,
+                    clip_x1=clip_x1,
+                    raw_y0=raw_y0,
+                    raw_y1=raw_y1,
+                )
+                filtered_raw_blocks = filter_page_noise_blocks(raw_blocks, page_height=page_height)
+                if not filtered_raw_blocks:
+                    continue
+
+                text_boxes = [(x0, y0, x1, y1) for x0, y0, x1, y1, _text in filtered_raw_blocks]
+                y0, y1 = module5.refine_clip_y_to_text_blocks(
+                    raw_y0=raw_y0,
+                    raw_y1=raw_y1,
+                    text_block_boxes=text_boxes,
+                )
+                clip_x0, clip_x1 = module5.refine_clip_x_to_text_blocks(
+                    raw_x0=clip_x0,
+                    raw_x1=clip_x1,
+                    text_block_boxes=text_boxes,
+                )
+
+                filtered_blocks = filter_page_noise_blocks(
+                    collect_text_blocks_with_text_for_clip(
+                        page,
+                        clip_x0=clip_x0,
+                        clip_x1=clip_x1,
+                        raw_y0=y0,
+                        raw_y1=y1,
+                    ),
+                    page_height=page_height,
+                )
+                if not filtered_blocks:
+                    continue
+
+                clip_text = _join_text_from_blocks(filtered_blocks)
+                if not clip_text:
+                    continue
+
+                incoming_choices_started = choices_started
+                problem_clip_y, choices_clip_y, choices_started = resolve_segment_clips_for_state(
+                    clip_y0=y0,
+                    clip_y1=y1,
+                    text_blocks=filtered_blocks,
+                    choices_started=choices_started,
+                    split_clip_fn=module5.split_problem_and_choices_clip_by_choice_blocks,
+                )
+
+                question_text_part, choices_text_part, choices_started = split_segment_text_for_state(
+                    module5,
+                    clip_text=clip_text,
+                    choices_started=incoming_choices_started,
+                )
+
+                if question_text_part:
+                    question_text_parts.append(question_text_part)
+                if choices_text_part:
+                    choices_text_parts.append(choices_text_part)
+
+                if problem_clip_y is not None:
+                    problem_clip = fitz.Rect(clip_x0, problem_clip_y[0], clip_x1, problem_clip_y[1])
+                    pix = page.get_pixmap(matrix=matrix, clip=problem_clip, alpha=False)
+                    out_path = image_dir_path / (
+                        f"question_{span.index:03d}_problem_part_{len(problem_paths) + 1:02d}.png"
+                    )
+                    pix.save(out_path)
+                    problem_paths.append(str(out_path))
+
+                if choices_clip_y is not None:
+                    choices_clip = fitz.Rect(clip_x0, choices_clip_y[0], clip_x1, choices_clip_y[1])
+                    pix = page.get_pixmap(matrix=matrix, clip=choices_clip, alpha=False)
+                    out_path = image_dir_path / (
+                        f"question_{span.index:03d}_choices_part_{len(choices_paths) + 1:02d}.png"
+                    )
+                    pix.save(out_path)
+                    choices_paths.append(str(out_path))
+
+            if problem_paths or choices_paths:
+                sequence_index = len(question_images) + 1
+                question_images.append(
+                    module5.QuestionImageSet(
+                        index=sequence_index,
+                        qno=span.qno,
+                        problem_image_paths=problem_paths,
+                        choices_image_paths=choices_paths,
+                    )
+                )
+                question_texts.append(
+                    module5.QuestionTextSet(
+                        index=sequence_index,
+                        qno=span.qno,
+                        question_text="\n".join(question_text_parts).strip(),
+                        choices_text="\n".join(choices_text_parts).strip(),
+                    )
+                )
+
+    return question_images, question_texts
+
+
 def process_one_pdf(
     module5,
     pdf_path: str,
@@ -1810,7 +2174,8 @@ def process_one_pdf(
     target_dir, image_dir, text_dir, out_tex = prepare_output_paths(pdf_path, output_root)
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    question_images, question_texts = module5._render_pdf_questions_with_text(
+    question_images, question_texts = render_pdf_questions_with_text(
+        module5,
         pdf_path=str(pdf_path),
         image_dir=str(image_dir),
         dpi=dpi,
