@@ -70,3 +70,29 @@ def test_infer_vertical_separator_x_detects_center_band():
 
     assert split_x is not None
     assert 345.0 <= split_x <= 355.0
+
+
+def test_rebuild_unbalanced_two_columns_from_question_starts_repairs_narrow_left_column():
+    import pipelines.base as base
+
+    cols = base.rebuild_unbalanced_two_columns_from_question_starts(
+        columns=[(18.7, 154.7), (158.7, 576.6)],
+        page_width=595.0,
+        question_start_x_centers=[152.0, 154.0, 155.0, 434.0, 438.0],
+    )
+
+    assert len(cols) == 2
+    assert cols[0][1] > 250.0
+    assert cols[1][0] > cols[0][1]
+
+
+def test_rebuild_unbalanced_two_columns_from_question_starts_keeps_balanced_columns():
+    import pipelines.base as base
+
+    cols = base.rebuild_unbalanced_two_columns_from_question_starts(
+        columns=[(0.0, 290.0), (305.0, 595.0)],
+        page_width=595.0,
+        question_start_x_centers=[150.0, 160.0, 440.0],
+    )
+
+    assert cols == [(0.0, 290.0), (305.0, 595.0)]

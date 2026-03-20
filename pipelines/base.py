@@ -310,6 +310,12 @@ def apply_render_safety_patches(module5) -> None:
                         separator_x=separator_x,
                     )
                     continue
+                page_columns[page_idx] = rebuild_unbalanced_two_columns_from_question_starts(
+                    columns=page_columns[page_idx],
+                    page_width=page_width,
+                    question_start_x_centers=starts,
+                )
+                columns = page_columns[page_idx]
                 if should_collapse_tight_two_columns(columns, page_width, starts):
                     page_columns[page_idx] = [(0.0, page_width)]
             return page_columns
@@ -393,6 +399,42 @@ def build_two_columns_from_separator(
     if right_x0 <= left_x1 + 4.0:
         return [(0.0, page_width)]
     return [(0.0, left_x1), (right_x0, page_width)]
+
+
+def rebuild_unbalanced_two_columns_from_question_starts(
+    columns: List[tuple[float, float]],
+    page_width: float,
+    question_start_x_centers: List[float],
+) -> List[tuple[float, float]]:
+    if len(columns) != 2 or page_width <= 0 or len(question_start_x_centers) < 2:
+        return columns
+
+    left, right = sorted(columns, key=lambda c: c[0])
+    left_width = max(0.0, left[1] - left[0])
+    right_width = max(0.0, right[1] - right[0])
+    if min(left_width, right_width) / page_width >= 0.3:
+        return [left, right]
+
+    starts = sorted(float(x) for x in question_start_x_centers)
+    max_gap = 0.0
+    split_x = None
+    for i in range(len(starts) - 1):
+        gap = starts[i + 1] - starts[i]
+        if gap > max_gap:
+            max_gap = gap
+            split_x = (starts[i] + starts[i + 1]) / 2.0
+
+    if split_x is None or max_gap < page_width * 0.18:
+        return [left, right]
+    if not (page_width * 0.25 <= split_x <= page_width * 0.75):
+        return [left, right]
+
+    repaired = build_two_columns_from_separator(
+        page_width=page_width,
+        separator_x=split_x,
+        separator_half_gap=4.0,
+    )
+    return repaired if len(repaired) == 2 else [left, right]
 
 
 def infer_vertical_separator_x(
