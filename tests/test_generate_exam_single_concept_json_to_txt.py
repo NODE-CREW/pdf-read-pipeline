@@ -7,8 +7,8 @@ import pytest
 
 
 def load_module():
-    module_name = "generate_exam_concepts_json_to_txt_v2"
-    module_path = Path(__file__).resolve().parents[1] / "9-2_generate_exam_concepts_json_to_txt.py"
+    module_name = "generate_exam_single_concept_json_to_txt"
+    module_path = Path(__file__).resolve().parents[1] / "9-2_generate_exam_single_concept_json_to_txt.py"
     spec = importlib.util.spec_from_file_location(module_name, str(module_path))
     module = importlib.util.module_from_spec(spec)
     assert spec is not None and spec.loader is not None

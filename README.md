@@ -268,6 +268,22 @@ python ./7-2_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 python ./8_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf
 ```
 
+디렉토리 안의 `.txt` 파일들을 파일명 순서대로 하나로 합치려면 아래 스크립트를 사용합니다.
+
+```bash
+python3 ./concat_text_files.py \
+  ./output/20200229_8/exam_concepts_txt \
+  --output ./output/20200229_8/all_concepts.txt
+```
+
+이 스크립트는 아래 규칙으로 동작합니다.
+
+- 입력 디렉토리 바로 아래의 `.txt` 파일만 대상으로 함
+- 파일명 오름차순으로 이어붙임
+- 출력 파일이 입력 디렉토리 안에 있어도 자기 자신은 다시 읽지 않음
+- 앞 파일 끝에 줄바꿈이 없을 때만 다음 파일 앞에 줄바꿈 1개를 추가
+- 결과는 UTF-8로 저장
+
 시험 문제 이미지 2~3장을 GPT-5 mini로 분석해 정답/해설 JSON을 txt로 저장:
 
 ```bash
@@ -299,6 +315,29 @@ python3 ./9_generate_exam_answer_json_to_txt.py \
 - 스마트 따옴표/JSON 파싱 실패 시 자동 재시도
 - 최종 결과를 2칸 들여쓰기 pretty JSON으로 `.txt` 저장
 
+`latex_pages` 디렉토리 안의 `question_001_*`, `question_002_*` 같은 파일들을 문제 번호별로 묶어서 [`9_generate_exam_answer_json_to_txt.py`](./9_generate_exam_answer_json_to_txt.py)를 순차 호출하려면 아래 배치 스크립트를 사용합니다.
+
+```bash
+python3 ./10_batch_generate_exam_answer_json_to_txt.py \
+  ./output/20200229_8/latex_pages
+```
+
+기본 출력 경로는 입력 디렉토리 상위의 `exam_answer_txt/`이며, 예를 들면 아래처럼 저장됩니다.
+
+- `./output/20200229_8/exam_answer_txt/question_001_answer.txt`
+- `./output/20200229_8/exam_answer_txt/question_002_answer.txt`
+- `...`
+- `./output/20200229_8/exam_answer_txt/question_060_answer.txt`
+
+`--test-id`, `--output-dir`, `--start-question-number`도 함께 사용할 수 있습니다.
+
+```bash
+python3 ./10_batch_generate_exam_answer_json_to_txt.py \
+  ./output/20200229_8/latex_pages \
+  --test-id 20200229 \
+  --start-question-number 26
+```
+
 시험 문제 이미지 2~3장을 GPT-5 mini로 분석해 공통 학습 개념 JSON을 txt로 저장:
 
 ```bash
@@ -327,10 +366,49 @@ python3 ./9-1_generate_exam_concepts_json_to_txt.py \
 - 스마트 따옴표 포함 여부 검사와 JSON 파싱 실패 시 자동 재시도
 - 최종 결과를 2칸 들여쓰기 pretty JSON으로 `.txt` 저장
 
+`latex_pages` 디렉토리 안의 `question_001_*`, `question_002_*` 같은 파일들을 문제 번호별로 묶어서 [`9-1_generate_exam_concepts_json_to_txt.py`](./9-1_generate_exam_concepts_json_to_txt.py)를 순차 호출하려면 아래 배치 스크립트를 사용합니다.
+
+```bash
+python3 ./10-1_batch_generate_exam_concepts_json_to_txt.py \
+  ./output/20200229_8/latex_pages
+```
+
+기본 출력 경로는 입력 디렉토리 상위의 `exam_concepts_txt/`이며, 예를 들면 아래처럼 저장됩니다.
+
+- `./output/20200229_8/exam_concepts_txt/question_001_concepts.txt`
+- `./output/20200229_8/exam_concepts_txt/question_002_concepts.txt`
+- `...`
+- `./output/20200229_8/exam_concepts_txt/question_060_concepts.txt`
+
+출력 디렉토리를 직접 지정하려면 `--output-dir`를 추가하면 됩니다.
+
+```bash
+python3 ./10-1_batch_generate_exam_concepts_json_to_txt.py \
+  ./output/20200229_8/latex_pages \
+  --output-dir ./output/20200229_8/custom_concepts_txt
+```
+
+특정 문제번호부터 다시 시작하려면 `--start-question-number`를 사용합니다.
+
+```bash
+python3 ./10-1_batch_generate_exam_concepts_json_to_txt.py \
+  ./output/20200229_8/latex_pages \
+  --start-question-number 26
+```
+
+이 스크립트는 아래를 함께 적용합니다.
+
+- `question_XXX_*` 파일만 수집
+- 문제 번호 기준 오름차순 실행
+- `--start-question-number`를 주면 해당 문제번호부터만 실행
+- 같은 문제의 `problem/choices/part` 이미지를 한 묶음으로 전달
+- 묶인 이미지 수만큼 같은 `--question-id`를 반복 전달
+- 개별 문제 실행 실패 시 해당 문제 번호와 함께 즉시 중단
+
 모든 입력 이미지에 대해 공통 학습 개념을 반드시 1개만 생성하도록 강제하려면 아래 스크립트를 사용합니다.
 
 ```bash
-python3 ./9-2_generate_exam_concepts_json_to_txt.py \
+python3 ./9-2_generate_exam_single_concept_json_to_txt.py \
   --image ./problem-4.png \
   --image ./problem-25.png \
   --output ./output/level5/concept_result2.txt
@@ -341,6 +419,29 @@ python3 ./9-2_generate_exam_concepts_json_to_txt.py \
 - `concepts` 배열 길이 1 고정
 - 입력된 모든 `question_id`가 하나의 동일한 `concept_id`에 정확히 한 번씩만 매핑
 - 모델이 여러 concept를 반환하면 검증 실패로 재시도
+
+`latex_pages` 디렉토리 안의 `question_001_*`, `question_002_*` 같은 파일들을 문제 번호별로 묶어서 [`9-2_generate_exam_single_concept_json_to_txt.py`](./9-2_generate_exam_single_concept_json_to_txt.py)를 순차 호출하려면 아래 배치 스크립트를 사용합니다.
+
+```bash
+python3 ./10-2_batch_generate_exam_single_concept_json_to_txt.py \
+  ./output/20200229_8/latex_pages
+```
+
+기본 출력 경로는 입력 디렉토리 상위의 `exam_single_concept_txt/`이며, 예를 들면 아래처럼 저장됩니다.
+
+- `./output/20200229_8/exam_single_concept_txt/question_001_single_concept.txt`
+- `./output/20200229_8/exam_single_concept_txt/question_002_single_concept.txt`
+- `...`
+- `./output/20200229_8/exam_single_concept_txt/question_060_single_concept.txt`
+
+출력 디렉토리를 직접 지정하거나 특정 문제번호부터 다시 시작하려면 아래처럼 실행합니다.
+
+```bash
+python3 ./10-2_batch_generate_exam_single_concept_json_to_txt.py \
+  ./output/20200229_8/latex_pages \
+  --output-dir ./output/20200229_8/custom_single_concept_txt \
+  --start-question-number 26
+```
 
 실행 전 준비:
 

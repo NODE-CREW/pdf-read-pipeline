@@ -66,3 +66,12 @@ def test_build_latex_document_contains_problem_and_choices_images():
     assert r"\\subsection*{Choices}" in tex
     assert "question_001_problem_part_01.png" in tex
     assert "question_001_choices_part_01.png" in tex
+
+
+def test_is_valid_question_start_line_rejects_formula_tail_lines():
+    module = load_module()
+
+    assert module.is_valid_question_start_line("35. 다음 중 이름 상자에 대한 설명으로 옳지 않은 것은?")
+    assert module.is_valid_question_start_line("1.이윤극대화를 추구하는 기업")
+    assert not module.is_valid_question_start_line("1)))}")
+    assert not module.is_valid_question_start_line("1))}")

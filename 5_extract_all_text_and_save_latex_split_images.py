@@ -43,6 +43,7 @@ QUESTION_START_RE = re.compile(
     """,
     re.VERBOSE,
 )
+QUESTION_START_BODY_RE = re.compile(r"[0-9A-Za-z가-힣]")
 
 CHOICE_LINE_RE = re.compile(r"^\s*[①②③④⑤⑥⑦⑧⑨⑩]\s*")
 ALT_CHOICE_RE = re.compile(r"^\s*\(\s*[1-5]\s*\)\s*")
@@ -138,6 +139,27 @@ def is_reasonable_question_number(qno: Optional[int]) -> bool:
     if qno is None:
         return False
     return 1 <= qno <= 100
+
+
+def is_valid_question_start_line(text: str) -> bool:
+    if not text:
+        return False
+
+    match = QUESTION_START_RE.match(text)
+    if match is None:
+        return False
+
+    qno = parse_question_number(text)
+    if not is_reasonable_question_number(qno):
+        return False
+
+    remainder = text[match.end():].strip()
+    if not remainder:
+        return False
+
+    # 수식 꼬리 조각 같은 "1)))}" 류를 문항 시작으로 오탐하지 않도록
+    # 접두부 뒤에는 실제 본문을 나타내는 문자/숫자가 최소 한 개 있어야 한다.
+    return QUESTION_START_BODY_RE.search(remainder) is not None
 
 
 def should_render_segment(part_index: int, segment_height: float) -> bool:
@@ -378,12 +400,10 @@ def get_question_starts(doc, page_columns: List[List[tuple[float, float]]]) -> L
                 spans = line.get("spans", [])
                 span_text = "".join(span.get("text", "") for span in spans)
                 span_text = span_text.strip()
-                if not span_text or not QUESTION_START_RE.match(span_text):
+                if not is_valid_question_start_line(span_text):
                     continue
 
                 qno = parse_question_number(span_text)
-                if not is_reasonable_question_number(qno):
-                    continue
 
                 if spans:
                     x0 = float(spans[0].get("bbox", [0, 0, 0, 0])[0])

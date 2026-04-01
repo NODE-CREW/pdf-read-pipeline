@@ -63,6 +63,15 @@ PAGE_BOTTOM_NOISE_PATTERNS = (
     re.compile(r"최강\s*자격증.*전자문제집\s*CBT", re.IGNORECASE),
     re.compile(r"www\.comcbt\.com", re.IGNORECASE),
 )
+APPENDIX_PROMO_PATTERNS = (
+    re.compile(r"전자문제집\s*CBT", re.IGNORECASE),
+    re.compile(r"CBT란", re.IGNORECASE),
+    re.compile(r"최신\s*수정된", re.IGNORECASE),
+    re.compile(r"OMR", re.IGNORECASE),
+    re.compile(r"교사용\s*/\s*학생용", re.IGNORECASE),
+)
+APPENDIX_NUMBER_ROW_RE = re.compile(r"^\s*(?:\d{1,2}\s+){4,}\d{1,2}\s*$")
+APPENDIX_ANSWER_ROW_RE = re.compile(r"^\s*(?:[①②③④⑤]\s+){4,}[①②③④⑤]\s*$")
 
 
 @dataclass
@@ -161,8 +170,82 @@ def collect_text_blocks_with_text_for_clip(
     return blocks
 
 
+def collect_visual_block_boxes_for_clip(
+    page,
+    *,
+    clip_x0: float,
+    clip_x1: float,
+    raw_y0: float,
+    raw_y1: float,
+) -> list[tuple[float, float, float, float]]:
+    boxes: list[tuple[float, float, float, float]] = []
+    text_dict = page.get_text("dict", sort=True)
+    for block in text_dict.get("blocks", []):
+        if block.get("type") != 1:
+            continue
+        bbox = block.get("bbox")
+        if not bbox or len(bbox) < 4:
+            continue
+        x0, y0, x1, y1 = map(float, bbox[:4])
+        if x1 <= x0 or y1 <= y0:
+            continue
+        if x1 < clip_x0 or x0 > clip_x1:
+            continue
+        if y1 < raw_y0 or y0 > raw_y1:
+            continue
+        boxes.append((x0, y0, x1, y1))
+    return boxes
+
+
 def _join_text_from_blocks(text_blocks: list[tuple[float, float, float, float, str]]) -> str:
     return "\n".join(text.strip() for *_coords, text in text_blocks if text.strip()).strip()
+
+
+def is_probable_appendix_segment(text: str) -> bool:
+    normalized = (text or "").strip()
+    if not normalized:
+        return False
+
+    lines = [line.strip() for line in normalized.splitlines() if line.strip()]
+    if not lines:
+        return False
+
+    strong_score = 0
+    weak_score = 0
+
+    for pattern in APPENDIX_PROMO_PATTERNS:
+        if pattern.search(normalized):
+            strong_score += 2
+
+    number_rows = sum(1 for line in lines if APPENDIX_NUMBER_ROW_RE.match(line))
+    answer_rows = sum(1 for line in lines if APPENDIX_ANSWER_ROW_RE.match(line))
+    if number_rows >= 2:
+        strong_score += 2
+    elif number_rows == 1:
+        weak_score += 1
+
+    if answer_rows >= 2:
+        strong_score += 2
+    elif answer_rows == 1:
+        weak_score += 1
+
+    short_token_lines = 0
+    for line in lines:
+        tokens = line.split()
+        if len(tokens) >= 8 and all(len(token) <= 2 for token in tokens):
+            short_token_lines += 1
+    if short_token_lines >= 2:
+        weak_score += 2
+
+    choice_like_lines = sum(
+        1
+        for line in lines
+        if OCR_CHOICE_LINE_RE.match(line) and not OCR_QUESTION_START_RE.match(line)
+    )
+    if choice_like_lines >= 3 and strong_score == 0:
+        return False
+
+    return strong_score >= 4 or (strong_score >= 2 and weak_score >= 2)
 
 
 def split_segment_text_for_state(
@@ -185,6 +268,424 @@ def split_segment_text_for_state(
     question_text = question_text.strip()
     choices_text = choices_text.strip()
     return question_text, choices_text, bool(choices_text)
+
+
+def is_sparse_choice_marker_text(text: str) -> bool:
+    lines = [line.strip() for line in (text or "").splitlines() if line.strip()]
+    if len(lines) < 2:
+        return False
+    return all(re.fullmatch(r"[①②③④⑤⑥⑦⑧⑨⑩]", line) for line in lines)
+
+
+def _normalize_sparse_choice_ocr_row(text: str) -> str:
+    normalized = " ".join((text or "").split())
+    normalized = normalized.replace("|", " ")
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    normalized = re.sub(r"^[^0-9A-Za-z가-힣#]+", "", normalized)
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return normalized
+
+
+def _group_consecutive_positions(positions: list[int]) -> list[tuple[int, int]]:
+    if not positions:
+        return []
+    ordered = sorted(set(int(pos) for pos in positions))
+    groups: list[tuple[int, int]] = []
+    start = ordered[0]
+    prev = ordered[0]
+    for pos in ordered[1:]:
+        if pos == prev + 1:
+            prev = pos
+            continue
+        groups.append((start, prev))
+        start = pos
+        prev = pos
+    groups.append((start, prev))
+    return groups
+
+
+def _score_sparse_choice_row_text(text: str) -> tuple[int, int, int]:
+    normalized = _normalize_sparse_choice_ocr_row(text)
+    if not normalized:
+        return (0, 0, 0)
+    digit_count = sum(ch.isdigit() for ch in normalized)
+    hash_count = normalized.count("#")
+    punctuation_count = normalized.count(",") + normalized.count(".")
+    hangul_count = sum("가" <= ch <= "힣" for ch in normalized)
+    useful = digit_count * 3 + hash_count * 4 + punctuation_count * 2
+    penalty = hangul_count * 3
+    return (useful - penalty, hash_count + digit_count, len(normalized))
+
+
+def _looks_like_structured_table_row(text: str) -> bool:
+    tokens = [token for token in _normalize_sparse_choice_ocr_row(text).split() if token]
+    if not (2 <= len(tokens) <= 4):
+        return False
+    return all(re.fullmatch(r"[0-9#.,]+", token) for token in tokens)
+
+
+def _select_dark_spans_from_boundaries(
+    *,
+    boundaries: list[int],
+    limit: int,
+    target_count: int,
+    min_span_px: int,
+    include_start_edge: bool,
+    include_end_edge: bool,
+    score_fn,
+) -> list[tuple[int, int]]:
+    if limit <= 0 or target_count <= 0:
+        return []
+
+    points = [pos for pos in sorted(set(int(pos) for pos in boundaries)) if 0 < pos < limit]
+    if include_start_edge:
+        points = [0] + points
+    if include_end_edge:
+        points = points + [limit]
+
+    candidates: list[tuple[int, int, int, int]] = []
+    for start, end in zip(points, points[1:]):
+        if (end - start) < min_span_px:
+            continue
+        score = int(score_fn(start, end))
+        if score <= 0:
+            continue
+        candidates.append((score, end - start, start, end))
+
+    if not candidates:
+        return []
+
+    if len(candidates) <= target_count:
+        return [(start, end) for _score, _span, start, end in candidates]
+
+    selected = sorted(candidates, key=lambda item: (item[0], item[1]), reverse=True)[:target_count]
+    return sorted(((start, end) for _score, _span, start, end in selected), key=lambda item: item[0])
+
+
+def _prepare_sparse_choice_binary_image(image):
+    gray = image.convert("L")
+    gray = gray.resize((gray.size[0] * 2, gray.size[1] * 2))
+    return gray.point(lambda v: 0 if v < 190 else 255)
+
+
+def _count_dark_pixels_in_box(binary_image, *, x0: int, y0: int, x1: int, y1: int) -> int:
+    x0 = max(0, int(x0))
+    y0 = max(0, int(y0))
+    x1 = min(binary_image.size[0], int(x1))
+    y1 = min(binary_image.size[1], int(y1))
+    if x1 <= x0 or y1 <= y0:
+        return 0
+
+    pix = binary_image.load()
+    dark = 0
+    for y in range(y0, y1):
+        for x in range(x0, x1):
+            if pix[x, y] == 0:
+                dark += 1
+    return dark
+
+
+def _detect_sparse_choice_table_spans(binary_image, choice_count: int) -> tuple[list[tuple[int, int]], list[tuple[int, int]]]:
+    width, height = binary_image.size
+    pix = binary_image.load()
+    row_positions: list[int] = []
+    for y in range(height):
+        dark = sum(1 for x in range(width) if pix[x, y] == 0)
+        if dark > width * 0.45:
+            row_positions.append(y)
+
+    col_positions: list[int] = []
+    for x in range(width):
+        mean, stddev, dark_ratio, longest_dark_run_ratio = _col_stats(binary_image, x)
+        if (
+            dark_ratio >= 0.32
+            and longest_dark_run_ratio >= 0.16
+            and mean <= 210.0
+            and stddev >= 80.0
+        ):
+            col_positions.append(x)
+
+    row_groups = _group_consecutive_positions(row_positions)
+    col_groups = _group_consecutive_positions(col_positions)
+    row_boundaries = [int((start + end) / 2) for start, end in row_groups]
+    col_boundaries = [
+        int((start + end) / 2)
+        for start, end in col_groups
+        if int((start + end) / 2) < (width - 2)
+    ]
+
+    row_spans = _select_dark_spans_from_boundaries(
+        boundaries=row_boundaries,
+        limit=height,
+        target_count=choice_count,
+        min_span_px=max(18, int(height * 0.05)),
+        include_start_edge=True,
+        include_end_edge=True,
+        score_fn=lambda start, end: _count_dark_pixels_in_box(
+            binary_image,
+            x0=0,
+            y0=start + 3,
+            x1=width,
+            y1=end - 3,
+        ),
+    )
+    col_spans = _select_dark_spans_from_boundaries(
+        boundaries=col_boundaries,
+        limit=width,
+        target_count=max(1, min(4, max(1, len(col_boundaries) - 1))),
+        min_span_px=max(20, int(width * 0.06)),
+        include_start_edge=False,
+        include_end_edge=False,
+        score_fn=lambda start, end: _count_dark_pixels_in_box(
+            binary_image,
+            x0=start + 3,
+            y0=0,
+            x1=end - 3,
+            y1=height,
+        ),
+    )
+
+    return row_spans, col_spans
+
+
+def infer_symbol_mask_from_cell_image(image) -> str:
+    binary = image.convert("L").resize((image.size[0] * 4, image.size[1] * 4))
+    binary = binary.point(lambda v: 0 if v < 210 else 255)
+    width, height = binary.size
+    pix = binary.load()
+
+    components: list[tuple[float, str]] = []
+    seen: set[tuple[int, int]] = set()
+    for y in range(height):
+        for x in range(width):
+            if pix[x, y] != 0 or (x, y) in seen:
+                continue
+
+            stack = [(x, y)]
+            seen.add((x, y))
+            x0 = x1 = x
+            y0 = y1 = y
+            area = 0
+            while stack:
+                cx, cy = stack.pop()
+                area += 1
+                x0 = min(x0, cx)
+                x1 = max(x1, cx)
+                y0 = min(y0, cy)
+                y1 = max(y1, cy)
+                for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                    if 0 <= nx < width and 0 <= ny < height and pix[nx, ny] == 0 and (nx, ny) not in seen:
+                        seen.add((nx, ny))
+                        stack.append((nx, ny))
+
+            comp_width = x1 - x0 + 1
+            comp_height = y1 - y0 + 1
+            if area < 12:
+                continue
+            if comp_width > width * 0.9 or comp_height > height * 0.9:
+                continue
+            if comp_height <= max(3, int(height * 0.08)) and comp_width >= int(width * 0.5):
+                continue
+
+            center_x = (x0 + x1) / 2.0
+            center_y = (y0 + y1) / 2.0
+            if comp_height >= int(height * 0.30) and comp_width >= int(width * 0.05):
+                components.append((center_x, "#"))
+                continue
+            if comp_height <= int(height * 0.24) and comp_width <= int(width * 0.10):
+                token = "," if center_y >= (height * 0.55) else "."
+                components.append((center_x, token))
+
+    tokens = "".join(token for _center_x, token in sorted(components, key=lambda item: item[0]))
+    return tokens if "#" in tokens else ""
+
+
+def _ocr_sparse_choice_cell_text(pytesseract, cell_image, ocr_lang: str) -> str:
+    candidates: list[str] = []
+    for scale in (2, 3):
+        scaled = cell_image.resize((cell_image.size[0] * scale, cell_image.size[1] * scale))
+        for threshold in (180, 200, 220):
+            binary = scaled.point(lambda v, t=threshold: 0 if v < t else 255)
+            for config, lang in (
+                ("--oem 1 --psm 7 -c tessedit_char_whitelist=0123456789#.,", "eng"),
+                ("--oem 1 --psm 6 -c tessedit_char_whitelist=0123456789#.,", "eng"),
+                ("--oem 1 --psm 7", ocr_lang),
+            ):
+                text = pytesseract.image_to_string(binary, lang=lang, config=config)
+                normalized = _normalize_sparse_choice_ocr_row(text)
+                if normalized:
+                    candidates.append(normalized)
+
+    best_ocr = max(candidates, key=_score_sparse_choice_row_text) if candidates else ""
+    if sum(ch.isdigit() for ch in best_ocr) >= 1:
+        return best_ocr
+
+    symbol_mask = infer_symbol_mask_from_cell_image(cell_image)
+    if symbol_mask:
+        candidates.append(symbol_mask)
+
+    if not candidates:
+        return ""
+    return max(candidates, key=_score_sparse_choice_row_text)
+
+
+def _ocr_sparse_choice_table_rows_from_image(
+    pytesseract,
+    image,
+    *,
+    choice_count: int,
+    ocr_lang: str,
+) -> list[str]:
+    gray = image.convert("L")
+    binary = _prepare_sparse_choice_binary_image(gray)
+    row_spans, col_spans = _detect_sparse_choice_table_spans(binary, choice_count)
+    if not row_spans or not col_spans:
+        return []
+
+    scale_x = gray.size[0] / binary.size[0]
+    scale_y = gray.size[1] / binary.size[1]
+    rows_out: list[str] = []
+    for row_start, row_end in row_spans[:choice_count]:
+        row_cells: list[str] = []
+        row_height = row_end - row_start
+        y_pad = max(1, int(row_height * 0.05))
+        for col_start, col_end in col_spans:
+            col_width = col_end - col_start
+            x_pad = max(1, int(col_width * 0.02))
+            x0 = min(col_end, col_start + x_pad)
+            x1 = max(x0 + 1, col_end - x_pad)
+            y0 = min(row_end, row_start + y_pad)
+            y1 = max(y0 + 1, row_end - y_pad)
+            cell = gray.crop(
+                (
+                    max(0, int(x0 * scale_x)),
+                    max(0, int(y0 * scale_y)),
+                    min(gray.size[0], max(1, int(x1 * scale_x))),
+                    min(gray.size[1], max(1, int(y1 * scale_y))),
+                )
+            )
+            text = _ocr_sparse_choice_cell_text(pytesseract, cell, ocr_lang=ocr_lang)
+            normalized = _normalize_sparse_choice_ocr_row(text)
+            if normalized:
+                row_cells.append(normalized)
+        rows_out.append(" ".join(row_cells).strip())
+    return rows_out
+
+
+def merge_sparse_choice_row_candidates(
+    primary_rows: list[str],
+    fallback_rows: list[str],
+) -> list[str]:
+    size = max(len(primary_rows), len(fallback_rows))
+    merged: list[str] = []
+    for idx in range(size):
+        primary = primary_rows[idx] if idx < len(primary_rows) else ""
+        fallback = fallback_rows[idx] if idx < len(fallback_rows) else ""
+        primary_norm = _normalize_sparse_choice_ocr_row(primary)
+        fallback_norm = _normalize_sparse_choice_ocr_row(fallback)
+        primary_structured = _looks_like_structured_table_row(primary_norm)
+        fallback_structured = _looks_like_structured_table_row(fallback_norm)
+        if primary_structured and not fallback_structured:
+            merged.append(primary_norm)
+            continue
+        if fallback_structured and not primary_structured:
+            merged.append(fallback_norm)
+            continue
+        if _score_sparse_choice_row_text(primary_norm) >= _score_sparse_choice_row_text(fallback_norm):
+            merged.append(primary_norm)
+        else:
+            merged.append(fallback_norm)
+    return merged
+
+
+def merge_sparse_choice_marker_lines_with_ocr_rows(
+    marker_text: str,
+    ocr_rows: list[str],
+) -> str:
+    markers = [line.strip() for line in (marker_text or "").splitlines() if line.strip()]
+    if not markers:
+        return marker_text.strip()
+
+    merged_lines: list[str] = []
+    useful_rows = 0
+    for idx, marker in enumerate(markers):
+        row = ocr_rows[idx] if idx < len(ocr_rows) else ""
+        row = _normalize_sparse_choice_ocr_row(row)
+        if row:
+            useful_rows += 1
+            merged_lines.append(f"{marker} {row}".strip())
+        else:
+            merged_lines.append(marker)
+
+    if useful_rows == 0:
+        return marker_text.strip()
+    return "\n".join(merged_lines).strip()
+
+
+def ocr_sparse_choice_rows_from_image_paths(
+    image_paths,
+    choice_count: int,
+    ocr_lang: str = "kor+eng",
+) -> list[str]:
+    if choice_count <= 0:
+        return []
+    try:
+        import pytesseract
+        from PIL import Image
+    except Exception:
+        return []
+
+    if shutil.which("tesseract") is None:
+        return []
+
+    rows_out: list[str] = []
+    for image_path in image_paths:
+        try:
+            with Image.open(image_path) as raw_img:
+                img = _prepare_sparse_choice_binary_image(raw_img)
+                pix = img.load()
+                width, height = img.size
+                table_rows = _ocr_sparse_choice_table_rows_from_image(
+                    pytesseract,
+                    raw_img,
+                    choice_count=choice_count,
+                    ocr_lang=ocr_lang,
+                )
+                slice_rows: list[str] = []
+
+                for y in range(height):
+                    dark = sum(1 for x in range(width) if pix[x, y] == 0)
+                    if dark > width * 0.5:
+                        for x in range(width):
+                            pix[x, y] = 255
+                for x in range(width):
+                    dark = sum(1 for y in range(height) if pix[x, y] == 0)
+                    if dark > height * 0.5:
+                        for y in range(height):
+                            pix[x, y] = 255
+
+                for i in range(choice_count):
+                    y0 = int(round(height * (i / choice_count)))
+                    y1 = int(round(height * ((i + 1) / choice_count)))
+                    if y1 <= y0 + 2:
+                        slice_rows.append("")
+                        continue
+                    crop = img.crop((0, y0, width, y1))
+                    candidates: list[str] = []
+                    for config in ("--oem 1 --psm 6", "--oem 1 --psm 7", "--oem 1 --psm 11"):
+                        text = pytesseract.image_to_string(crop, lang=ocr_lang, config=config)
+                        normalized = _normalize_sparse_choice_ocr_row(text)
+                        if normalized:
+                            candidates.append(normalized)
+                    slice_rows.append(max(candidates, key=_score_sparse_choice_row_text) if candidates else "")
+                rows_out = merge_sparse_choice_row_candidates(table_rows, slice_rows)
+        except Exception:
+            return []
+
+        if rows_out:
+            break
+
+    return rows_out[:choice_count]
 
 
 def _split_problem_and_choices_clip_by_choice_blocks_fallback(
@@ -213,6 +714,58 @@ def _split_problem_and_choices_clip_by_choice_blocks_fallback(
     return problem_clip, choices_clip
 
 
+def _is_marker_only_choice_block(text: str) -> bool:
+    lines = [line.strip() for line in (text or "").splitlines() if line.strip()]
+    if not lines:
+        return False
+    return all(re.fullmatch(r"[①②③④⑤⑥⑦⑧⑨⑩]", line) for line in lines)
+
+
+def _adjust_split_for_sparse_table_markers(
+    *,
+    clip_y0: float,
+    clip_y1: float,
+    text_blocks: list[tuple[float, float, float, float, str]],
+    problem_clip: tuple[float, float] | None,
+    choices_clip: tuple[float, float] | None,
+) -> tuple[tuple[float, float] | None, tuple[float, float] | None]:
+    if problem_clip is None or choices_clip is None:
+        return problem_clip, choices_clip
+
+    marker_blocks = [
+        (block_y0, block_y1)
+        for _x0, block_y0, _x1, block_y1, block_text in text_blocks
+        if _is_marker_only_choice_block(block_text)
+    ]
+    if len(marker_blocks) < 3:
+        return problem_clip, choices_clip
+
+    marker_blocks.sort(key=lambda item: item[0])
+    gaps = [marker_blocks[idx + 1][0] - marker_blocks[idx][0] for idx in range(len(marker_blocks) - 1)]
+    if not gaps:
+        return problem_clip, choices_clip
+
+    avg_gap = sum(gaps) / len(gaps)
+    if avg_gap <= 8.0:
+        return problem_clip, choices_clip
+    if max(gaps) - min(gaps) > max(6.0, avg_gap * 0.25):
+        return problem_clip, choices_clip
+
+    first_y0, first_y1 = marker_blocks[0]
+    marker_height = max(1.0, first_y1 - first_y0)
+    lead = max(marker_height * 1.6, avg_gap * 0.78)
+    adjusted_start = max(clip_y0, first_y0 - lead)
+    adjusted_start = min(adjusted_start, choices_clip[0])
+    if adjusted_start >= choices_clip[0] - 2.0:
+        return problem_clip, choices_clip
+
+    adjusted_problem_end = adjusted_start - 1.0
+    if adjusted_problem_end <= clip_y0 + 4.0 or clip_y1 <= adjusted_start + 4.0:
+        return problem_clip, choices_clip
+
+    return (clip_y0, adjusted_problem_end), (adjusted_start, clip_y1)
+
+
 def resolve_segment_clips_for_state(
     *,
     clip_y0: float,
@@ -238,6 +791,13 @@ def resolve_segment_clips_for_state(
             clip_y1=clip_y1,
             text_blocks=[(y0, y1, text) for _x0, y0, _x1, y1, text in text_blocks],
         )
+    problem_clip, choices_clip = _adjust_split_for_sparse_table_markers(
+        clip_y0=clip_y0,
+        clip_y1=clip_y1,
+        text_blocks=text_blocks,
+        problem_clip=problem_clip,
+        choices_clip=choices_clip,
+    )
     return problem_clip, choices_clip, choices_started or (choices_clip is not None)
 
 
@@ -1855,11 +2415,35 @@ def enhance_question_texts_with_ocr(
     out = []
     for item in question_texts:
         combined_text = _build_combined_text(item.question_text, item.choices_text)
+        image_item = image_by_index.get(item.index)
+        sparse_choice_text = is_sparse_choice_marker_text(item.choices_text)
+
+        if sparse_choice_text and image_item is not None and image_item.choices_image_paths:
+            marker_lines = [line.strip() for line in item.choices_text.splitlines() if line.strip()]
+            recovered_rows = ocr_sparse_choice_rows_from_image_paths(
+                image_paths=image_item.choices_image_paths,
+                choice_count=len(marker_lines),
+                ocr_lang=ocr_lang,
+            )
+            recovered_choices = merge_sparse_choice_marker_lines_with_ocr_rows(
+                marker_text=item.choices_text,
+                ocr_rows=recovered_rows,
+            )
+            if normalize_text_for_hash(recovered_choices) != normalize_text_for_hash(item.choices_text):
+                out.append(
+                    module5.QuestionTextSet(
+                        index=item.index,
+                        qno=item.qno,
+                        question_text=item.question_text,
+                        choices_text=recovered_choices,
+                    )
+                )
+                continue
+
         if not should_use_ocr_fallback(combined_text, min_chars=min_chars):
             out.append(item)
             continue
 
-        image_item = image_by_index.get(item.index)
         if image_item is None:
             out.append(item)
             continue
@@ -2046,6 +2630,8 @@ def render_pdf_questions_with_text(
         page_heights = [float(page.rect.height) for page in doc]
         starts = module5.get_question_starts(doc, page_columns=page_columns)
         spans = module5.build_question_spans(starts, page_heights, page_columns=page_columns)
+        qnos = [int(span.qno) for span in spans if span.qno is not None]
+        max_qno = max(qnos) if qnos else None
 
         if not spans:
             page_images = module5.render_pdf_pages_to_png(doc, image_dir=image_dir, dpi=dpi)
@@ -2115,15 +2701,23 @@ def render_pdf_questions_with_text(
                     continue
 
                 text_boxes = [(x0, y0, x1, y1) for x0, y0, x1, y1, _text in filtered_raw_blocks]
+                visual_boxes = collect_visual_block_boxes_for_clip(
+                    page,
+                    clip_x0=clip_x0,
+                    clip_x1=clip_x1,
+                    raw_y0=raw_y0,
+                    raw_y1=raw_y1,
+                )
+                refine_boxes = text_boxes + visual_boxes
                 y0, y1 = module5.refine_clip_y_to_text_blocks(
                     raw_y0=raw_y0,
                     raw_y1=raw_y1,
-                    text_block_boxes=text_boxes,
+                    text_block_boxes=refine_boxes,
                 )
                 clip_x0, clip_x1 = module5.refine_clip_x_to_text_blocks(
                     raw_x0=clip_x0,
                     raw_x1=clip_x1,
-                    text_block_boxes=text_boxes,
+                    text_block_boxes=refine_boxes,
                 )
 
                 filtered_blocks = filter_page_noise_blocks(
@@ -2144,6 +2738,15 @@ def render_pdf_questions_with_text(
                     continue
 
                 incoming_choices_started = choices_started
+                if (
+                    max_qno is not None
+                    and span.qno == max_qno
+                    and segment_part >= 2
+                    and incoming_choices_started
+                    and is_probable_appendix_segment(clip_text)
+                ):
+                    continue
+
                 problem_clip_y, choices_clip_y, choices_started = resolve_segment_clips_for_state(
                     clip_y0=y0,
                     clip_y1=y1,
