@@ -36,6 +36,8 @@ SHARED_PASSAGE_RE = re.compile(
 )
 _PIL_IMAGE_AVAILABLE: bool | None = None
 _OCR_WARNED_KEYS: set[str] = set()
+_EASYOCR_READER: "easyocr.Reader | None" = None
+_EASYOCR_AVAILABLE: bool | None = None
 OCR_QUESTION_START_RE = re.compile(r"^\s*(\d{1,3})\s*[\.\)]\s*")
 OCR_QUESTION_START_SLASH7_RE = re.compile(r"^\s*/\s*[\.\)]\s*")
 OCR_CHOICE_LINE_RE = re.compile(
@@ -1893,6 +1895,62 @@ def _warn_ocr_once(key: str, message: str) -> None:
     print(message, file=sys.stderr)
 
 
+def _get_easyocr_reader():
+    """EasyOCR Reader 인스턴스를 반환 (싱글톤 패턴)."""
+    global _EASYOCR_READER, _EASYOCR_AVAILABLE
+    
+    if _EASYOCR_AVAILABLE is False:
+        return None
+    
+    if _EASYOCR_READER is not None:
+        return _EASYOCR_READER
+    
+    try:
+        import easyocr
+        _EASYOCR_READER = easyocr.Reader(
+            ["ko", "en"],
+            gpu=False,
+            verbose=False,
+        )
+        _EASYOCR_AVAILABLE = True
+        return _EASYOCR_READER
+    except ImportError:
+        _warn_ocr_once(
+            "easyocr_import_error",
+            "[OCR] EasyOCR을 불러오지 못했습니다. Tesseract로 대체합니다. "
+            "(pip install easyocr)",
+        )
+        _EASYOCR_AVAILABLE = False
+        return None
+    except Exception as exc:
+        _warn_ocr_once(
+            "easyocr_init_error",
+            f"[OCR] EasyOCR 초기화 실패: {type(exc).__name__}. Tesseract로 대체합니다.",
+        )
+        _EASYOCR_AVAILABLE = False
+        return None
+
+
+def _ocr_with_easyocr(image_path: str) -> str:
+    """EasyOCR로 이미지에서 텍스트 추출."""
+    reader = _get_easyocr_reader()
+    if reader is None:
+        return ""
+    
+    try:
+        result = reader.readtext(image_path, detail=0, paragraph=True)
+        if not result:
+            return ""
+        
+        return "\n".join(str(text) for text in result if text).strip()
+    except Exception as exc:
+        _warn_ocr_once(
+            "easyocr_runtime_error",
+            f"[OCR] EasyOCR 처리 중 오류: {type(exc).__name__}. 해당 이미지를 건너뜁니다.",
+        )
+        return ""
+
+
 def _preprocess_image_for_ocr(image):
     # 스캔본에서 명암 대비를 단순화해 OCR 인식률을 높인다.
     gray = image.convert("L")
@@ -2365,7 +2423,44 @@ def _split_ocr_question_and_choices(text: str) -> tuple[str, str]:
     return question_text, choices_text
 
 
-def ocr_text_from_image_paths(image_paths, ocr_lang: str = "kor+eng") -> str:
+def ocr_text_from_image_paths(
+    image_paths,
+    ocr_lang: str = "kor+eng",
+    *,
+    use_easyocr: bool = True,
+) -> str:
+    """이미지 경로들로부터 OCR 텍스트 추출.
+    
+    Args:
+        image_paths: 이미지 파일 경로 리스트
+        ocr_lang: Tesseract OCR 언어 설정
+        use_easyocr: EasyOCR 우선 사용 여부 (기본 True)
+    
+    Returns:
+        추출된 텍스트
+    """
+    ocr_parts = []
+    
+    for image_path in image_paths:
+        ocr_text = ""
+        image_path_str = str(image_path)
+        
+        # 1. EasyOCR 우선 시도
+        if use_easyocr:
+            ocr_text = _ocr_with_easyocr(image_path_str)
+        
+        # 2. EasyOCR 실패 시 Tesseract fallback
+        if not ocr_text or not ocr_text.strip():
+            ocr_text = _ocr_with_tesseract(image_path_str, ocr_lang=ocr_lang)
+        
+        if ocr_text and ocr_text.strip():
+            ocr_parts.append(ocr_text.strip())
+    
+    return "\n".join(ocr_parts).strip()
+
+
+def _ocr_with_tesseract(image_path: str, ocr_lang: str = "kor+eng") -> str:
+    """Tesseract OCR로 이미지에서 텍스트 추출."""
     try:
         import pytesseract
         from PIL import Image
@@ -2385,22 +2480,16 @@ def ocr_text_from_image_paths(image_paths, ocr_lang: str = "kor+eng") -> str:
         )
         return ""
 
-    ocr_parts = []
-    for image_path in image_paths:
-        try:
-            with Image.open(image_path) as img:
-                ocr_text = _ocr_from_single_image(pytesseract, img, ocr_lang=ocr_lang)
-        except Exception as exc:
-            _warn_ocr_once(
-                "ocr_runtime_error",
-                f"[OCR] OCR 처리 중 오류가 발생했습니다: {type(exc).__name__}. "
-                "해당 이미지 OCR을 건너뜁니다.",
-            )
-            ocr_text = ""
-        if ocr_text and ocr_text.strip():
-            ocr_parts.append(ocr_text.strip())
-
-    return "\n".join(ocr_parts).strip()
+    try:
+        with Image.open(image_path) as img:
+            return _ocr_from_single_image(pytesseract, img, ocr_lang=ocr_lang)
+    except Exception as exc:
+        _warn_ocr_once(
+            "ocr_runtime_error",
+            f"[OCR] Tesseract 처리 중 오류가 발생했습니다: {type(exc).__name__}. "
+            "해당 이미지 OCR을 건너뜁니다.",
+        )
+        return ""
 
 
 def enhance_question_texts_with_ocr(

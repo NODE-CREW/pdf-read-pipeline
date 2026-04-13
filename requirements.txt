@@ -1,0 +1,10 @@
+# PDF 처리
+PyMuPDF>=1.23.0
+Pillow>=10.0.0
+
+# OCR
+easyocr>=1.7.0
+pytesseract>=0.3.10
+
+# 기타
+opendataloader-pdf>=0.1.0

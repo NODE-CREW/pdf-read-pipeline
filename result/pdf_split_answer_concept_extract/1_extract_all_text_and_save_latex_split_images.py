@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
+from pathlib import Path
+
+# 프로젝트 루트를 sys.path에 추가
+_project_root = Path(__file__).resolve().parents[2]
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
+
 from pipelines.split_images_pipeline import *  # noqa: F401,F403
 import pipelines.split_images_pipeline as _pipeline
 import pipelines.base as _base
