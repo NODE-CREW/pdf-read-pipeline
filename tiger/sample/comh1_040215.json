@@ -1,0 +1,5824 @@
+{
+  "file name" : "comh1_040215.pdf",
+  "number of pages" : 5,
+  "author" : null,
+  "title" : null,
+  "creation date" : "D:20221111040800+09'00'",
+  "modification date" : "D:20221111040800+09'00'",
+  "kids" : [ {
+    "type" : "header",
+    "id" : 115,
+    "page number" : 1,
+    "bounding box" : [ 25.2, 797.021, 570.42, 813.36 ],
+    "kids" : [ {
+      "type" : "image",
+      "id" : 16,
+      "page number" : 1,
+      "bounding box" : [ 25.2, 797.04, 59.04, 813.36 ],
+      "source" : "comh1_040215_images/imageFile1.png"
+    }, {
+      "type" : "heading",
+      "id" : 17,
+      "page number" : 1,
+      "bounding box" : [ 61.68, 797.021, 570.42, 810.565 ],
+      "heading level" : 1,
+      "font" : "Dotum",
+      "font size" : 12.0,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "건시스템 http://www.gunsys.com 컴퓨터활용능력 1급 필기 기출문제 (2004.2.15)"
+    } ]
+  }, {
+    "type" : "paragraph",
+    "id" : 118,
+    "page number" : 1,
+    "bounding box" : [ 104.88, 761.28, 211.44, 773.28 ],
+    "font" : "*HY-Gyeongothic",
+    "font size" : 12.0,
+    "text color" : "[0.0, 0.0, 0.0]",
+    "content" : "1과목. 컴퓨터 일반"
+  }, {
+    "type" : "list",
+    "id" : 120,
+    "level" : "1",
+    "page number" : 1,
+    "bounding box" : [ 22.8, 115.829, 293.52, 746.789 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 9,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 737.669, 230.197, 746.789 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "1. 다음 기호 중 파일명으로 사용할 수 있는 기호는?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 103,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 712.949, 205.38, 734.309 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① \\ ② > ③ : ④ $"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 663.029, 293.52, 697.109 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "2. 다음은 인터넷 E-mail서비스에 관한 내용이다. 이때 사용되는 메 일서버와 사용자 단말기간의 프로토콜 중 해당된 내용이 아닌 것 은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 104,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 650.549, 218.255, 659.669 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① SNMP ② SMTP"
+      }, {
+        "type" : "paragraph",
+        "id" : 105,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 638.309, 216.095, 647.429 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ POP ④ IMAP"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 600.869, 293.52, 622.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "3. 다음 중 RAM(Random Access Memory)의 설명으로 가장 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 106,
+        "level" : "3",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 513.749, 293.52, 597.509 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 575.909, 293.52, 597.509 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 전원이 꺼지고 나면 기억된 내용이 모두 사라지는 휘발성 메 모리이다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 563.669, 290.94, 572.789 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 일반적으로 주기억장치라고 하면 RAM을 의미하는 경우가 많다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 538.709, 293.52, 560.309 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ RAM은 재충전 여부에 따라 DRAM과 SRAM으로 구분할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 513.749, 293.52, 535.349 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 제조과정에서 필요한 내용을 미리 기억시키므로 사용자가 임 의로 수정할 수 없다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 476.549, 293.52, 498.149 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "4. 다음 중 가전제품, PDA등에 사용되는 임베디드 운영체제로 가장 적절한 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 107,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 464.069, 213.637, 473.189 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① IIS(Internet Information Server) ② Java"
+      }, {
+        "type" : "paragraph",
+        "id" : 108,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 451.589, 221.28, 460.709 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ 윈도우CE ④ 유닉스"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 414.389, 293.28, 435.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "5. 다음 중 한글 Windows98 설치시 \"디스크 공간 부족 메시지\"가 나타 날 때 디스크 공간을 확보하는 방법으로 가장 거리가 먼 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 109,
+        "level" : "3",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 351.989, 293.52, 411.029 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 389.429, 293.52, 411.029 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 휴지통을 마우스 오른쪽 단추로 클릭한 다음 [휴지통 비우기] 를 선택한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 376.949, 235.26, 386.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 인터넷 브라우저 캐시 폴더의 내용을 삭제한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 364.469, 216.3, 373.589 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 확장명이 .bak과 .tmp인 파일을 삭제한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 37.92, 351.989, 274.62, 361.109 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ regedit를 이용하여 필요 없는 프로그램 정보를 삭제한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 302.309, 293.52, 336.389 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "6. 7bit ASCII 코드에 1bit 짝수 패리티(Even Parity) 비트를 첨부하여 데이터를 송신하였을 경우 수신된 데이터에 에러가 발생하는 것 은 어느 것인가? (단, 우측에서 첫 번째 비트가 패리티 비트이다)",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 110,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 277.349, 192.517, 298.949 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 10101100 ② 10101011 ③ 01110111 ④ 00110101"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 240.149, 293.52, 261.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "7. [제어판]에 있는 다음 항목들 중 컴퓨터가 대기 모드로부터 해제 될 때 \"암호사용\" 여부를 선택할 수 있는 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 111,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 227.669, 221.28, 236.789 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 디스플레이 ② 내게 필요한 옵션"
+      }, {
+        "type" : "paragraph",
+        "id" : 112,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 215.189, 170.64, 224.309 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ 시스템 ④ 암호"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 177.989, 293.52, 199.589 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "8. CD음질 수준의 스테레오 사운드를 10초간 저장하는데 필요한 최소 한의 메모리 공간은? (CD음질 : 44.1KHz, 16bit 샘플링 데이터)",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 113,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 165.509, 194.449, 174.629 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 0.88Mbyte ② 1.76Mbyte"
+      }, {
+        "type" : "paragraph",
+        "id" : 114,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 37.92, 153.029, 186.289, 162.149 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ 3.52Mbyte ④ 10Mbyte"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 22.8, 115.829, 293.28, 137.189 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "9. WWW 환경에서 사용할 웹페이지를 제작할 때 지켜야 할 네티켓 (Netiquette)에 대한 다음 설명들 중 가장 올바르지 않은 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 121,
+    "level" : "3",
+    "page number" : 1,
+    "bounding box" : [ 34.8, 28.709, 293.52, 112.469 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 34.8, 90.869, 293.52, 112.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 웹 페이지를 제작할 때는 대용량 멀티미디어 데이터들의 활용 을 자제한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 34.8, 65.909, 293.52, 87.509 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 텍스트 브라우저 사용자를 고려하여 Image Map으로 메뉴를 구성한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 34.8, 41.189, 293.28, 62.549 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 용량이 큰 파일을 제공할 때는 파일 옆에 파일 형식과 크기를 명시한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 34.8, 28.709, 290.94, 37.829 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ Trademark(TM)나 Copyright(C) 등의 저작권을 분명히 밝힌다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 122,
+    "level" : "1",
+    "page number" : 1,
+    "bounding box" : [ 301.92, 127.109, 572.64, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 7,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 770.549, 543.637, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "10. 다음 중 데이터의 압축에 관한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 94,
+        "level" : "3",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 708.389, 572.64, 767.189 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 758.069, 560.94, 767.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 데이터가 기억장치의 용량을 초과할 때 유용하게 사용된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 745.589, 543.9, 754.709 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 압축 방식은 중복의 형태나 처리방법에 따라 상이하다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 733.349, 568.14, 742.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 주로 소프트웨어로 구현되고, 하드웨어로 구현은 불가능하다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 708.389, 572.64, 729.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 압축 기술은 파일에서 비트 패턴이 자주 반복된다는 사실에 근거한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 683.429, 485.797, 692.549 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "11 다음을 설명하는 용어로 가장 적절한 것은?",
+      "kids" : [ {
+        "type" : "text block",
+        "id" : 95,
+        "page number" : 1,
+        "bounding box" : [ 316.68, 627.48, 557.88, 677.16 ],
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 1,
+          "page number" : 1,
+          "bounding box" : [ 323.28, 628.949, 551.52, 675.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "애플사가 개발한 디지털 기간 전송 기술 표준으로 통신기기, 컴퓨터및 가전제품을 단일 네트워크로연결하여 이들이 멀티미디 어 데이터를 100Mbps 에서부터 1 Gbps 까지 송수신할 수 있게 하는 인테페이스 규격"
+        } ]
+      }, {
+        "type" : "paragraph",
+        "id" : 96,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 612.389, 474.517, 621.509 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① USB ② IEEE 1394"
+      }, {
+        "type" : "paragraph",
+        "id" : 97,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 599.909, 449.579, 609.029 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ AGP ④ SCS"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 562.469, 572.64, 584.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "12 한글 Windows98의 프린터 설정에 관한 설명 중 가장 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 98,
+        "level" : "3",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 475.349, 572.64, 559.109 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 537.749, 572.64, 559.109 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 다른 컴퓨터에 설치되어 네트워크로 공유한 프린터는 기본 프린터로 설정할 수 없다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 512.789, 572.64, 534.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 여러 개의 프린터를 설정한 경우 반드시 1개의 프린터를 기본 프린터로 설정한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 487.829, 572.64, 509.429 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 제어판에 있는 프린터 항목이나 설정 메뉴의 프린터 항목을 이용하여 설정할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 475.349, 518.7, 484.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 기본 프린터로 설정된 프린터도 삭제할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 425.669, 572.64, 459.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "13 MPEG-4와 MP3를 재 조합한 것으로, 비표준 동영상 파일 형식 이지만 수백 메가에서 기가대의 영화를 압축한 DVD 수준의 고화 질 파일을 의미하는 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 99,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 413.189, 455.464, 422.309 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① ASF ② AVI"
+      }, {
+        "type" : "paragraph",
+        "id" : 100,
+        "level" : "2",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 400.709, 476.677, 409.829 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ DIVX ④ MPEG-7"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 326.069, 572.64, 385.109 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "14 집에서 ADSL 1회선으로 2대의 컴퓨터를 연결하여 인터넷을 사용 하려고 한다. 두 대의 컴퓨터는 LAN으로 연결되어 있으며 서버 컴퓨터의 IP주소는 192.168.0.1 클라이언트 컴퓨터의 IP주소는 192.168.0.2로 설정되어 있다. 다음 중 각각 컴퓨터의 TCP/IP 등 록 정보에 관한 설명 중 거리가 먼 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 101,
+        "level" : "3",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 251.429, 572.88, 322.949 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 313.829, 566.94, 322.949 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 서버 컴퓨터의 게이트웨이 주소는 192.168.0.2로 설정하였다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 301.349, 565.5, 310.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 두 컴퓨터의 서브네트 마스크는 255.255.255.0으로 설정하였다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 276.389, 572.88, 297.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 클라이언트 컴퓨터의 게이트웨이 주소는 192.168.0.1로 설정하 였다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 251.429, 572.88, 273.029 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 본인이 사용하는 통신 서비스 회사의 DNS 서버 주소를 지정하 였다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 201.749, 572.64, 235.829 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "15 한글 WIndows 98의 Windows 탐색기에서 폴더 목록에 있는 파 일의 확장명이 표시되지 않고 있다. 파일 확장명을 표시하도록 설 정하는 방법으로 가장 적합한 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 102,
+        "level" : "3",
+        "page number" : 1,
+        "bounding box" : [ 317.04, 152.069, 531.18, 198.389 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 189.269, 463.74, 198.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 보기 메뉴에서 자세히를 선택한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 176.789, 522.78, 185.909 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 보기 메뉴에서 아이콘 정렬을 종류별로 지정한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 164.549, 476.46, 173.669 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 보기 메뉴에서 모두 보기를 선택한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 1,
+          "bounding box" : [ 317.04, 152.069, 531.18, 161.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ [폴더 옵션]에서 확장명을 숨기는 기능을 해제한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 301.92, 127.109, 572.437, 136.229 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "16 한글 Windows 98에서 문서의 인쇄에 대한 설명 중 잘못된 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 123,
+    "level" : "3",
+    "page number" : 1,
+    "bounding box" : [ 317.04, 39.989, 572.64, 123.749 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 317.04, 102.149, 572.64, 123.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 여러 개의 출력 파일들이 출력을 기다릴 때 출력 순서를 바꿀 수 있다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 317.04, 77.429, 572.64, 99.029 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 인쇄 작업에 일단 들어가 있는 상태의 파일은 강제로 종료시 킬 수 없다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 317.04, 64.949, 556.62, 74.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 문서 아이콘을 프린터 아이콘 위로 끌면 인쇄가 가능하다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 1,
+      "bounding box" : [ 317.04, 39.989, 572.64, 61.589 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ 문서를 인쇄하는 동안 작업 표시줄에 프린터 아이콘이 표시되 며, 인쇄가 끝나면 이 아이콘이 없어진다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "footer",
+    "id" : 125,
+    "page number" : 1,
+    "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+    "kids" : [ {
+      "type" : "heading",
+      "id" : 11,
+      "page number" : 1,
+      "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+      "heading level" : 2,
+      "font" : "Haansoft20Batang",
+      "font size" : 10.08,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "- 1 -"
+    } ]
+  }, {
+    "type" : "header",
+    "id" : 126,
+    "page number" : 2,
+    "bounding box" : [ 25.2, 797.021, 570.42, 813.36 ],
+    "kids" : [ {
+      "type" : "image",
+      "id" : 18,
+      "page number" : 2,
+      "bounding box" : [ 25.2, 797.04, 59.04, 813.36 ],
+      "source" : "comh1_040215_images/imageFile2.png"
+    }, {
+      "type" : "heading",
+      "id" : 19,
+      "page number" : 2,
+      "bounding box" : [ 61.68, 797.021, 570.42, 810.565 ],
+      "heading level" : 1,
+      "font" : "Dotum",
+      "font size" : 12.0,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "건시스템 http://www.gunsys.com 컴퓨터활용능력 1급 필기 기출문제 (2004.2.15)"
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 128,
+    "level" : "1",
+    "page number" : 2,
+    "bounding box" : [ 22.8, 124.469, 293.52, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 6,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 22.8, 757.109, 293.52, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "17 웹 브라우저인 인터넷 익스플로러의 [도구]-[인터넷 옵션]에서 지정하거나 변경할 수 있는 항목으로 가장 거리가 먼 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 79,
+        "level" : "3",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 702.869, 291.42, 752.549 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 743.429, 247.98, 752.549 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 사용자 스타일 시트의 사용여부를 지정할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 729.989, 209.82, 739.109 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 방문한 웹사이트 기록을 삭제할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 716.549, 226.86, 725.669 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 홈페이지로 사용할 페이지를 변경할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 702.869, 291.42, 711.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 보안수준을 지정하여 볼 수 있는 인터넷 내용을 제한할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 22.8, 662.309, 293.52, 685.109 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "18 ftp 서비스를 받기 위해 웹 브라우저에 입력하는 주소로서 올바른 것은? (단, 서버의 주소와 기타 정보는 다음과 같다.)",
+      "kids" : [ {
+        "type" : "text block",
+        "id" : 80,
+        "page number" : 2,
+        "bounding box" : [ 60.12, 592.92, 187.56, 656.52 ],
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 1,
+          "page number" : 2,
+          "bounding box" : [ 70.32, 598.709, 164.456, 651.029 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "서버주소 : ftp.korcham.net 서버IP : 211.195.1.139 아이디: imis 비밀번호 : 1234"
+        } ]
+      }, {
+        "type" : "list",
+        "id" : 81,
+        "level" : "3",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 537.509, 180.997, 587.189 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 578.069, 148.697, 587.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① ftp://211.195.1.139/imis",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 564.629, 180.685, 573.749 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② ftp://imis@1234:ftp.korcham.net",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 550.949, 153.877, 560.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ ftp://imis@211.195.1.139",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 537.509, 180.997, 546.629 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ ftp://imis:ftp.korcham.net@1234",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 22.8, 469.829, 293.52, 519.509 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "19 한글 Windows 98의 [내 컴퓨터] 창에는 현재 사용자의 시스템이 사용할 수 있는 자원이 아이콘으로 표시되는데, 실제 자신의 시스 템에 직접 장착되어 있지 않고 네트워크에 공유되어 있는 자원을 표시하는 아이콘은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 82,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 445.109, 149.52, 454.229 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① ②"
+      }, {
+        "type" : "image",
+        "id" : 83,
+        "page number" : 2,
+        "bounding box" : [ 53.28, 443.04, 101.76, 459.6 ],
+        "source" : "comh1_040215_images/imageFile3.png"
+      }, {
+        "type" : "image",
+        "id" : 84,
+        "page number" : 2,
+        "bounding box" : [ 156.0, 443.04, 196.56, 459.6 ],
+        "source" : "comh1_040215_images/imageFile4.png"
+      }, {
+        "type" : "paragraph",
+        "id" : 85,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 416.549, 149.52, 425.669 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ ④"
+      }, {
+        "type" : "image",
+        "id" : 86,
+        "page number" : 2,
+        "bounding box" : [ 53.28, 414.24, 100.32, 432.96 ],
+        "source" : "comh1_040215_images/imageFile5.png"
+      }, {
+        "type" : "image",
+        "id" : 87,
+        "page number" : 2,
+        "bounding box" : [ 160.08, 414.48, 194.88, 431.04 ],
+        "source" : "comh1_040215_images/imageFile6.png"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 22.8, 387.269, 177.157, 396.389 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "20 다음 중 에러체크방식이 아닌 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 88,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 373.589, 212.88, 382.709 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① CRC방식 ② 패리티비트방식"
+      }, {
+        "type" : "paragraph",
+        "id" : 89,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 360.149, 210.24, 369.269 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ 블록합검사방식 ④ CSMA/CD방식"
+      }, {
+        "type" : "paragraph",
+        "id" : 91,
+        "page number" : 2,
+        "bounding box" : [ 86.88, 283.2, 229.44, 295.2 ],
+        "font" : "*HY-Gyeongothic",
+        "font size" : 12.0,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "2과목. 스프레드시트 일반"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 22.8, 259.829, 278.197, 268.949 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "21 다음 중 머리글이나 바닥글에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 93,
+        "level" : "3",
+        "page number" : 2,
+        "bounding box" : [ 37.92, 151.589, 293.52, 255.269 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 232.709, 293.52, 255.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 머리글과 바닥글을 칼라 프린트를 사용하여 색깔을 다양하게 바꿀 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 205.589, 293.52, 228.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 페이지의 왼쪽/오른쪽 여백과는 상관없이 머리글과 바닥글의 왼쪽/오른쪽 여백은 일정하다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 178.709, 293.52, 201.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 페이지의 위 아래와 머리글/바닥글 사이의 거리를 조절할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 37.92, 151.589, 293.52, 174.149 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 머리글과 바닥글에 '&'문자를 포함시키려면 '&&'를 사용해야 한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 22.8, 124.469, 261.397, 133.589 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "22 다음 중 엑셀의 인쇄 작업에 관한 설명으로 올바른 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 129,
+    "level" : "3",
+    "page number" : 2,
+    "bounding box" : [ 37.92, 29.909, 293.52, 120.149 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 37.92, 97.589, 293.52, 120.149 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 미리보기에서는 열의 너비를 조절할 수 없으므로 워크시트에 서 열의 너비를 조절한 후 미리보기를 실행하여야 한다",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 37.92, 70.469, 293.52, 93.029 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 셀에 삽입된 메모는 화면에서만 나타나고 인쇄시에는 출력할 수 없다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 37.92, 57.029, 277.5, 66.149 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 셀 구분선의 인쇄는 선택적으로 설정 및 해제가 가능하다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 37.92, 29.909, 293.52, 52.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ [틀 고정]이 실행되어 있으면, 인쇄시 각 페이지마다 제목부 분이 반복되어 인쇄되므로 편리하다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 130,
+    "level" : "1",
+    "page number" : 2,
+    "bounding box" : [ 301.92, 122.549, 572.677, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 5,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 301.92, 757.349, 572.64, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "23 다음 중 [데이터]-[외부 데이터 가져오기]를 실행하여 표시되는 대화상자에서의 작업에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 71,
+        "page number" : 2,
+        "bounding box" : [ 338.16, 657.12, 499.68, 752.88 ],
+        "source" : "comh1_040215_images/imageFile7.png"
+      }, {
+        "type" : "list",
+        "id" : 72,
+        "level" : "3",
+        "page number" : 2,
+        "bounding box" : [ 317.04, 584.789, 572.64, 647.189 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 638.069, 518.7, 647.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 조건이 지정된 열은 열 이름이 진하게 표시된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 624.869, 540.3, 633.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 한 열에 대해서 지정할 수 있는 조건은 최대 3개이다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 611.429, 548.22, 620.549 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 해당 열에서 포함할 행 데이터에 대한 조건을 지정한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 584.789, 572.64, 607.349 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 각 열에 대해서 [그리고] 와 [또는] 연산을 함께 사용하여 조 건을 지정할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 301.92, 531.509, 572.64, 567.269 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "24 아래 그림에서 [A1:D5] 영역의 데이터를 대상으로, [B8:B16] 영 역에 [A8:A16] 영역의 구간을 기준으로 구간별 빈도수를 구하는 수식으로 올바른 것은?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 73,
+        "page number" : 2,
+        "bounding box" : [ 338.16, 434.16, 469.68, 527.28 ],
+        "source" : "comh1_040215_images/imageFile8.png"
+      }, {
+        "type" : "list",
+        "id" : 74,
+        "level" : "3",
+        "page number" : 2,
+        "bounding box" : [ 317.04, 375.269, 456.72, 424.229 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 415.109, 456.72, 424.229 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① {=FREQUENCY(A1:D5,A8:A16)}",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 401.909, 456.72, 411.029 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② {=FREQUENCY(A8:A16,A1:D5)}",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 388.469, 448.14, 397.589 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ =FREQUENCY(A8:A16,A1:D5)",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 2,
+          "bounding box" : [ 317.04, 375.269, 448.14, 384.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ =FREQUENCY(A1:D5,A8:A16)",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 301.92, 335.189, 572.64, 357.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "25 다음 중 수식에서 어떤 값을 0 으로 나누었을 때 표시되는 오류 메시지로 옳은 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 75,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 317.04, 321.989, 471.997, 331.109 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① #NAME? ② #NUM!"
+      }, {
+        "type" : "paragraph",
+        "id" : 76,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 317.04, 308.549, 479.917, 317.669 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ #DIV/0! ④ #VALUE!"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 301.92, 242.069, 572.677, 291.029 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "26 아래의 워크시트에서 목표값 찾기를 이용하여 홍길동의 평균이 6 이 되기 위해서는 창의력이 얼마로 바꾸어야 하는지를 확인하고 자 할 때, 수식 셀, 찾는 값, 값을 바꿀 셀에 입력할 내용이 순서 대로 나열된 것은 어느 것인가?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 77,
+        "page number" : 2,
+        "bounding box" : [ 325.44, 192.0, 501.84, 237.6 ],
+        "source" : "comh1_040215_images/imageFile9.png"
+      }, {
+        "type" : "paragraph",
+        "id" : 78,
+        "level" : "2",
+        "page number" : 2,
+        "bounding box" : [ 317.04, 162.629, 510.997, 184.949 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① $C$2, $D$2, $F$2 ② $C$2, 6, $F$2 ③ $F$2, $D$2, $C$2 ④ $F$2, 6, $C$2"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 301.92, 122.549, 572.64, 145.109 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "27 다음 중 차트에서 표시되는 범례에 관한 설명 중에서 옳지 않은 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 131,
+    "level" : "3",
+    "page number" : 2,
+    "bounding box" : [ 317.04, 29.429, 572.64, 118.469 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 317.04, 109.349, 531.18, 118.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 차트 상에서 범례는 지정할 수도 삭제할 수도 있다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 317.04, 82.709, 572.64, 105.029 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 범례의 위치를 '모서리'로 설정하면 차트의 좌측 상단에 표시 된다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 317.04, 56.069, 572.64, 78.389 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 범례 표시, 범례 위치 지정은 [차트옵션] 대화상자의 [범례] 탭에서 지정할 수 있다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 2,
+      "bounding box" : [ 317.04, 29.429, 572.64, 51.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ 범례는 여러 항목의 차트가 그려질 때 각 항목의 이해를 돕기 위한 내용이다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "footer",
+    "id" : 133,
+    "page number" : 2,
+    "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+    "kids" : [ {
+      "type" : "heading",
+      "id" : 12,
+      "page number" : 2,
+      "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+      "heading level" : 2,
+      "font" : "Haansoft20Batang",
+      "font size" : 10.08,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "- 2 -"
+    } ]
+  }, {
+    "type" : "header",
+    "id" : 134,
+    "page number" : 3,
+    "bounding box" : [ 25.2, 797.021, 570.42, 813.36 ],
+    "kids" : [ {
+      "type" : "image",
+      "id" : 20,
+      "page number" : 3,
+      "bounding box" : [ 25.2, 797.04, 59.04, 813.36 ],
+      "source" : "comh1_040215_images/imageFile10.png"
+    }, {
+      "type" : "heading",
+      "id" : 21,
+      "page number" : 3,
+      "bounding box" : [ 61.68, 797.021, 570.42, 810.565 ],
+      "heading level" : 1,
+      "font" : "Dotum",
+      "font size" : 12.0,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "건시스템 http://www.gunsys.com 컴퓨터활용능력 1급 필기 기출문제 (2004.2.15)"
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 136,
+    "level" : "1",
+    "page number" : 3,
+    "bounding box" : [ 22.8, 154.229, 293.28, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 5,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 22.8, 755.669, 293.28, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "28 아래의 주어진 표와 같이 3가지 조건에 따라 셀 서식을 각각 다 르게 설정하기 위한 사용자 정의 셀 서식으로 올바른 것은?",
+      "kids" : [ {
+        "type" : "table",
+        "id" : 66,
+        "level" : "3",
+        "page number" : 3,
+        "bounding box" : [ 39.0, 689.88, 279.48, 748.44 ],
+        "number of rows" : 4,
+        "number of columns" : 5,
+        "rows" : [ {
+          "type" : "table row",
+          "row number" : 1,
+          "cells" : [ {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 39.18, 733.68, 75.36, 748.26 ],
+            "row number" : 1,
+            "column number" : 1,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 1,
+              "page number" : 3,
+              "bounding box" : [ 48.72, 736.709, 66.0, 745.829 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "구분"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 75.36, 733.68, 118.56, 748.26 ],
+            "row number" : 1,
+            "column number" : 2,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 2,
+              "page number" : 3,
+              "bounding box" : [ 88.32, 736.709, 105.6, 745.829 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "기준"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 118.56, 733.68, 170.88, 748.26 ],
+            "row number" : 1,
+            "column number" : 3,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 3,
+              "page number" : 3,
+              "bounding box" : [ 123.84, 736.709, 165.84, 745.829 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "표시문자열"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 170.88, 733.68, 215.52, 748.26 ],
+            "row number" : 1,
+            "column number" : 4,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 4,
+              "page number" : 3,
+              "bounding box" : [ 176.4, 736.709, 210.24, 745.829 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "문자색상"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 215.52, 733.68, 279.3, 748.26 ],
+            "row number" : 1,
+            "column number" : 5,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 5,
+              "page number" : 3,
+              "bounding box" : [ 223.68, 736.709, 271.02, 745.829 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "표시형식(예)"
+            } ]
+          } ]
+        }, {
+          "type" : "table row",
+          "row number" : 2,
+          "cells" : [ {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 39.18, 719.04, 75.36, 733.68 ],
+            "row number" : 2,
+            "column number" : 1,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 6,
+              "page number" : 3,
+              "bounding box" : [ 46.32, 722.069, 68.197, 731.189 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "조건1"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 75.36, 719.04, 118.56, 733.68 ],
+            "row number" : 2,
+            "column number" : 2,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 7,
+              "page number" : 3,
+              "bounding box" : [ 81.12, 722.069, 112.8, 731.189 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "500이상"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 118.56, 719.04, 170.88, 733.68 ],
+            "row number" : 2,
+            "column number" : 3,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 8,
+              "page number" : 3,
+              "bounding box" : [ 125.52, 722.069, 164.077, 731.189 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "목표달성!!"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 170.88, 719.04, 215.52, 733.68 ],
+            "row number" : 2,
+            "column number" : 4,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 9,
+              "page number" : 3,
+              "bounding box" : [ 178.56, 722.069, 208.08, 731.189 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "파랑 색"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 215.52, 719.04, 279.3, 733.68 ],
+            "row number" : 2,
+            "column number" : 5,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 10,
+              "page number" : 3,
+              "bounding box" : [ 220.8, 722.069, 273.877, 731.189 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "목표달성!!510"
+            } ]
+          } ]
+        }, {
+          "type" : "table row",
+          "row number" : 3,
+          "cells" : [ {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 39.18, 704.4, 75.36, 719.04 ],
+            "row number" : 3,
+            "column number" : 1,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 11,
+              "page number" : 3,
+              "bounding box" : [ 46.32, 707.429, 68.197, 716.549 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "조건2"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 75.36, 704.4, 118.56, 719.04 ],
+            "row number" : 3,
+            "column number" : 2,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 12,
+              "page number" : 3,
+              "bounding box" : [ 81.12, 707.429, 112.8, 716.549 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "300미만"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 118.56, 704.4, 170.88, 719.04 ],
+            "row number" : 3,
+            "column number" : 3,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 13,
+              "page number" : 3,
+              "bounding box" : [ 125.52, 707.429, 164.077, 716.549 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "주의요망!!"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 170.88, 704.4, 215.52, 719.04 ],
+            "row number" : 3,
+            "column number" : 4,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 14,
+              "page number" : 3,
+              "bounding box" : [ 178.56, 707.429, 208.08, 716.549 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "빨강 색"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 215.52, 704.4, 279.3, 719.04 ],
+            "row number" : 3,
+            "column number" : 5,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 15,
+              "page number" : 3,
+              "bounding box" : [ 220.8, 707.429, 273.877, 716.549 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "주의요망!!250"
+            } ]
+          } ]
+        }, {
+          "type" : "table row",
+          "row number" : 4,
+          "cells" : [ {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 39.18, 690.06, 75.36, 704.4 ],
+            "row number" : 4,
+            "column number" : 1,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 16,
+              "page number" : 3,
+              "bounding box" : [ 46.32, 692.789, 68.197, 701.909 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "조건3"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 75.36, 690.06, 118.56, 704.4 ],
+            "row number" : 4,
+            "column number" : 2,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 17,
+              "page number" : 3,
+              "bounding box" : [ 79.92, 692.789, 113.797, 701.909 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "300-499"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 118.56, 690.06, 170.88, 704.4 ],
+            "row number" : 4,
+            "column number" : 3,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 18,
+              "page number" : 3,
+              "bounding box" : [ 125.52, 692.789, 164.077, 701.909 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "노력요망!!"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 170.88, 690.06, 215.52, 704.4 ],
+            "row number" : 4,
+            "column number" : 4,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 19,
+              "page number" : 3,
+              "bounding box" : [ 178.56, 692.789, 208.08, 701.909 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "표준 색"
+            } ]
+          }, {
+            "type" : "table cell",
+            "page number" : 3,
+            "bounding box" : [ 215.52, 690.06, 279.3, 704.4 ],
+            "row number" : 4,
+            "column number" : 5,
+            "row span" : 1,
+            "column span" : 1,
+            "kids" : [ {
+              "type" : "paragraph",
+              "id" : 20,
+              "page number" : 3,
+              "bounding box" : [ 220.8, 692.789, 273.877, 701.909 ],
+              "font" : "Dotum",
+              "font size" : 9.12,
+              "text color" : "[0.0, 0.0, 0.0]",
+              "content" : "노력요망!!400"
+            } ]
+          } ]
+        } ]
+      }, {
+        "type" : "list",
+        "id" : 67,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 37.92, 569.909, 293.52, 682.949 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 658.949, 293.52, 682.949 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① [파랑][>=500]\"목표달성!!\";[빨강][<300]\"주의요망!!\";\"노력요 망!!\"",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 629.189, 293.474, 653.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② [파랑][>=500]\"목표달성!!\";[빨강][<300]\"주의요망!!\";G/표준\" 노력요망!!\"",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 599.429, 293.474, 623.429 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ [파랑][>=500]\"목표달성!!\"G/표준;[빨강][<300]\"주의요망!!\" G/표준;[G/표준]\"노력요망!!\"",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 569.909, 293.474, 593.909 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ [파랑][>=500]\"목표달성!!\"G/표준;[빨강][<300]\"주의요망!!\" G/표준;\"노력요망!!\"G/표준",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 22.8, 525.269, 293.28, 549.269 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "29 다음 중 그룹 및 윤곽 설정 기능에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 68,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 37.92, 406.709, 293.52, 519.509 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 495.749, 293.28, 519.509 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 그룹 및 윤곽 설정 기능은 그룹별 계산을 자동으로 수행해 주 며 행(세로 방향)으로만 그룹을 묶을 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 465.989, 293.52, 489.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 그룹으로 묶기 위해서는 데이터를 정렬할 때 오름차순 방식과 내림차순 방식 중 어떤 것을 사용해도 상관없다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 436.229, 293.52, 460.229 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 그룹이 설정되면 자동으로 윤곽 기호가 표시되며 윤곽 기호는 현재 보이는 데이터들의 수준을 조절하기 위해 사용된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 406.709, 293.52, 430.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 그룹을 해제하려면 그룹의 모든 데이터를 범위로 설정한 후 [데이터]-[그룹]-[그룹 해제]를 클릭하면 된다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 22.8, 376.949, 231.877, 386.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "30 다음 중 스타일에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 69,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 37.92, 302.789, 293.52, 371.189 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 362.069, 268.86, 371.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 셀에 적용할 서식의 종류를 미리 정의하여 놓은 것이다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 347.189, 260.46, 356.309 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 그리기 개체 스타일을 기본 스타일로 저장할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 332.309, 239.34, 341.429 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 다른 문서에서 정의된 스타일은 사용할 수 없다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 302.789, 293.52, 326.789 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 표준 스타일을 편집하면 입력된 자료에 기본으로 설정되는 서 식이 변경된다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 22.8, 273.029, 244.597, 282.149 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "31 다음 중 차트 작성에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 70,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 37.92, 183.989, 293.52, 267.269 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 258.149, 292.86, 267.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 분산형, 도넛형, 주식형 차트는 3차원 차트로 작성할 수 없다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 228.629, 293.52, 252.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 차트 마법사의 3단계의 [축] 탭의 'X(항목) 축 레이블'에 사용 자가 직접 레이블을 문자열로 입력할 수 있다",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 198.869, 293.28, 222.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 전체 데이터 계열을 선택해서 데이터의 값 표시를 할 수 있으 며, 하나의 데이터 계열에도 데이터 값을 표시할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 37.92, 183.989, 289.98, 193.109 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 차트는 현재 워크시트나 새로운 차트 시트에 삽입될 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 22.8, 154.229, 231.877, 163.349 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "32 다음 중 기능에 대한 설명이 올바르지 않은 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 137,
+    "level" : "4",
+    "page number" : 3,
+    "bounding box" : [ 37.92, 35.669, 293.52, 148.709 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 37.92, 139.589, 293.52, 148.709 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 그림 파일을 셀의 배경으로 삽입하기 위해서는 [서식]-[시",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 65,
+        "level" : "5",
+        "page number" : 3,
+        "bounding box" : [ 50.88, 124.709, 143.58, 133.829 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "트]-[배경]을 선택한다."
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 37.92, 94.949, 293.52, 118.949 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 배경에 삽입했던 그림을 삭제하려면 [서식]-[시트]-[배경삭 제]를 선택한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 37.92, 65.189, 293.52, 89.189 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 워드 아트를 삽입하기 위해서는 [삽입]-[그림]-[WordArt]를 선택한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 37.92, 35.669, 293.52, 59.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ [인쇄]를 선택하면 화면상에서 보이는 배경그림이 프린트로 인쇄된다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 138,
+    "level" : "1",
+    "page number" : 3,
+    "bounding box" : [ 301.92, 199.349, 572.64, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 5,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 301.92, 758.069, 572.64, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "33 아래 시트에서 입사년도가 '2001년'이고 성별이 '여'인 직원들의 급여의 평균을 구하는 배열 수식으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 58,
+        "page number" : 3,
+        "bounding box" : [ 338.16, 702.0, 450.72, 754.56 ],
+        "source" : "comh1_040215_images/imageFile11.png"
+      }, {
+        "type" : "list",
+        "id" : 59,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 317.04, 646.709, 569.52, 693.269 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 684.149, 551.04, 693.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① {=AVERAGE((B2:B6=\"2001년\")*(C2:C6=\"여\")*(D2:D6))}",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 671.669, 567.12, 680.789 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② {=AVERAGE(IF((B2:B6=\"2001년\")*(C2:C6=\"여\"), (D2:D6)))}",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 659.189, 556.08, 668.309 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ {=AVERAGE((B2:B6=\"2001년\"), (C2:C6=\"여\"), (D2:D6))}",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 646.709, 569.52, 655.829 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ {=AVERAGE(IF((B2:B6=\"2001년\"), (C2:C6=\"여\"), (D2:D6)))}",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 301.92, 609.509, 572.64, 631.109 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "34 다음 중 아래에 주어진 대화상자에서의 작업에 대한 설명으로 옳 지 않은 것은?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 60,
+        "page number" : 3,
+        "bounding box" : [ 325.44, 491.04, 499.68, 606.0 ],
+        "source" : "comh1_040215_images/imageFile12.png"
+      }, {
+        "type" : "list",
+        "id" : 61,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 317.04, 398.309, 572.64, 482.069 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 460.709, 572.64, 482.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 데이터를 통합하면서 사용할 함수로 합계, 최대값, 최소값 등 의 함수를 선택할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 448.229, 505.98, 457.349 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 다른 통합 문서의 셀 범위를 통합할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 423.269, 572.64, 444.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ [데이터]-[통합]을 실행하면 표시되는 대화상자로 여러 시트 에 입력되어 있는 데이터를 통합할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 398.309, 572.64, 419.909 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ '추가' 단추를 클릭하면 현재 워크시트의 모든 데이터가 선택 되어 '모든 데이터 영역'에 셀 범위가 추가된다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 301.92, 361.109, 572.52, 382.709 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "35 다음 중 셀에 03-12-25과 같이 입력한 후 결과가 December 25, 2003로 표시되도록 하기 위한 사용자 정의 표시형식으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 62,
+        "level" : "2",
+        "page number" : 3,
+        "bounding box" : [ 317.04, 348.629, 493.738, 357.749 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① mm dd, yyyy ② mmm dd, yyyy"
+      }, {
+        "type" : "paragraph",
+        "id" : 63,
+        "level" : "2",
+        "page number" : 3,
+        "bounding box" : [ 317.04, 336.149, 509.098, 345.269 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ mmmm dd, yyyy ④ mmmmm dd, yyyy"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 301.92, 286.469, 572.64, 320.549 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "36 다음 중 매크로가 포함되어 있는 파일을 열 때, 매크로를 포함할 것인지 묻는 대화상자를 표시하지 않게 설정하는 방법으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 64,
+        "level" : "4",
+        "page number" : 3,
+        "bounding box" : [ 317.04, 224.309, 572.64, 283.109 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 273.989, 568.74, 283.109 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① [도구]-[매크로]-[보안]의 [보안수준] 탭에서 '낮음'을 선택한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 261.509, 568.74, 270.629 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② [도구]-[매크로]-[보안]의 [보안수준] 탭에서 '보통'을 선택한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 249.029, 568.74, 258.149 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ [도구]-[매크로]-[보안]의 [보안수준] 탭에서 '높음'을 선택한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 3,
+          "bounding box" : [ 317.04, 224.309, 572.64, 245.909 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ [도구]-[매크로]-[보안]의 [보안수준] 탭에서 '매크로 숨김'을 선 택한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 301.92, 199.349, 536.437, 208.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "37 다음 프로시저의 실행 결과에 대한 설명으로 옳은 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "text block",
+    "id" : 139,
+    "page number" : 3,
+    "bounding box" : [ 318.36, 121.08, 553.56, 194.52 ],
+    "kids" : [ {
+      "type" : "paragraph",
+      "id" : 21,
+      "page number" : 3,
+      "bounding box" : [ 329.28, 171.029, 403.106, 191.909 ],
+      "font" : "Batang",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "Sub BoldCell() For i = 1 To 10"
+    }, {
+      "type" : "paragraph",
+      "id" : 22,
+      "page number" : 3,
+      "bounding box" : [ 347.28, 147.509, 543.813, 168.389 ],
+      "font" : "Batang",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "If Cells(i, 1).Value >= 100 Then Cells(i, 1).Font.Italic = True"
+    }, {
+      "type" : "paragraph",
+      "id" : 23,
+      "page number" : 3,
+      "bounding box" : [ 329.28, 124.229, 366.213, 144.869 ],
+      "font" : "Batang",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "Next End Sub"
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 140,
+    "level" : "4",
+    "page number" : 3,
+    "bounding box" : [ 317.04, 32.789, 572.64, 116.549 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 317.04, 107.429, 523.98, 116.549 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① [A1:A10] 영역의 셀의 값을 'Italic'으로 입력한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 317.04, 82.469, 572.64, 104.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② [A1:A10] 영역의 셀 중에서 100 이하의 값들이 들어있는 셀 의 값을 이탤릭체로 표시한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 317.04, 57.749, 572.64, 79.349 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ [A1:A10] 영역의 셀 중에서 셀의 속성 값이 이탤릭체인 셀만 표시한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 3,
+      "bounding box" : [ 317.04, 32.789, 572.64, 54.389 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ [A1:A10] 영역의 셀 중에서 100 이상의 값들이 들어있는 셀 의 값을 이탤릭체로 표시한다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "footer",
+    "id" : 142,
+    "page number" : 3,
+    "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+    "kids" : [ {
+      "type" : "heading",
+      "id" : 13,
+      "page number" : 3,
+      "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+      "heading level" : 2,
+      "font" : "Haansoft20Batang",
+      "font size" : 10.08,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "- 3 -"
+    } ]
+  }, {
+    "type" : "header",
+    "id" : 143,
+    "page number" : 4,
+    "bounding box" : [ 25.2, 797.021, 570.42, 813.36 ],
+    "kids" : [ {
+      "type" : "image",
+      "id" : 22,
+      "page number" : 4,
+      "bounding box" : [ 25.2, 797.04, 59.04, 813.36 ],
+      "source" : "comh1_040215_images/imageFile13.png"
+    }, {
+      "type" : "heading",
+      "id" : 23,
+      "page number" : 4,
+      "bounding box" : [ 61.68, 797.021, 570.42, 810.565 ],
+      "heading level" : 1,
+      "font" : "Dotum",
+      "font size" : 12.0,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "건시스템 http://www.gunsys.com 컴퓨터활용능력 1급 필기 기출문제 (2004.2.15)"
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 145,
+    "level" : "1",
+    "page number" : 4,
+    "bounding box" : [ 22.8, 54.629, 293.52, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 7,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 770.549, 231.877, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "38 다음 중 매크로에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 43,
+        "level" : "3",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 682.469, 293.52, 767.189 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 758.069, 239.34, 767.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 차트를 만드는 작업도 매크로로 기록할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 732.869, 293.52, 754.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 새 매크로를 기록할 때에는 바로 가기 키를 반드시 지정하여 야 한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 707.669, 293.52, 729.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 그리기 도구모음을 이용하여 작성된 텍스트 상자에 매크로를 지정한 후 매크로를 실행할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 682.469, 293.52, 704.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 매크로를 실행하기 위해 [Alt]＋[F8] 키를 눌러 표시된 대화 상자에서 매크로 이름을 선택하여 실행할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 632.069, 293.52, 666.389 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "39 아래의 워크시트에 작성되어 있는 명령 단추를 클릭하면 사용자 정의 폼 '주소입력'이 워크시트에 표시되도록 아래의 프로시저에 입력할 내용으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 44,
+        "page number" : 4,
+        "bounding box" : [ 59.04, 578.16, 234.24, 628.32 ],
+        "source" : "comh1_040215_images/imageFile14.png"
+      }, {
+        "type" : "text block",
+        "id" : 45,
+        "page number" : 4,
+        "bounding box" : [ 60.12, 529.32, 255.24, 567.72 ],
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 1,
+          "page number" : 4,
+          "bounding box" : [ 70.56, 556.229, 203.04, 565.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "Private Sub CommandButton1_Click()"
+        }, {
+          "type" : "paragraph",
+          "id" : 2,
+          "page number" : 4,
+          "bounding box" : [ 81.0, 545.599, 156.6, 553.519 ],
+          "font" : "GulimChe",
+          "font size" : 7.92,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "주소입력.( )"
+        }, {
+          "type" : "paragraph",
+          "id" : 3,
+          "page number" : 4,
+          "bounding box" : [ 70.56, 531.749, 98.16, 540.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "End Sub"
+        } ]
+      }, {
+        "type" : "paragraph",
+        "id" : 46,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 515.429, 173.019, 524.549 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① Enabled ② Load"
+      }, {
+        "type" : "paragraph",
+        "id" : 47,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 502.949, 171.169, 512.069 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ Show ④ Hide"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 465.029, 293.52, 486.869 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "40 다음 워크시트에 대해 =HLOOKUP(\"수입\",A1:C7,3) 수식의 결과 값으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "image",
+        "id" : 48,
+        "page number" : 4,
+        "bounding box" : [ 59.04, 390.48, 210.96, 461.52 ],
+        "source" : "comh1_040215_images/imageFile15.png"
+      }, {
+        "type" : "paragraph",
+        "id" : 49,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 375.029, 231.397, 384.149 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 760 ② 455 ③ 670 ④ 512"
+      }, {
+        "type" : "paragraph",
+        "id" : 51,
+        "page number" : 4,
+        "bounding box" : [ 84.48, 340.56, 227.04, 352.56 ],
+        "font" : "*HY-Gyeongothic",
+        "font size" : 12.0,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "3과목. 데이터베이스 일반"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 279.269, 293.52, 326.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "41 보고서 머리글의 텍스트 박스 컨트롤에 다음과 같이 컨트롤 원본 을 지정하였다. 보고서 미리보기를 하는 경우에 어떠한 결과가 나 타나는가? (단, 오늘 날짜가 2004년 1월 6일 화요일이라고 가 정한다.)",
+      "kids" : [ {
+        "type" : "text block",
+        "id" : 53,
+        "page number" : 4,
+        "bounding box" : [ 55.8, 257.4, 183.72, 274.2 ],
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 4,
+          "level" : "1",
+          "page number" : 4,
+          "bounding box" : [ 66.24, 261.509, 148.32, 270.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "=Format(Date(),\"mmm\")"
+        } ]
+      }, {
+        "type" : "paragraph",
+        "id" : 54,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 243.749, 235.729, 252.869 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① Jan ② 1월 ③ 1 ④ Tue"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 218.549, 240.277, 227.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "42 보고서의 그룹화에 대한 설명 중 가장 잘못된 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 55,
+        "level" : "3",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 155.429, 293.28, 214.949 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 205.829, 288.54, 214.949 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 보고서에서 필드나 식을 이용하여 데이터를 그룹화할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 193.349, 285.9, 202.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 숫자 데이터는 첫번째 숫자만을 기준으로 그룹화할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 168.149, 293.28, 189.749 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 날짜 데이터는 년도별, 분기별, 월별, 주별, 일별 등으로 그룹 화할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 37.92, 155.429, 277.5, 164.549 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 문자열 데이터는 접두 문자를 기준으로 그룹화할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 117.749, 293.52, 139.349 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "43 다음 컨트롤 중 '컨트롤 원본' 속성을 이용하여 바운드할 수 없는 컨트롤은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 56,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 105.029, 263.58, 114.149 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 콤보 상자(Combo Box) ② 옵션 단추(Option Button)"
+      }, {
+        "type" : "paragraph",
+        "id" : 57,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 37.92, 92.549, 278.94, 101.669 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ 입력란(Text Box) ④ 명령 단추(Command Button)"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 22.8, 54.629, 293.28, 76.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "44 다음 중 Visual Basic에서 Microsoft Access 매크로 함수를 실행 할 수 있는 액세스 개체는 무엇인가",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "paragraph",
+    "id" : 146,
+    "level" : "2",
+    "page number" : 4,
+    "bounding box" : [ 37.92, 42.149, 195.36, 51.269 ],
+    "font" : "Dotum",
+    "font size" : 9.12,
+    "text color" : "[0.0, 0.0, 0.0]",
+    "content" : "① Application 개체 ② Form 개체"
+  }, {
+    "type" : "paragraph",
+    "id" : 147,
+    "level" : "2",
+    "page number" : 4,
+    "bounding box" : [ 37.92, 29.429, 221.52, 38.549 ],
+    "font" : "Dotum",
+    "font size" : 9.12,
+    "text color" : "[0.0, 0.0, 0.0]",
+    "content" : "③ Docmd 개체 ④ CurrentData 개체"
+  }, {
+    "type" : "list",
+    "id" : 148,
+    "level" : "1",
+    "page number" : 4,
+    "bounding box" : [ 301.92, 169.109, 572.64, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 7,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 770.549, 532.117, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "45 테이블의 작성시 필드에 관한 설명 중 가장 옳은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 35,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 707.669, 572.64, 767.189 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 758.069, 510.3, 767.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 테이블 이름과 필드이름이 동일해서는 안된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 745.349, 539.82, 754.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 필드의 이름에는 공백 문자나 숫자가 포함될 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 720.149, 572.64, 741.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 하나의 테이블에 같은 이름을 갖는 여러 필드가 존재 할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 707.669, 493.26, 716.789 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 필드 이름은 영문으로만 작성하여야 한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 694.949, 554.677, 704.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "46 다음 중 Recordset 개체가 가지고 있는 메서드가 아닌 것은?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 36,
+        "level" : "3",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 682.469, 470.125, 691.589 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① Open ② MoveNext"
+      }, {
+        "type" : "paragraph",
+        "id" : 37,
+        "level" : "3",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 669.749, 457.489, 678.869 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ Execute ④ Delete"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 632.069, 572.64, 653.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "47 다음은 기본 키(Primary Key)에 대한 설명이다. 가장 옳게 설명된 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 38,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 568.949, 572.64, 628.469 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 619.349, 505.98, 628.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 테이블에 기본 키를 설정하지 않으면 안된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 594.149, 572.64, 615.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 기본 키를 설정하지 않고도 다른 테이블과의 관계를 설정할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 581.669, 571.74, 590.789 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 레코드의 추가시에 기본 키 필드에 값을 입력하지 않아도 된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 568.949, 552.3, 578.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 여러 필드를 혼합하여 하나의 기본 키로 설정할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 518.549, 572.64, 552.869 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "48 폼 보기에서 <Tab>을 누를 때마다 탭 순서에 따라 포커스가 들 어온다. 다음 중 폼 보기 상태에서 포커스를 가질 수 없는 컨트롤 은 무엇인가?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 39,
+        "level" : "3",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 493.349, 466.8, 515.189 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 레이블 ② 목록상자 ③ 입력란 ④ 명령단추"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 430.469, 572.64, 477.269 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "49 직원(사원번호, 이름, 나이, 주소, 직급) 테이블에서 주소 필드에 는 '서울', '서울시', '서울특별시', '경기', '경기도'와 같은 방식으 로 데이터가 저장되어 있다. 다음 중 주소가 서울이나 경기로 시 작하는 직원을 검색하는 질의문으로 가장 옳은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 40,
+        "level" : "4",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 380.069, 572.114, 426.869 ],
+        "numbering style" : "unknown style",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 417.749, 558.914, 426.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① select * from 직원 where 주소 between \"서울*\" and \"경기*\"",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 405.269, 572.114, 414.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② select * from 직원where 주소Like \"서울*\" and 주소 Like \"경기*\"",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 392.549, 523.5, 401.669 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ select * from 직원 where 주소 in (\"서울*\", \"경기*\")",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 380.069, 571.394, 389.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ select * from 직원 where 주소 Like \"서울*\" or 주소 Like \"경기*\"",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 354.869, 565.957, 363.989 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "50 다음 모듈의 일부분에 대한 설명으로 가장 적절하지 않은 것은?",
+      "kids" : [ {
+        "type" : "text block",
+        "id" : 41,
+        "page number" : 4,
+        "bounding box" : [ 335.16, 309.0, 505.32, 349.8 ],
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 5,
+          "page number" : 4,
+          "bounding box" : [ 345.36, 310.469, 462.24, 348.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "Dim conn as ADODB.Connection Dim rs as ADODB.RecordSet set rs = conn.execute (\"친구\")"
+        } ]
+      }, {
+        "type" : "list",
+        "id" : 42,
+        "level" : "2",
+        "page number" : 4,
+        "bounding box" : [ 317.04, 219.509, 572.64, 304.229 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 282.629, 572.64, 304.229 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 친구 테이블의 데이터를 읽어와서 코드셋을 생성하며 rs는 이 를 지칭한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 257.429, 572.64, 279.029 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② rs(\"이름\") 과 같이 레코드셋의 특정 필드의 값을 참조할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 244.709, 527.1, 253.829 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 친구.mdb 데이터베이스의 정보를 파악할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 4,
+          "bounding box" : [ 317.04, 219.509, 572.64, 241.349 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ \"친구\" 대신에 \"select * from 친구\"와 같이 바꾸어도 유사한 결과를 나타낸다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 301.92, 169.109, 572.64, 203.429 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "51 학생들은 여러 과목을 수강하며, 한 과목은 여러 학생들이 수강 한다. 이러한 상황에 대한 다음의 테이블 설계 중에서 가장 적절 한 것은? (단, 밑줄은 기본 키를 의미함)",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 149,
+    "level" : "2",
+    "page number" : 4,
+    "bounding box" : [ 317.04, 43.109, 543.9, 165.749 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 317.04, 131.429, 452.22, 165.749 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 학생(학번,이름,연락처) 과목(과목코드,과목명,담당교수) 수강(학번,과목코드,성적)",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 317.04, 106.229, 472.38, 127.829 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 수강(학번,이름,연락처,수강과목코드) 과목(과목코드,과목명,담당교수)",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 317.04, 81.029, 543.9, 102.629 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 수강(학번,이름,연락처,수강과목1,수강과목2,수강과목3) 과목(과목코드,과목명,담당교수)",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 4,
+      "bounding box" : [ 317.04, 43.109, 472.38, 77.429 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ 학생(학번,이름,연락처) 과목(과목코드,과목명,담당교수) 수강신청(학번,과목코드,이름,과목명)",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "footer",
+    "id" : 151,
+    "page number" : 4,
+    "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+    "kids" : [ {
+      "type" : "heading",
+      "id" : 14,
+      "page number" : 4,
+      "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+      "heading level" : 2,
+      "font" : "Haansoft20Batang",
+      "font size" : 10.08,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "- 4 -"
+    } ]
+  }, {
+    "type" : "header",
+    "id" : 152,
+    "page number" : 5,
+    "bounding box" : [ 25.2, 797.021, 570.42, 813.36 ],
+    "kids" : [ {
+      "type" : "image",
+      "id" : 24,
+      "page number" : 5,
+      "bounding box" : [ 25.2, 797.04, 59.04, 813.36 ],
+      "source" : "comh1_040215_images/imageFile16.png"
+    }, {
+      "type" : "heading",
+      "id" : 25,
+      "page number" : 5,
+      "bounding box" : [ 61.68, 797.021, 570.42, 810.565 ],
+      "heading level" : 1,
+      "font" : "Dotum",
+      "font size" : 12.0,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "건시스템 http://www.gunsys.com 컴퓨터활용능력 1급 필기 기출문제 (2004.2.15)"
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 154,
+    "level" : "1",
+    "page number" : 5,
+    "bounding box" : [ 22.8, 140.069, 293.52, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 6,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 22.8, 758.069, 293.52, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "52 다음 중 테이블 생성시 정의하는 제약조건이나 필드속성에 대한 설명으로 가장 옳지 않은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 29,
+        "level" : "2",
+        "page number" : 5,
+        "bounding box" : [ 37.92, 657.269, 293.52, 754.469 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 732.869, 293.52, 754.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 입력 마스크 : 필드에서 사용하는 데이터의 서식을 지정하여 필드에 입력할 수 있는 데이터를 제한한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 707.669, 293.52, 729.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 인덱스 : 메모, 하이퍼 링크, OLE 개체 형식의 필드는 인덱스 할 수 없다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 682.469, 293.52, 704.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 필드 크기: 필드의 데이터의 형식의 세부적인 사항을 지정하 는 것으로 입력될 수 있는 가장 큰 데이터를 기준으로 한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 657.269, 293.28, 678.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 캡션 : 특정 필드에 자주 입력되는 데이터가 있을 경우 이를 지정하면 편리하다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 22.8, 619.349, 293.52, 641.189 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "53 폼 바닥글에 다음과 같은 도메인 계산 함수를 사용했을 때 나타 나는 결과에 대해 가장 맞게 설명한 것은?",
+      "kids" : [ {
+        "type" : "text block",
+        "id" : 30,
+        "page number" : 5,
+        "bounding box" : [ 55.8, 594.84, 273.72, 614.52 ],
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 1,
+          "level" : "1",
+          "page number" : 5,
+          "bounding box" : [ 66.24, 600.149, 225.6, 609.269 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "= DCOUNT(\"[성명]\", \"[사원]\", \"[점수]=80\")"
+        } ]
+      }, {
+        "type" : "list",
+        "id" : 31,
+        "level" : "3",
+        "page number" : 5,
+        "bounding box" : [ 37.92, 492.869, 293.294, 590.069 ],
+        "numbering style" : "unknown style",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 568.469, 293.294, 590.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① <사원> 테이블에서 '점수' 필드 값이 80인 레코드의 '성명' 필드 값을 구한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 543.269, 293.28, 564.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② <사원> 테이블에서 '점수' 필드 값이 80인 레코드의 개수를 구한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 518.069, 293.28, 539.669 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ <사원> 테이블에서 '점수' 필드 값이 80이고 '성명' 필드에 값 이 들어있는 레코드의 개수를 구한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 492.869, 293.28, 514.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ <사원> 테이블에서 '점수' 필드 값이 80이고 '성명' 필드에 들 어 있는 값의 종류수를 구한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 22.8, 467.669, 231.877, 476.789 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "54 액세스의 보고서에 대한 설명 중 가장 옳은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 32,
+        "level" : "2",
+        "page number" : 5,
+        "bounding box" : [ 37.92, 366.869, 293.52, 464.069 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 442.469, 293.52, 464.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 보고서 머리글과 보고서 바닥글의 내용은 모든 페이지에 출력 된다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 417.269, 293.52, 438.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 보고서에서도 폼에서와 같이 이벤트 프로시저를 작성할 수 있 다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 392.069, 293.52, 413.669 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 보고서를 작성하기 위한 데이터는 테이블, 쿼리, 매크로 등이 될 수 있다",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 366.869, 293.52, 388.469 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 인쇄 미리보기 상태에서 컨트롤의 위치나 크기 변경 등의 디 자인을 변경 작업을 할 수 있다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 22.8, 328.949, 293.52, 350.789 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "55 회원(회원번호, 이름, 나이, 주소) 테이블에서 회원수가 몇 명인 가를 알아보기 위한 질의문으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 33,
+        "level" : "2",
+        "page number" : 5,
+        "bounding box" : [ 37.92, 278.549, 198.0, 325.589 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 316.469, 198.0, 325.589 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① select count(*) as 회원수 from 회원",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 303.749, 192.72, 312.869 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② select sum(*) as 회원수 from 회원",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 291.269, 196.08, 300.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ insert count(*) as 회원수 from 회원",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 278.549, 190.8, 287.669 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ insert sum(*) as 회원수 from 회원",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 22.8, 240.869, 293.52, 262.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "56 마이크로소프트사의 엑셀에서 작성된 데이터를 엑세스 데이터베이 스의 테이블로 가져오기를 할 때에 대한 설명으로 옳은 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 34,
+        "level" : "2",
+        "page number" : 5,
+        "bounding box" : [ 37.92, 165.269, 293.52, 237.269 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 215.669, 293.52, 237.269 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 하나의 엑셀파일에 여러 개의 시트가 존재하면 가져오기를 할 수 없다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 202.949, 230.94, 212.069 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 시트의 특정 필드를 제외하고 가져올 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 177.749, 293.52, 199.589 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 시트의 첫 번째 행에 필드 이름이 지정되어 있어야 가져오기 를 할 수 있다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 37.92, 165.269, 285.9, 174.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 이미 데이터가 들어있는 테이블로는 가져오기를 할 수 없다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 22.8, 140.069, 181.237, 149.189 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "57 폼에 대한 설명으로 옳지 않은 것은?",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 156,
+    "level" : "1",
+    "page number" : 5,
+    "bounding box" : [ 301.92, 568.949, 572.64, 779.669 ],
+    "numbering style" : "arabic numbers",
+    "number of list items" : 3,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 301.92, 758.069, 572.64, 779.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "58 성격이 유사한 두 개의 테이블의 내용을 합쳐서 하나의 테이블 을 만들기에 가장 적합한 질의는?",
+      "kids" : [ {
+        "type" : "paragraph",
+        "id" : 26,
+        "level" : "2",
+        "page number" : 5,
+        "bounding box" : [ 317.04, 745.349, 480.48, 754.469 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "① 매개변수 질의 ② UNION 질의"
+      }, {
+        "type" : "paragraph",
+        "id" : 27,
+        "level" : "2",
+        "page number" : 5,
+        "bounding box" : [ 317.04, 732.869, 487.68, 741.989 ],
+        "font" : "Dotum",
+        "font size" : 9.12,
+        "text color" : "[0.0, 0.0, 0.0]",
+        "content" : "③ 하위질의 ④ 크로스탭 질의"
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 301.92, 694.949, 572.64, 716.789 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "59 다음 중 다중 테이블을 이용한 조인 쿼리에 대한 설명으로 가장 옳지 못한 것은?",
+      "kids" : [ {
+        "type" : "list",
+        "id" : 28,
+        "level" : "3",
+        "page number" : 5,
+        "bounding box" : [ 317.04, 594.149, 572.64, 691.589 ],
+        "numbering style" : "circled arabic numbers",
+        "number of list items" : 4,
+        "list items" : [ {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 317.04, 669.749, 572.64, 691.589 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "① 다중 테이블을 이용한 쿼리를 이용하기 위해서는 보통 양 테 이블이 관계가 설정되어 있어야 한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 317.04, 644.549, 572.64, 666.389 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "② 두 개 이상의 테이블이나 쿼리에서 원하는 필드를 추출하여 추가하는 기능이다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 317.04, 619.349, 572.64, 641.189 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "③ 동일한 값이면 쿼리에서 일치하는 두 레코드를 결합하여 쿼리 결과에 두 개의 레코드로 표시한다.",
+          "kids" : [ ]
+        }, {
+          "type" : "list item",
+          "page number" : 5,
+          "bounding box" : [ 317.04, 594.149, 572.64, 615.989 ],
+          "font" : "Dotum",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "④ 기본적인 조인 형식은 조인된 테이블이나 쿼리에서 조인된 필 드 값이 같은 레코드만 선택한다.",
+          "kids" : [ ]
+        } ]
+      } ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 301.92, 568.949, 572.64, 578.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "60 다음은 보고서의 그룹화 수준이 지정된 컨트롤의 속성 중 [데이",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "paragraph",
+    "id" : 157,
+    "level" : "4",
+    "page number" : 5,
+    "bounding box" : [ 315.12, 556.469, 552.037, 565.589 ],
+    "font" : "Dotum",
+    "font size" : 9.12,
+    "text color" : "[0.0, 0.0, 0.0]",
+    "content" : "터]-[누적총계]에 대한 설명이다. 가장 적절하지 않은 것은?"
+  }, {
+    "type" : "list",
+    "id" : 158,
+    "level" : "3",
+    "page number" : 5,
+    "bounding box" : [ 317.04, 468.149, 572.64, 552.869 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 317.04, 531.269, 572.64, 552.869 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 특정 필드의 값에 대한 페이지별 누적 총계를 계산하여 표시 하는 속성",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 317.04, 506.069, 572.64, 527.669 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 아니오(기본값)를 선택하면 레코드에서 원본으로 사용하는 필 드의 값을 표시",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 317.04, 493.349, 558.72, 502.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ '그룹'을 선택하면 동일한 그룹 내에서의 누적 총계를 표시",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 317.04, 468.149, 572.64, 489.989 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ '모두'를 선택하면 그룹에 관계없이 전체 데이터에 대한 누적 총계를 표시",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "table",
+    "id" : 159,
+    "level" : "4",
+    "page number" : 5,
+    "bounding box" : [ 338.28, 51.24, 536.28, 228.6 ],
+    "number of rows" : 15,
+    "number of columns" : 8,
+    "rows" : [ {
+      "type" : "table row",
+      "row number" : 1,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 216.48, 363.12, 228.42 ],
+        "row number" : 1,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 2,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 218.069, 353.04, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 216.48, 387.84, 228.42 ],
+        "row number" : 1,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 3,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 218.069, 377.76, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 216.48, 412.56, 228.42 ],
+        "row number" : 1,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 4,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 218.069, 404.88, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "16"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 216.48, 437.28, 228.42 ],
+        "row number" : 1,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 5,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 218.069, 427.2, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 216.48, 462.0, 228.42 ],
+        "row number" : 1,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 6,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 218.069, 454.32, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "31"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 216.48, 486.72, 228.42 ],
+        "row number" : 1,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 7,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 218.069, 476.88, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 216.48, 511.44, 228.42 ],
+        "row number" : 1,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 8,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 218.069, 503.76, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "46"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 216.48, 536.1, 228.42 ],
+        "row number" : 1,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 9,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 218.069, 526.32, 227.189 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 2,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 204.72, 363.12, 216.48 ],
+        "row number" : 2,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 10,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 206.309, 353.04, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 204.72, 387.84, 216.48 ],
+        "row number" : 2,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 11,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 206.309, 377.76, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 204.72, 412.56, 216.48 ],
+        "row number" : 2,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 12,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 206.309, 404.88, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "17"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 204.72, 437.28, 216.48 ],
+        "row number" : 2,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 13,
+          "page number" : 5,
+          "bounding box" : [ 414.48, 207.334, 435.36, 214.294 ],
+          "font" : "GulimChe",
+          "font size" : 6.96,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "모두답"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 204.72, 462.0, 216.48 ],
+        "row number" : 2,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 14,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 206.309, 454.32, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "32"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 204.72, 486.72, 216.48 ],
+        "row number" : 2,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 15,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 206.309, 476.88, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 204.72, 511.44, 216.48 ],
+        "row number" : 2,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 16,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 206.309, 503.76, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "47"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 204.72, 536.1, 216.48 ],
+        "row number" : 2,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 17,
+          "page number" : 5,
+          "bounding box" : [ 517.2, 206.309, 530.64, 215.429 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2,4"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 3,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 192.96, 363.12, 204.72 ],
+        "row number" : 3,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 18,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 194.549, 353.04, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 192.96, 387.84, 204.72 ],
+        "row number" : 3,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 19,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 194.549, 377.76, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 192.96, 412.56, 204.72 ],
+        "row number" : 3,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 20,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 194.549, 404.88, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "18"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 192.96, 437.28, 204.72 ],
+        "row number" : 3,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 21,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 194.549, 427.2, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 192.96, 462.0, 204.72 ],
+        "row number" : 3,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 22,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 194.549, 454.32, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "33"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 192.96, 486.72, 204.72 ],
+        "row number" : 3,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 23,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 194.549, 476.88, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 192.96, 511.44, 204.72 ],
+        "row number" : 3,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 24,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 194.549, 503.76, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "48"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 192.96, 536.1, 204.72 ],
+        "row number" : 3,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 25,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 194.549, 526.32, 203.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 4,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 181.2, 363.12, 192.96 ],
+        "row number" : 4,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 26,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 182.549, 353.04, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 181.2, 387.84, 192.96 ],
+        "row number" : 4,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 27,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 182.549, 377.76, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 181.2, 412.56, 192.96 ],
+        "row number" : 4,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 28,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 182.549, 404.88, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "19"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 181.2, 437.28, 192.96 ],
+        "row number" : 4,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 29,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 182.549, 427.2, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 181.2, 462.0, 192.96 ],
+        "row number" : 4,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 30,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 182.549, 454.32, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "34"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 181.2, 486.72, 192.96 ],
+        "row number" : 4,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 31,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 182.549, 476.88, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 181.2, 511.44, 192.96 ],
+        "row number" : 4,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 32,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 182.549, 503.76, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "49"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 181.2, 536.1, 192.96 ],
+        "row number" : 4,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 33,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 182.549, 526.32, 191.669 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 5,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 169.44, 363.12, 181.2 ],
+        "row number" : 5,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 34,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 170.789, 353.04, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "5"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 169.44, 387.84, 181.2 ],
+        "row number" : 5,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 35,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 170.789, 377.76, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 169.44, 412.56, 181.2 ],
+        "row number" : 5,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 36,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 170.789, 404.88, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "20"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 169.44, 437.28, 181.2 ],
+        "row number" : 5,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 37,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 170.789, 427.2, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 169.44, 462.0, 181.2 ],
+        "row number" : 5,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 38,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 170.789, 454.32, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "35"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 169.44, 486.72, 181.2 ],
+        "row number" : 5,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 39,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 170.789, 476.88, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 169.44, 511.44, 181.2 ],
+        "row number" : 5,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 40,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 170.789, 503.76, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "50"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 169.44, 536.1, 181.2 ],
+        "row number" : 5,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 41,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 170.789, 526.32, 179.909 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 6,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 157.68, 363.12, 169.44 ],
+        "row number" : 6,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 42,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 159.029, 353.04, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "6"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 157.68, 387.84, 169.44 ],
+        "row number" : 6,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 43,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 159.029, 377.76, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 157.68, 412.56, 169.44 ],
+        "row number" : 6,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 44,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 159.029, 404.88, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "21"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 157.68, 437.28, 169.44 ],
+        "row number" : 6,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 45,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 159.029, 427.2, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 157.68, 462.0, 169.44 ],
+        "row number" : 6,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 46,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 159.029, 454.32, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "36"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 157.68, 486.72, 169.44 ],
+        "row number" : 6,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 47,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 159.029, 476.88, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 157.68, 511.44, 169.44 ],
+        "row number" : 6,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 48,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 159.029, 503.76, 168.149 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "51"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 157.68, 536.1, 169.44 ],
+        "row number" : 6,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 49,
+          "page number" : 5,
+          "bounding box" : [ 513.36, 160.054, 534.48, 167.014 ],
+          "font" : "GulimChe",
+          "font size" : 6.96,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "모두답"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 7,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 145.68, 363.12, 157.68 ],
+        "row number" : 7,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 50,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 147.269, 353.04, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "7"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 145.68, 387.84, 157.68 ],
+        "row number" : 7,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 51,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 147.269, 377.76, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 145.68, 412.56, 157.68 ],
+        "row number" : 7,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 52,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 147.269, 404.88, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "22"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 145.68, 437.28, 157.68 ],
+        "row number" : 7,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 53,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 147.269, 427.2, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 145.68, 462.0, 157.68 ],
+        "row number" : 7,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 54,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 147.269, 454.32, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "37"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 145.68, 486.72, 157.68 ],
+        "row number" : 7,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 55,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 147.269, 476.88, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 145.68, 511.44, 157.68 ],
+        "row number" : 7,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 56,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 147.269, 503.76, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "52"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 145.68, 536.1, 157.68 ],
+        "row number" : 7,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 57,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 147.269, 526.32, 156.389 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 8,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 133.92, 363.12, 145.68 ],
+        "row number" : 8,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 58,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 135.509, 353.04, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "8"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 133.92, 387.84, 145.68 ],
+        "row number" : 8,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 59,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 135.509, 377.76, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 133.92, 412.56, 145.68 ],
+        "row number" : 8,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 60,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 135.509, 404.88, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "23"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 133.92, 437.28, 145.68 ],
+        "row number" : 8,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 61,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 135.509, 427.2, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 133.92, 462.0, 145.68 ],
+        "row number" : 8,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 62,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 135.509, 454.32, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "38"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 133.92, 486.72, 145.68 ],
+        "row number" : 8,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 63,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 135.509, 476.88, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 133.92, 511.44, 145.68 ],
+        "row number" : 8,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 64,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 135.509, 503.76, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "53"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 133.92, 536.1, 145.68 ],
+        "row number" : 8,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 65,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 135.509, 526.32, 144.629 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 9,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 122.16, 363.12, 133.92 ],
+        "row number" : 9,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 66,
+          "page number" : 5,
+          "bounding box" : [ 348.48, 123.749, 353.04, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "9"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 122.16, 387.84, 133.92 ],
+        "row number" : 9,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 67,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 123.749, 377.76, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 122.16, 412.56, 133.92 ],
+        "row number" : 9,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 68,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 123.749, 404.88, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "24"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 122.16, 437.28, 133.92 ],
+        "row number" : 9,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 69,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 123.749, 427.2, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 122.16, 462.0, 133.92 ],
+        "row number" : 9,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 70,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 123.749, 454.32, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "39"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 122.16, 486.72, 133.92 ],
+        "row number" : 9,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 71,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 123.749, 476.88, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 122.16, 511.44, 133.92 ],
+        "row number" : 9,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 72,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 123.749, 503.76, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "54"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 122.16, 536.1, 133.92 ],
+        "row number" : 9,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 73,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 123.749, 526.32, 132.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 10,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 110.4, 363.12, 122.16 ],
+        "row number" : 10,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 74,
+          "page number" : 5,
+          "bounding box" : [ 346.32, 111.749, 355.44, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "10"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 110.4, 387.84, 122.16 ],
+        "row number" : 10,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 75,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 111.749, 377.76, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 110.4, 412.56, 122.16 ],
+        "row number" : 10,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 76,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 111.749, 404.88, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "25"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 110.4, 437.28, 122.16 ],
+        "row number" : 10,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 77,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 111.749, 427.2, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 110.4, 462.0, 122.16 ],
+        "row number" : 10,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 78,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 111.749, 454.32, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "40"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 110.4, 486.72, 122.16 ],
+        "row number" : 10,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 79,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 111.749, 476.88, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 110.4, 511.44, 122.16 ],
+        "row number" : 10,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 80,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 111.749, 503.76, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "55"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 110.4, 536.1, 122.16 ],
+        "row number" : 10,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 81,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 111.749, 526.32, 120.869 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 11,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 98.64, 363.12, 110.4 ],
+        "row number" : 11,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 82,
+          "page number" : 5,
+          "bounding box" : [ 346.32, 99.989, 355.44, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "11"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 98.64, 387.84, 110.4 ],
+        "row number" : 11,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 83,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 99.989, 377.76, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 98.64, 412.56, 110.4 ],
+        "row number" : 11,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 84,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 99.989, 404.88, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "26"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 98.64, 437.28, 110.4 ],
+        "row number" : 11,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 85,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 99.989, 427.2, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 98.64, 462.0, 110.4 ],
+        "row number" : 11,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 86,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 99.989, 454.32, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "41"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 98.64, 486.72, 110.4 ],
+        "row number" : 11,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 87,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 99.989, 476.88, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 98.64, 511.44, 110.4 ],
+        "row number" : 11,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 88,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 99.989, 503.76, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "56"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 98.64, 536.1, 110.4 ],
+        "row number" : 11,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 89,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 99.989, 526.32, 109.109 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 12,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 86.88, 363.12, 98.64 ],
+        "row number" : 12,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 90,
+          "page number" : 5,
+          "bounding box" : [ 346.32, 88.229, 355.44, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "12"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 86.88, 387.84, 98.64 ],
+        "row number" : 12,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 91,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 88.229, 377.76, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 86.88, 412.56, 98.64 ],
+        "row number" : 12,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 92,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 88.229, 404.88, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "27"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 86.88, 437.28, 98.64 ],
+        "row number" : 12,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 93,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 88.229, 427.2, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 86.88, 462.0, 98.64 ],
+        "row number" : 12,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 94,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 88.229, 454.32, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "42"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 86.88, 486.72, 98.64 ],
+        "row number" : 12,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 95,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 88.229, 476.88, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 86.88, 511.44, 98.64 ],
+        "row number" : 12,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 96,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 88.229, 503.76, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "57"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 86.88, 536.1, 98.64 ],
+        "row number" : 12,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 97,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 88.229, 526.32, 97.349 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 13,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 74.88, 363.12, 86.88 ],
+        "row number" : 13,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 98,
+          "page number" : 5,
+          "bounding box" : [ 346.32, 76.469, 355.44, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "13"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 74.88, 387.84, 86.88 ],
+        "row number" : 13,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 99,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 76.469, 377.76, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 74.88, 412.56, 86.88 ],
+        "row number" : 13,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 100,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 76.469, 404.88, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "28"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 74.88, 437.28, 86.88 ],
+        "row number" : 13,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 101,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 76.469, 427.2, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 74.88, 462.0, 86.88 ],
+        "row number" : 13,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 102,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 76.469, 454.32, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "43"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 74.88, 486.72, 86.88 ],
+        "row number" : 13,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 103,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 76.469, 476.88, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 74.88, 511.44, 86.88 ],
+        "row number" : 13,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 104,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 76.469, 503.76, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "58"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 74.88, 536.1, 86.88 ],
+        "row number" : 13,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 105,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 76.469, 526.32, 85.589 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 14,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 63.12, 363.12, 74.88 ],
+        "row number" : 14,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 106,
+          "page number" : 5,
+          "bounding box" : [ 346.32, 64.709, 355.44, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "14"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 63.12, 387.84, 74.88 ],
+        "row number" : 14,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 107,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 64.709, 377.76, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 63.12, 412.56, 74.88 ],
+        "row number" : 14,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 108,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 64.709, 404.88, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "29"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 63.12, 437.28, 74.88 ],
+        "row number" : 14,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 109,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 64.709, 427.2, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 63.12, 462.0, 74.88 ],
+        "row number" : 14,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 110,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 64.709, 454.32, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "44"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 63.12, 486.72, 74.88 ],
+        "row number" : 14,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 111,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 64.709, 476.88, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 63.12, 511.44, 74.88 ],
+        "row number" : 14,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 112,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 64.709, 503.76, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "59"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 63.12, 536.1, 74.88 ],
+        "row number" : 14,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 113,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 64.709, 526.32, 73.829 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      } ]
+    }, {
+      "type" : "table row",
+      "row number" : 15,
+      "cells" : [ {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 338.46, 51.42, 363.12, 63.12 ],
+        "row number" : 15,
+        "column number" : 1,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 114,
+          "page number" : 5,
+          "bounding box" : [ 346.32, 52.949, 355.44, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "15"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 363.12, 51.42, 387.84, 63.12 ],
+        "row number" : 15,
+        "column number" : 2,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 115,
+          "page number" : 5,
+          "bounding box" : [ 373.2, 52.949, 377.76, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "4"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 387.84, 51.42, 412.56, 63.12 ],
+        "row number" : 15,
+        "column number" : 3,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 116,
+          "page number" : 5,
+          "bounding box" : [ 395.76, 52.949, 404.88, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "30"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 412.56, 51.42, 437.28, 63.12 ],
+        "row number" : 15,
+        "column number" : 4,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 117,
+          "page number" : 5,
+          "bounding box" : [ 422.64, 52.949, 427.2, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "3"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 437.28, 51.42, 462.0, 63.12 ],
+        "row number" : 15,
+        "column number" : 5,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 118,
+          "page number" : 5,
+          "bounding box" : [ 445.2, 52.949, 454.32, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "45"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 462.0, 51.42, 486.72, 63.12 ],
+        "row number" : 15,
+        "column number" : 6,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 119,
+          "page number" : 5,
+          "bounding box" : [ 472.32, 52.949, 476.88, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "2"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 486.72, 51.42, 511.44, 63.12 ],
+        "row number" : 15,
+        "column number" : 7,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 120,
+          "page number" : 5,
+          "bounding box" : [ 494.64, 52.949, 503.76, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "60"
+        } ]
+      }, {
+        "type" : "table cell",
+        "page number" : 5,
+        "bounding box" : [ 511.44, 51.42, 536.1, 63.12 ],
+        "row number" : 15,
+        "column number" : 8,
+        "row span" : 1,
+        "column span" : 1,
+        "kids" : [ {
+          "type" : "paragraph",
+          "id" : 121,
+          "page number" : 5,
+          "bounding box" : [ 521.76, 52.949, 526.32, 62.069 ],
+          "font" : "GulimChe",
+          "font size" : 9.12,
+          "text color" : "[0.0, 0.0, 0.0]",
+          "content" : "1"
+        } ]
+      } ]
+    } ]
+  }, {
+    "type" : "list",
+    "id" : 155,
+    "level" : "2",
+    "page number" : 5,
+    "bounding box" : [ 37.92, 39.269, 293.52, 136.469 ],
+    "numbering style" : "circled arabic numbers",
+    "number of list items" : 4,
+    "list items" : [ {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 37.92, 114.869, 293.52, 136.469 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "① 폼은 레이블, 콤보상자, 목록상자, 명령단추 등의 컨트롤로 구 성된다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 37.92, 89.669, 293.52, 111.269 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "② 폼이란 데이터의 입력, 편집 등의 작업을 위한 일종의 인터페 이스이다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 37.92, 64.469, 293.52, 86.069 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "③ 폼의 형식과 원본으로 사용할 테이블만 선택하면 액세스가 자 동으로 만들어 주는 폼을 자동 폼이라고 한다.",
+      "kids" : [ ]
+    }, {
+      "type" : "list item",
+      "page number" : 5,
+      "bounding box" : [ 37.92, 39.269, 293.52, 60.869 ],
+      "font" : "Dotum",
+      "font size" : 9.12,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "④ 테이블이나 쿼리를 원본으로 지정하여 데이터가 연결되어 있 는 폼을 언바운드 폼이라 한다.",
+      "kids" : [ ]
+    } ]
+  }, {
+    "type" : "caption",
+    "id" : 160,
+    "page number" : 5,
+    "bounding box" : [ 338.64, 38.309, 535.98, 47.429 ],
+    "linked content id" : 8,
+    "font" : "Dotum",
+    "font size" : 9.12,
+    "text color" : "[0.0, 0.0, 1.0]",
+    "content" : "[오답 및 오타 문의] ⇒ 건시스템(gunsys.com)"
+  }, {
+    "type" : "footer",
+    "id" : 162,
+    "page number" : 5,
+    "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+    "kids" : [ {
+      "type" : "heading",
+      "id" : 15,
+      "page number" : 5,
+      "bounding box" : [ 281.52, 14.173, 314.157, 24.253 ],
+      "heading level" : 2,
+      "font" : "Haansoft20Batang",
+      "font size" : 10.08,
+      "text color" : "[0.0, 0.0, 0.0]",
+      "content" : "- 5 -"
+    } ]
+  } ]
+}

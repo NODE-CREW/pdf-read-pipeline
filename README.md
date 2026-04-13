@@ -184,6 +184,65 @@ output/
 - 중앙 2분할 실험:
   - `8-2`
 
+## PDF to Markdown 변환
+
+`pipelines/pdf_to_markdown.py`는 PDF를 Markdown으로 변환하는 새로운 파이프라인입니다.
+
+### 주요 기능
+
+- **opendataloader-pdf** 기반 PDF 파싱
+- 텍스트 → Markdown 변환
+- 그림/표/수식 → 이미지 추출 후 Markdown에 경로 삽입
+- 문항별 분리 저장
+
+### 실행 방법
+
+```bash
+python -m pipelines.pdf_to_markdown ./input.pdf -o ./output/
+```
+
+### 출력 구조
+
+```text
+output/<pdf파일명>/
+├── document.md           # 전체 마크다운 문서
+├── questions/            # 문항별 분리
+│   ├── q001.md
+│   ├── q002.md
+│   └── ...
+├── images/               # 추출된 이미지
+│   ├── imageFile1.png
+│   └── ...
+├── raw_json/             # opendataloader 원본 출력
+│   └── <pdf파일명>.json
+└── metadata.json         # 변환 메타데이터
+```
+
+### Python에서 직접 사용
+
+```python
+from pathlib import Path
+from pipelines.pdf_to_markdown import convert_pdf_to_markdown
+
+result = convert_pdf_to_markdown(
+    Path("./input.pdf"),
+    Path("./output/"),
+)
+
+print(f"마크다운: {result.markdown_path}")
+print(f"이미지: {result.image_count}개")
+print(f"문항: {result.question_count}개")
+```
+
+### 의존성
+
+```bash
+pip install opendataloader-pdf
+```
+
+시스템 요구사항:
+- **Java 11+** (opendataloader-pdf 필수)
+
 ## 공통 파이프라인 모듈
 
 `6-1`, `6-2`, `7-1`, `7-2`, `8`, `8-1`, `8-2`는 `pipelines/` 패키지의 공통 구현을 공유합니다.
@@ -198,6 +257,8 @@ output/
   - OCR fallback
 - `pipelines/split_images_pipeline.py`
   - 공통 파이프라인 재노출용 façade
+- `pipelines/pdf_to_markdown.py`
+  - PDF → Markdown 변환
 
 ## OCR 실행 환경
 
