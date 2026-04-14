@@ -243,6 +243,79 @@ pip install opendataloader-pdf
 시스템 요구사항:
 - **Java 11+** (opendataloader-pdf 필수)
 
+## 텍스트 기반 문제 추출 (JSON → 구조화 JSON)
+
+`pipelines/question_parser.py`는 opendataloader-pdf가 생성한 JSON에서 헤더/푸터를 제거하고, 문제·선택지를 파싱하여 구조화 JSON을 출력합니다. OCR 없이 텍스트 구조를 유지합니다.
+
+### 노이즈 제거 방식
+
+- **헤더/푸터/캡션**: JSON의 `type == "header"`, `"footer"`, `"caption"` 노드를 명시적으로 필터링합니다.
+- **2단 컬럼 구분선**: 별도 처리가 필요하지 않습니다. opendataloader-pdf는 PDF 구조를 직접 파싱하여 읽기 순서대로 텍스트를 추출하므로, 2단 레이아웃의 왼쪽 컬럼 → 오른쪽 컬럼 순서로 `list` 노드가 이미 분리되어 나옵니다. 중앙 구분선은 JSON에 별도 노드로 나타나지 않으므로 제거할 대상 자체가 없습니다.
+
+> 기존 `base.py`의 `infer_vertical_separator_x()`, `detect_vertical_separator_x_in_page()` 등은 이미지 기반으로 픽셀을 분석해서 세로선을 감지했지만, opendataloader JSON 방식에서는 이 과정이 불필요합니다.
+
+### 실행 방법
+
+**권장**: PDF 파일만 지정 (자동으로 JSON 생성 후 파싱)
+
+```bash
+python result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py \
+  --pdf tiger/sample/comh1_040215.pdf \
+  --out-dir output/comh1_040215_questions
+```
+
+**고급**: JSON이 이미 있는 경우 직접 지정
+
+```bash
+python result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py \
+  --json tiger/sample/comh1_040215.json \
+  --pdf tiger/sample/comh1_040215.pdf \
+  --out-dir output/comh1_040215_questions
+```
+
+#### 파라미터 설명
+
+- `--pdf`: 원본 PDF 파일 경로
+  - `--json` 없이 단독 사용 가능 (자동으로 임시 JSON 생성 후 삭제)
+  - `--json`과 함께 사용 시 이미지 crop도 수행
+- `--json`: opendataloader-pdf JSON 파일 경로 (선택)
+  - 생략 시 `--pdf`로부터 자동 생성 (권장)
+  - 직접 지정 시 JSON 생성 단계 건너뜀
+- `--out-dir`: 출력 디렉토리 (필수)
+- `--dpi`: 이미지 crop 해상도 (기본 150)
+  - **150 DPI**: 화면 표시/일반 OCR (기본값, 권장)
+  - **200-300 DPI**: 고품질 OCR/인쇄
+  - **400-600 DPI**: 정밀 분석 (파일 크기 증가, 메모리 주의)
+  - 600 DPI 초과는 메모리 이슈로 비권장
+
+> **내부 동작**: `--json` 없이 `--pdf`만 사용하면, 스크립트가 자동으로 opendataloader-pdf를 호출하여 임시 디렉토리에 JSON을 생성하고, 파싱 완료 후 임시 JSON을 삭제합니다.
+
+### 출력 구조
+
+```text
+output/<pdf파일명>_questions/
+├── <pdf파일명>_questions.json   # 문제별 구조화 JSON
+└── crops/                       # bbox 기반 이미지 crop
+    ├── crop_id0016_p1.png
+    └── ...
+```
+
+### Python에서 직접 사용
+
+```python
+from pathlib import Path
+from pipelines.question_parser import parse_pdf_json
+
+result = parse_pdf_json(
+    Path("tiger/sample/comh1_040215.json"),
+    pdf_path=Path("tiger/sample/comh1_040215.pdf"),
+    out_dir=Path("output/comh1_040215_questions"),
+)
+
+print(f"문제 수: {result['metadata']['total_questions']}")
+print(f"첫 문제: {result['questions'][0]['question_text']}")
+```
+
 ## 공통 파이프라인 모듈
 
 `6-1`, `6-2`, `7-1`, `7-2`, `8`, `8-1`, `8-2`는 `pipelines/` 패키지의 공통 구현을 공유합니다.
@@ -259,6 +332,8 @@ pip install opendataloader-pdf
   - 공통 파이프라인 재노출용 façade
 - `pipelines/pdf_to_markdown.py`
   - PDF → Markdown 변환
+- `pipelines/question_parser.py`
+  - opendataloader JSON → 문제별 구조화 JSON 추출
 
 ## OCR 실행 환경
 
