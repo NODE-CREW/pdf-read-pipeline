@@ -59,8 +59,19 @@ def _strip_question_number(content: str) -> str:
 # ──────────────────────────────────────────────
 
 def filter_content_nodes(kids: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """header, footer, caption 노드를 제거하고 본문 노드만 반환."""
-    return [kid for kid in kids if kid.get("type") not in FILTERED_NODE_TYPES]
+    """header, footer, caption 노드를 제거하고 본문 노드만 반환.
+
+    단, 선택지 마커(①②...)가 포함된 caption은 유지.
+    """
+    result: list[dict[str, Any]] = []
+    for kid in kids:
+        node_type = kid.get("type")
+        if node_type in FILTERED_NODE_TYPES:
+            if node_type == "caption" and CHOICE_MARKER_RE.search(kid.get("content", "")):
+                result.append(kid)
+            continue
+        result.append(kid)
+    return result
 
 
 # ──────────────────────────────────────────────
@@ -183,6 +194,48 @@ def _collect_images_from_kids(kids: list[dict[str, Any]]) -> list[dict[str, Any]
     return images
 
 
+def _is_choice_label_only(content: str) -> bool:
+    """content가 선택지 마커(①②...)와 공백만으로 구성되어 있는지 확인."""
+    stripped = content.strip()
+    if not stripped:
+        return False
+    remaining = CHOICE_MARKER_RE.sub("", stripped).strip()
+    return len(remaining) == 0 and CHOICE_MARKER_RE.search(stripped) is not None
+
+
+def _extract_choice_numbers(content: str) -> list[int]:
+    """content에서 선택지 번호를 순서대로 추출. '① ②' → [1, 2]"""
+    return [_circled_to_number(m.group(0)) for m in CHOICE_MARKER_RE.finditer(content)]
+
+
+def _extract_description_from_kids(kids: list[dict[str, Any]]) -> str:
+    """문제 kids에서 설명 텍스트를 추출 (선택지, 이미지 제외).
+
+    text block 내부의 paragraph나 unordered list의 항목 텍스트를 수집.
+    """
+    lines: list[str] = []
+    for kid in kids:
+        if not isinstance(kid, dict):
+            continue
+        kid_type = kid.get("type", "")
+        if kid_type != "text block":
+            continue
+        for sub in kid.get("kids", []):
+            if not isinstance(sub, dict):
+                continue
+            sub_type = sub.get("type", "")
+            sub_content = sub.get("content", "").strip()
+            if sub_type == "paragraph" and sub_content and not CHOICE_MARKER_RE.search(sub_content):
+                lines.append(sub_content)
+            elif sub_type == "list":
+                for item in sub.get("list items", []):
+                    if isinstance(item, dict):
+                        item_content = item.get("content", "").strip()
+                        if item_content and not CHOICE_MARKER_RE.search(item_content):
+                            lines.append(item_content)
+    return "\n".join(lines)
+
+
 def _extract_questions_from_list(
     list_node: dict[str, Any],
     *,
@@ -208,11 +261,13 @@ def _extract_questions_from_list(
         kids = item.get("kids", [])
         choices = parse_choices_from_kids(kids)
         images = _collect_images_from_kids(kids)
+        description = _extract_description_from_kids(kids)
 
         questions.append({
             "question_number": qno,
             "page_number": item.get("page number"),
             "question_text": _strip_question_number(content),
+            "description": description,
             "choices": choices,
             "images": images,
             "bounding_box": item.get("bounding box"),
@@ -238,11 +293,16 @@ def extract_questions(filtered_kids: list[dict[str, Any]]) -> list[dict[str, Any
     """
     all_questions: list[dict[str, Any]] = []
     pending_choices: list[dict[str, Any]] = []
+    pending_images: list[dict[str, Any]] = []
 
     for node in filtered_kids:
         node_type = node.get("type", "")
 
         if node_type == "list":
+            # pending_images flush
+            if pending_images and all_questions:
+                all_questions[-1]["images"].extend(pending_images)
+                pending_images = []
             # list의 numbering style 확인
             numbering = node.get("numbering style", "")
             items = node.get("list items", [])
@@ -275,20 +335,48 @@ def extract_questions(filtered_kids: list[dict[str, Any]]) -> list[dict[str, Any
                 )
                 all_questions.extend(qs)
 
-        elif node_type == "paragraph":
-            # 과목 구분 paragraph 또는 독립 선택지 paragraph
+        elif node_type in ("image", "picture", "figure", "formula"):
+            # 독립 이미지 노드 → pending_images에 추가
+            if all_questions:
+                pending_images.append({
+                    "type": node_type,
+                    "element_id": node.get("id"),
+                    "page_number": node.get("page number"),
+                    "bounding_box": node.get("bounding box"),
+                    "source": node.get("source", ""),
+                })
+
+        elif node_type in ("paragraph", "caption"):
             content = node.get("content", "")
-            if CHOICE_MARKER_RE.search(content) and all_questions:
+            if _is_choice_label_only(content) and pending_images and all_questions:
+                # 이미지 선택지 패턴: 레이블에 대응하는 이미지를 선택지로 연결
+                choice_numbers = _extract_choice_numbers(content)
+                n = len(choice_numbers)
+                if n <= len(pending_images):
+                    choice_imgs = pending_images[-n:]
+                    pending_images = pending_images[:-n]
+                    choice_imgs.sort(key=lambda img: (img.get("bounding_box") or [0])[0])
+                    target = all_questions[-1]
+                    for cnum, img in zip(choice_numbers, choice_imgs):
+                        target["choices"].append({"number": cnum, "text": "", "image": img})
+            elif CHOICE_MARKER_RE.search(content) and all_questions:
+                # 과목 구분 paragraph 또는 독립 선택지 paragraph
                 target = _find_last_question_without_choices(all_questions)
-                if target is not None:
-                    new_choices = _parse_choices_from_text(content)
-                    target["choices"].extend(new_choices)
+                if target is None:
+                    target = all_questions[-1]
+                new_choices = _parse_choices_from_text(content)
+                target["choices"].extend(new_choices)
 
         elif node_type == "text block":
             # 보기 지문 등 — 직전 문제에 연결
             if all_questions:
+                kids_list = node.get("kids", [])
+                # heading만 있는 text block은 과목 구분이므로 건너뛰기
+                dict_kids = [k for k in kids_list if isinstance(k, dict)]
+                if dict_kids and all(k.get("type") == "heading" for k in dict_kids):
+                    continue
                 content = ""
-                for sub in node.get("kids", []):
+                for sub in kids_list:
                     if isinstance(sub, dict):
                         content += " " + sub.get("content", "")
                 content = content.strip()
@@ -308,9 +396,34 @@ def extract_questions(filtered_kids: list[dict[str, Any]]) -> list[dict[str, Any
                     "source": "",
                 })
 
+    # 남은 pending_images flush
+    if pending_images and all_questions:
+        all_questions[-1]["images"].extend(pending_images)
+
     # 문제 번호 기준 정렬
     all_questions.sort(key=lambda q: q["question_number"])
     return all_questions
+
+
+def _link_crops_to_questions(
+    questions: list[dict[str, Any]],
+    image_crops: list[dict[str, Any]],
+) -> None:
+    """image_crops의 crop_path를 각 question의 images에 element_id 기준으로 연결."""
+    if not image_crops:
+        return
+    crop_map = {c["element_id"]: c["crop_path"] for c in image_crops}
+    for q in questions:
+        for img in q.get("images", []):
+            eid = img.get("element_id")
+            if eid in crop_map:
+                img["crop_path"] = crop_map[eid]
+        for choice in q.get("choices", []):
+            img = choice.get("image")
+            if img:
+                eid = img.get("element_id")
+                if eid in crop_map:
+                    img["crop_path"] = crop_map[eid]
 
 
 # ──────────────────────────────────────────────
@@ -362,7 +475,10 @@ def parse_pdf_json(
             dpi=dpi,
         )
 
-    # 5. 결과 조립
+    # 5. crop 결과를 문제별 images에 연결
+    _link_crops_to_questions(questions, image_crops)
+
+    # 6. 결과 조립
     source_name = data.get("file name", json_path.stem)
     result = {
         "source": source_name,
@@ -375,7 +491,7 @@ def parse_pdf_json(
         },
     }
 
-    # 6. 저장
+    # 7. 저장
     if out_dir:
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / f"{json_path.stem}_questions.json"
