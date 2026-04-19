@@ -249,6 +249,7 @@ def _extract_questions_from_list(
     """
     questions: list[dict[str, Any]] = []
     items = list_node.get("list items", [])
+    orphan_choices: list[dict[str, Any]] = []
 
     for item in items:
         if not isinstance(item, dict):
@@ -256,6 +257,8 @@ def _extract_questions_from_list(
         content = item.get("content", "")
         qno = _extract_question_number(content)
         if qno is None:
+            if CHOICE_MARKER_RE.search(content) and not questions:
+                orphan_choices = _parse_choices_from_text(content)
             continue
 
         kids = item.get("kids", [])
@@ -273,7 +276,7 @@ def _extract_questions_from_list(
             "bounding_box": item.get("bounding box"),
         })
 
-    return questions, []
+    return questions, orphan_choices
 
 
 def _find_last_question_without_choices(
@@ -313,27 +316,36 @@ def extract_questions(filtered_kids: list[dict[str, Any]]) -> list[dict[str, Any
             if is_choice_list and all_questions:
                 # 선택지가 없는 가장 최근 문제를 찾아 할당
                 target = _find_last_question_without_choices(all_questions)
-                if target is not None:
-                    choices: list[dict[str, Any]] = []
-                    for idx, item in enumerate(items):
-                        if not isinstance(item, dict):
-                            continue
-                        item_content = item.get("content", "")
-                        m = CHOICE_MARKER_RE.match(item_content.strip())
-                        if m:
-                            marker = m.group(0)
-                            number = _circled_to_number(marker)
-                            choice_text = item_content.strip()[len(marker):].strip()
-                        else:
-                            number = idx + 1
-                            choice_text = item_content.strip()
-                        choices.append({"number": number, "text": choice_text})
-                    target["choices"] = choices
+                if target is None:
+                    target = all_questions[-1]
+                choices: list[dict[str, Any]] = []
+                for idx, item in enumerate(items):
+                    if not isinstance(item, dict):
+                        continue
+                    item_content = item.get("content", "")
+                    m = CHOICE_MARKER_RE.match(item_content.strip())
+                    if m:
+                        marker = m.group(0)
+                        number = _circled_to_number(marker)
+                        choice_text = item_content.strip()[len(marker):].strip()
+                    else:
+                        number = idx + 1
+                        choice_text = item_content.strip()
+                    choices.append({"number": number, "text": choice_text})
+                target["choices"].extend(choices)
             else:
+                prev_count = len(all_questions)
                 qs, pending_choices = _extract_questions_from_list(
                     node, pending_choices=pending_choices
                 )
                 all_questions.extend(qs)
+                if pending_choices and prev_count > 0:
+                    pre_questions = all_questions[:prev_count]
+                    target = _find_last_question_without_choices(pre_questions)
+                    if target is None:
+                        target = all_questions[prev_count - 1]
+                    target["choices"].extend(pending_choices)
+                    pending_choices = []
 
         elif node_type in ("image", "picture", "figure", "formula"):
             # 독립 이미지 노드 → pending_images에 추가

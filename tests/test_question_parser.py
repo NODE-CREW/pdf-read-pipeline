@@ -378,6 +378,88 @@ class TestExtractQuestions:
         assert q["choices"][2]["text"] == "링형"
         assert q["choices"][3]["text"] == "그물형"
 
+    def test_orphan_choice_item_in_list_linked_to_previous_question(self):
+        """list 첫 item이 선택지만 포함(문제번호 없음)한 경우 직전 문제에 연결 (Q28 패턴)"""
+        kids = [
+            {
+                "type": "list",
+                "numbering style": "arabic numbers",
+                "list items": [
+                    {
+                        "type": "list item",
+                        "page number": 3,
+                        "bounding box": [22, 302, 281, 322],
+                        "content": "28. 사용자 매뉴얼 작성절차로 옳은 것은?",
+                        "kids": [],
+                    },
+                ],
+            },
+            {
+                "type": "list",
+                "numbering style": "arabic numbers",
+                "list items": [
+                    {
+                        "type": "list item",
+                        "page number": 3,
+                        "content": "① (가)-㉠ ② (가)-㉢ ③ (가)-㉠ ④ (가)-㉢",
+                        "kids": [],
+                    },
+                    {
+                        "type": "list item",
+                        "page number": 3,
+                        "bounding box": [22, 200, 281, 220],
+                        "content": "29. 다음 문제",
+                        "kids": [
+                            {"type": "paragraph", "content": "① A ② B ③ C ④ D"},
+                        ],
+                    },
+                ],
+            },
+        ]
+        questions = extract_questions(kids)
+        q28 = next(q for q in questions if q["question_number"] == 28)
+        assert len(q28["choices"]) == 4
+        q29 = next(q for q in questions if q["question_number"] == 29)
+        assert len(q29["choices"]) == 4
+
+    def test_circled_choice_list_split_across_pages(self):
+        """circled arabic numbers list가 페이지 경계에서 분리된 경우 (Q32 패턴)"""
+        kids = [
+            {
+                "type": "list",
+                "numbering style": "arabic numbers",
+                "list items": [
+                    {
+                        "type": "list item",
+                        "page number": 3,
+                        "bounding box": [304, 100, 547, 109],
+                        "content": "32. 형상 관리에 대한 설명으로 틀린 것은?",
+                        "kids": [],
+                    },
+                ],
+            },
+            {
+                "type": "list",
+                "numbering style": "circled arabic numbers",
+                "list items": [
+                    {"type": "list item", "content": "① 형상 식별은 대상을 식별하는 과정이다.", "kids": []},
+                    {"type": "list item", "content": "② 형상 관리를 통해 품질을 높인다.", "kids": []},
+                    {"type": "list item", "content": "③ 형상 통제 과정에서는 변경 요구를 즉시 수", "kids": []},
+                ],
+            },
+            {
+                "type": "list",
+                "numbering style": "circled arabic numbers",
+                "list items": [
+                    {"type": "list item", "content": "④ 형상 감사는 계획대로 진행되는지 살펴보는 활동이다.", "kids": []},
+                ],
+            },
+        ]
+        questions = extract_questions(kids)
+        q32 = next(q for q in questions if q["question_number"] == 32)
+        assert len(q32["choices"]) == 4
+        assert q32["choices"][3]["number"] == 4
+
     def test_image_choices_pattern(self):
         """이미지 선택지 패턴 (Q43 유형): 문제 뒤 이미지+레이블 조합"""
         kids = [
