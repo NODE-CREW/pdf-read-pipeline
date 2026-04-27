@@ -49,6 +49,22 @@ python ./1_extract_text_and_print.py --pdf ./test.pdf --pages "1-3"
 python ./8_extract_all_text_and_save_latex_split_images.py --pdf ./level2.pdf ./level3.pdf
 ```
 
+opendataloader 기반 문제 구조 JSON을 바로 생성:
+
+```bash
+python3 ./11_run_exam_pdf_pipeline.py \
+  ./tiger/sample/comh1_040215.pdf \
+  --output-dir ./output/exam_pdf
+```
+
+`data/test-1.pdf`처럼 2단 레이아웃이 섞인 PDF를 `@output` 호환 JSON + 이미지 crop으로 추출:
+
+```bash
+python3 ./new/test1_parser.py \
+  --pdf ./data/test-1.pdf \
+  --output-dir ./new/output/test-1
+```
+
 SaaS OCR 우선 사용:
 
 ```bash
@@ -242,6 +258,75 @@ pip install opendataloader-pdf
 
 시스템 요구사항:
 - **Java 11+** (opendataloader-pdf 필수)
+
+## 시험지형 PDF 질문 JSON 추출
+
+`11_run_exam_pdf_pipeline.py`는 `result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py`와 같은 계열로 동작합니다.
+
+- 먼저 `opendataloader-pdf`로 임시 JSON을 생성하고
+- 그 다음 `pipelines.question_parser.parse_pdf_json()`으로 문제 구조 JSON을 만듭니다.
+
+즉 출력 스키마는 `question_parser` 기준이며, 텍스트/선택지/이미지/crop이 분리된 **md-ready 구조**를 만듭니다.
+
+### 출력 구조 특징
+
+- top-level: `source`, `questions`, `image_crops`, `metadata`
+- question item: `question_number`, `page_number`, `question_text`, `description`, `choices`, `images`, `bounding_box`
+- 이미지 crop은 top-level `image_crops`에 모이고, 각 `images[]` / `choice.image`에 `crop_path`가 연결됩니다.
+
+### 실행 방법
+
+```bash
+python3 ./11_run_exam_pdf_pipeline.py \
+  ./tiger/sample/comh1_040215.pdf \
+  --output-dir ./output/exam_pdf
+```
+
+여러 PDF를 한 번에 처리할 수도 있습니다.
+
+```bash
+python3 ./11_run_exam_pdf_pipeline.py \
+  ./20190302.pdf ./20190831.pdf \
+  --output-dir ./output/exam_pdf
+```
+
+### 출력 파일
+
+```text
+output/exam_pdf/
+  comh1_040215_questions.json
+  crops/
+    crop_id0001_p1.png
+```
+
+`new/test1_parser.py`는 아래 구조를 만듭니다.
+
+```text
+new/output/test-1/
+  test-1_questions.json
+  crops/
+    crop_id0001_p2.png
+    crop_id0002_p2.png
+```
+
+- top-level 키: `source`, `questions`, `image_crops`, `metadata`
+- question item 키: `question_number`, `page_number`, `question_text`, `description`, `choices`, `images`, `bounding_box`
+- `images[]`와 top-level `image_crops[]`의 `crop_path`는 상대 경로 문자열입니다.
+- `new/test1_parser.py`는 `data/test-1.pdf` 같은 2단 시험지 레이아웃에서 header/footer를 제외하고 문제/선택지만 구조화합니다.
+
+### Python에서 직접 사용
+
+```python
+from pathlib import Path
+from pipelines.question_parser import parse_pdf_json
+
+result = parse_pdf_json(
+    Path("./raw_json/comh1_040215.json"),
+    pdf_path=Path("./tiger/sample/comh1_040215.pdf"),
+    out_dir=Path("./output/exam_pdf"),
+)
+print(result["metadata"])
+```
 
 ## 텍스트 기반 문제 추출 (JSON → 구조화 JSON)
 
