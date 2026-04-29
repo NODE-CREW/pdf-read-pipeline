@@ -19,6 +19,7 @@ CHOICE_RE = re.compile(r"([①②③④])")
 SUBJECT_RE = re.compile(r"^제\s*\d*\s*과목")
 FOOTER_RE = re.compile(r"^-\s*\d+\s*-$")
 NUMBER_LIST_RE = re.compile(r"(?:\d+\s*,\s*){4,}\d+")
+CHOICE_LINE_RE = re.compile(r"^[①②③④]")
 
 CHOICE_NUMBER_MAP = {"①": 1, "②": 2, "③": 3, "④": 4}
 
@@ -158,29 +159,42 @@ def build_questions(lines: list[TextLine]) -> list[dict[str, object]]:
         question_match = QUESTION_RE.match(line.text)
         if question_match:
             if current is not None:
-                questions.append(finalize_question(current))
+                questions.append(current)
             current = {
                 "question_number": int(question_match.group(1)),
                 "page_number": line.page_number,
-                "texts": [normalize_text(question_match.group(2))] if question_match.group(2) else [],
-                "bboxes": [line.bbox],
+                "raw_lines": [line],
+                "excluded_line_indexes": set(),
+                "images": [],
             }
             continue
 
         if current is None:
             continue
 
-        current["texts"].append(line.text)
-        current["bboxes"].append(line.bbox)
+        current["raw_lines"].append(line)
 
     if current is not None:
-        questions.append(finalize_question(current))
+        questions.append(current)
 
     return questions
 
 
+def get_included_lines(question: dict[str, object]) -> list[TextLine]:
+    excluded_line_indexes = question.get("excluded_line_indexes", set())
+    return [
+        line
+        for index, line in enumerate(question["raw_lines"])
+        if index not in excluded_line_indexes
+    ]
+
+
 def finalize_question(raw_question: dict[str, object]) -> dict[str, object]:
-    text = normalize_text(" ".join(raw_question["texts"]))
+    included_lines = get_included_lines(raw_question)
+    line_texts = [line.text for line in included_lines]
+    if line_texts and is_question_start_line(line_texts[0]):
+        line_texts[0] = normalize_text(QUESTION_RE.match(line_texts[0]).group(2))
+    text = normalize_text(" ".join(line_texts))
     question_text, choices = parse_choice_text(text)
     return {
         "question_number": raw_question["question_number"],
@@ -188,13 +202,23 @@ def finalize_question(raw_question: dict[str, object]) -> dict[str, object]:
         "question_text": question_text,
         "description": "",
         "choices": choices,
-        "images": [],
-        "bounding_box": [round(value, 3) for value in merge_bboxes(raw_question["bboxes"])],
+        "images": raw_question["images"],
+        "bounding_box": [
+            round(value, 3) for value in merge_bboxes(line.bbox for line in raw_question["raw_lines"])
+        ],
     }
 
 
 def rect_contains(rect: fitz.Rect, point_x: float, point_y: float) -> bool:
     return rect.x0 <= point_x <= rect.x1 and rect.y0 <= point_y <= rect.y1
+
+
+def is_question_start_line(text: str) -> bool:
+    return QUESTION_RE.match(text) is not None
+
+
+def is_choice_line(text: str) -> bool:
+    return CHOICE_LINE_RE.match(text) is not None
 
 
 def is_text_representable_visual(question_text: str) -> bool:
@@ -332,15 +356,39 @@ def detect_non_text_visual_rect(
     return clamp_rect(visual_rect, page.rect)
 
 
-def attach_visual_crops(
+def should_crop_boxed_text(candidate_text: str) -> bool:
+    if not candidate_text:
+        return False
+
+    boxed_markers = (
+        "ㆍ",
+        "SELECT ",
+        "UPDATE ",
+        "#include",
+        "public class",
+        "System.out",
+        "while (",
+        "for (",
+        "JavaScript",
+    )
+    if any(marker in candidate_text for marker in boxed_markers):
+        return True
+    if NUMBER_LIST_RE.search(candidate_text):
+        return True
+    if len(candidate_text.splitlines()) >= 2:
+        return True
+    return False
+
+
+def attach_boxed_text_crops(
     doc: fitz.Document,
     questions: list[dict[str, object]],
     out_dir: Path,
     dpi: int,
+    crop_index_start: int = 1,
 ) -> list[dict[str, object]]:
     image_crops: list[dict[str, object]] = []
-    candidates_by_page = collect_visual_candidates(doc)
-    crop_index = 1
+    crop_index = crop_index_start
 
     def append_crop(question: dict[str, object], page_number: int, clipped: fitz.Rect) -> None:
         nonlocal crop_index
@@ -373,7 +421,89 @@ def attach_visual_crops(
     for question in questions:
         page_number = int(question["page_number"])
         page = doc[page_number - 1]
-        question_rect = fitz.Rect(question["bounding_box"])
+        question_rect = fitz.Rect(merge_bboxes(line.bbox for line in question["raw_lines"]))
+        expanded_rect = fitz.Rect(
+            question_rect.x0 - 8,
+            question_rect.y0 - 12,
+            question_rect.x1 + 8,
+            question_rect.y1 + 12,
+        )
+
+        for rect_like in page.cluster_drawings():
+            candidate = fitz.Rect(rect_like)
+            center_x = (candidate.x0 + candidate.x1) / 2
+            center_y = (candidate.y0 + candidate.y1) / 2
+            if not rect_contains(expanded_rect, center_x, center_y):
+                continue
+
+            matched_indexes: list[int] = []
+            matched_texts: list[str] = []
+            for index, line in enumerate(question["raw_lines"]):
+                line_center_x = (line.bbox[0] + line.bbox[2]) / 2
+                line_center_y = (line.bbox[1] + line.bbox[3]) / 2
+                if not rect_contains(candidate, line_center_x, line_center_y):
+                    continue
+                if is_question_start_line(line.text) or is_choice_line(line.text):
+                    continue
+                matched_indexes.append(index)
+                matched_texts.append(line.text)
+
+            if not matched_indexes:
+                continue
+
+            candidate_text = "\n".join(matched_texts)
+            if not should_crop_boxed_text(candidate_text):
+                continue
+
+            question["excluded_line_indexes"].update(matched_indexes)
+            append_crop(question, page_number, clamp_rect(candidate, page.rect))
+
+    return image_crops
+
+
+def attach_visual_crops(
+    doc: fitz.Document,
+    questions: list[dict[str, object]],
+    out_dir: Path,
+    dpi: int,
+    crop_index_start: int = 1,
+) -> list[dict[str, object]]:
+    image_crops: list[dict[str, object]] = []
+    candidates_by_page = collect_visual_candidates(doc)
+    crop_index = crop_index_start
+
+    def append_crop(question: dict[str, object], page_number: int, clipped: fitz.Rect) -> None:
+        nonlocal crop_index
+
+        crop_name = f"crop_id{crop_index:04d}_p{page_number}.png"
+        relative_crop_path = Path("crops") / crop_name
+        absolute_crop_path = out_dir / relative_crop_path
+        save_crop(doc[page_number - 1], clipped, absolute_crop_path, dpi)
+
+        image_entry = {
+            "type": "image",
+            "element_id": crop_index,
+            "page_number": page_number,
+            "bounding_box": [round(value, 3) for value in clipped],
+            "source": str(relative_crop_path).replace("\\", "/"),
+            "crop_path": str(relative_crop_path).replace("\\", "/"),
+        }
+        question["images"].append(image_entry)
+        image_crops.append(
+            {
+                "element_id": crop_index,
+                "page_number": page_number,
+                "type": "image",
+                "bounding_box": [round(value, 3) for value in clipped],
+                "crop_path": str(relative_crop_path).replace("\\", "/"),
+            }
+        )
+        crop_index += 1
+
+    for question in questions:
+        page_number = int(question["page_number"])
+        page = doc[page_number - 1]
+        question_rect = fitz.Rect(merge_bboxes(line.bbox for line in question["raw_lines"]))
         expanded_rect = fitz.Rect(
             question_rect.x0 - 8,
             question_rect.y0 - 12,
@@ -382,12 +512,18 @@ def attach_visual_crops(
         )
         page_rect = page.rect
 
+        if question["images"]:
+            continue
+
         for candidate in candidates_by_page.get(page_number, []):
             center_x = (candidate.x0 + candidate.x1) / 2
             center_y = (candidate.y0 + candidate.y1) / 2
             if not rect_contains(expanded_rect, center_x, center_y):
                 continue
-            if is_text_representable_visual(str(question["question_text"])):
+            current_question_text, _ = parse_choice_text(
+                normalize_text(" ".join(line.text for line in get_included_lines(question)))
+            )
+            if is_text_representable_visual(current_question_text):
                 continue
 
             clipped = clamp_rect(candidate, page_rect)
@@ -399,7 +535,9 @@ def attach_visual_crops(
         fallback_rect = detect_non_text_visual_rect(
             page=page,
             question_rect=question_rect,
-            question_text=str(question["question_text"]),
+            question_text=parse_choice_text(
+                normalize_text(" ".join(line.text for line in get_included_lines(question)))
+            )[0],
             dpi=dpi,
         )
         if fallback_rect is not None:
@@ -418,7 +556,17 @@ def parse_test1_pdf(pdf_path: Path, out_dir: Path | None = None, dpi: int = 150)
     try:
         lines = extract_ordered_lines(doc)
         questions = build_questions(lines)
-        image_crops = attach_visual_crops(doc, questions, out_dir, dpi)
+        image_crops = attach_boxed_text_crops(doc, questions, out_dir, dpi)
+        image_crops.extend(
+            attach_visual_crops(
+                doc,
+                questions,
+                out_dir,
+                dpi,
+                crop_index_start=len(image_crops) + 1,
+            )
+        )
+        questions = [finalize_question(question) for question in questions]
     finally:
         doc.close()
 

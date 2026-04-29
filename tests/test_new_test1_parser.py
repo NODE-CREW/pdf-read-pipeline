@@ -62,17 +62,44 @@ def test_parse_test1_pdf_filters_text_only_crops_and_keeps_visual_ones(tmp_path)
     assert len(by_number[51]["images"]) == 1
     assert len(by_number[66]["images"]) == 1
     assert len(by_number[89]["images"]) == 1
-    assert by_number[26]["images"] == []
-    assert by_number[14]["images"] == []
-    assert by_number[24]["images"] == []
-    assert by_number[69]["images"] == []
-    assert by_number[97]["images"] == []
+    assert len(by_number[14]["images"]) == 1
+    assert len(by_number[24]["images"]) == 1
+    assert len(by_number[26]["images"]) == 1
+    assert len(by_number[67]["images"]) == 1
+    assert len(by_number[69]["images"]) == 1
+    assert len(by_number[97]["images"]) == 1
+
+    assert "디자인" not in by_number[14]["question_text"]
+    assert "JavaScript" not in by_number[24]["question_text"]
+    assert "37, 14, 17, 40, 35" not in by_number[26]["question_text"]
+    assert "while (y--)" not in by_number[67]["question_text"]
+    assert "System.out.print" not in by_number[69]["question_text"]
+    assert "광채널 스위치" not in by_number[97]["question_text"]
 
     for image in (
-        by_number[23]["images"]
+        by_number[14]["images"]
+        + by_number[24]["images"]
+        + by_number[26]["images"]
+        + by_number[23]["images"]
         + by_number[28]["images"]
         + by_number[51]["images"]
         + by_number[66]["images"]
+        + by_number[67]["images"]
+        + by_number[69]["images"]
         + by_number[89]["images"]
+        + by_number[97]["images"]
     ):
         assert (tmp_path / image["crop_path"]).exists()
+
+
+@pytest.mark.skipif(not TEST1_PDF_PATH.exists(), reason="test-1 PDF 파일이 없습니다.")
+def test_parse_test1_pdf_uses_unique_crop_paths_per_question(tmp_path):
+    result = parse_test1_pdf(TEST1_PDF_PATH, out_dir=tmp_path)
+
+    by_number = {question["question_number"]: question for question in result["questions"]}
+    q14_path = by_number[14]["images"][0]["crop_path"]
+    q23_path = by_number[23]["images"][0]["crop_path"]
+
+    assert q14_path != q23_path
+    assert (tmp_path / q14_path).exists()
+    assert (tmp_path / q23_path).exists()
