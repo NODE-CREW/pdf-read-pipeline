@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import deque
 import json
 import re
 from dataclasses import dataclass
@@ -66,8 +67,6 @@ def should_skip_line(text: str) -> bool:
 def page_content_bounds(page_number: int) -> tuple[float, float]:
     if page_number == 1:
         return 215.0, 790.0
-    if page_number == 8:
-        return 0.0, 0.0
     return 60.0, 790.0
 
 
@@ -105,7 +104,8 @@ def group_words_to_lines(words: list[tuple], page_number: int, column_index: int
 
 def extract_ordered_lines(doc: fitz.Document) -> list[TextLine]:
     all_lines: list[TextLine] = []
-    for page_index in range(min(7, doc.page_count)):
+    content_page_count = max(doc.page_count - 1, 0)
+    for page_index in range(content_page_count):
         page_number = page_index + 1
         page = doc[page_index]
         min_y, max_y = page_content_bounds(page_number)
@@ -257,9 +257,26 @@ def is_text_heavy_candidate(page: fitz.Page, rect: fitz.Rect) -> bool:
     return text_overlap_ratio >= 0.35 and overlap_count >= 8
 
 
+def get_visual_band_from_lines(lines: list[TextLine]) -> tuple[float, float] | None:
+    if not lines:
+        return None
+
+    stem_bottom = lines[0].bbox[3]
+    choice_tops = [line.bbox[1] for line in lines if is_choice_line(line.text)]
+    if not choice_tops:
+        return None
+
+    first_choice_top = min(choice_tops)
+    if first_choice_top <= stem_bottom:
+        return None
+
+    return stem_bottom, first_choice_top
+
+
 def collect_visual_candidates(doc: fitz.Document) -> dict[int, list[fitz.Rect]]:
     candidates: dict[int, list[fitz.Rect]] = {}
-    for page_index in range(min(7, doc.page_count)):
+    content_page_count = max(doc.page_count - 1, 0)
+    for page_index in range(content_page_count):
         page_number = page_index + 1
         page = doc[page_index]
         min_y, max_y = page_content_bounds(page_number)
@@ -293,24 +310,38 @@ def save_crop(page: fitz.Page, rect: fitz.Rect, crop_path: Path, dpi: int) -> No
     pixmap.save(crop_path)
 
 
+def render_crop_image(page: fitz.Page, rect: fitz.Rect, dpi: int) -> Image.Image:
+    matrix = fitz.Matrix(dpi / 72, dpi / 72)
+    pixmap = page.get_pixmap(matrix=matrix, clip=rect, alpha=False)
+    return Image.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
+
+
 def detect_non_text_visual_rect(
     page: fitz.Page,
     question_rect: fitz.Rect,
     question_text: str,
+    question_lines: list[TextLine],
     dpi: int,
 ) -> fitz.Rect | None:
     if "트리" not in question_text:
         return None
 
+    visual_band = get_visual_band_from_lines(question_lines)
+    if visual_band is None:
+        return None
+    stem_bottom, first_choice_top = visual_band
+
     clip = clamp_rect(
         fitz.Rect(
             question_rect.x0 - 8,
-            question_rect.y0 - 8,
+            stem_bottom + 2,
             question_rect.x1 + 8,
-            question_rect.y1 + 8,
+            first_choice_top - 2,
         ),
         page.rect,
     )
+    if clip.is_empty or clip.y1 <= clip.y0:
+        return None
     scale = dpi / 72
     pixmap = page.get_pixmap(matrix=fitz.Matrix(scale, scale), clip=clip, alpha=False)
     image = Image.frombytes("RGB", [pixmap.width, pixmap.height], pixmap.samples)
@@ -354,6 +385,188 @@ def detect_non_text_visual_rect(
     if visual_rect.width < 20 or visual_rect.height < 20:
         return None
     return clamp_rect(visual_rect, page.rect)
+
+
+def refine_tree_crop_rect(page: fitz.Page, rect: fitz.Rect, dpi: int) -> fitz.Rect:
+    scale = dpi / 72
+    image = render_crop_image(page, rect, dpi)
+    pixmap_width, pixmap_height = image.size
+    grayscale = image.convert("L")
+    binary = grayscale.point(lambda pixel: 0 if pixel < 245 else 255)
+    cleaned = remove_edge_vertical_noise(binary)
+    dark_bbox = get_non_edge_content_bbox(cleaned)
+    if dark_bbox is None:
+        dark_bbox = cleaned.point(lambda pixel: 255 if pixel > 0 else 0).point(
+            lambda pixel: 0 if pixel == 255 else 255
+        ).getbbox()
+    if dark_bbox is None:
+        return rect
+
+    x0, y0, x1, y1 = dark_bbox
+    padding_px = 6
+    refined = fitz.Rect(
+        rect.x0 + max(0, x0 - padding_px) / scale,
+        rect.y0 + max(0, y0 - padding_px) / scale,
+        rect.x0 + min(pixmap_width, x1 + padding_px) / scale,
+        rect.y0 + min(pixmap_height, y1 + padding_px) / scale,
+    )
+    if refined.width < 20 or refined.height < 20:
+        return rect
+    return clamp_rect(refined, page.rect)
+
+
+def remove_edge_vertical_noise(binary_image: Image.Image) -> Image.Image:
+    width, height = binary_image.size
+    pixels = binary_image.load()
+    visited: set[tuple[int, int]] = set()
+    cleaned = binary_image.copy()
+    cleaned_pixels = cleaned.load()
+
+    def is_dark(x: int, y: int) -> bool:
+        return pixels[x, y] == 0
+
+    for start_y in range(height):
+        for start_x in (0, width - 1):
+            if (start_x, start_y) in visited or not is_dark(start_x, start_y):
+                continue
+
+            queue = deque([(start_x, start_y)])
+            component: list[tuple[int, int]] = []
+            min_x = max_x = start_x
+            min_y = max_y = start_y
+
+            while queue:
+                x, y = queue.popleft()
+                if (x, y) in visited:
+                    continue
+                visited.add((x, y))
+                if not is_dark(x, y):
+                    continue
+
+                component.append((x, y))
+                min_x = min(min_x, x)
+                max_x = max(max_x, x)
+                min_y = min(min_y, y)
+                max_y = max(max_y, y)
+
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = x + dx, y + dy
+                    if 0 <= nx < width and 0 <= ny < height and (nx, ny) not in visited:
+                        queue.append((nx, ny))
+
+            if not component:
+                continue
+
+            component_width = max_x - min_x + 1
+            component_height = max_y - min_y + 1
+            touches_edge = min_x == 0 or max_x == width - 1
+            looks_like_separator = (
+                touches_edge and component_width <= 12 and component_height >= int(height * 0.4)
+            )
+            if not looks_like_separator:
+                continue
+
+            for x, y in component:
+                cleaned_pixels[x, y] = 255
+
+    return cleaned
+
+
+def get_non_edge_content_bbox(binary_image: Image.Image) -> tuple[int, int, int, int] | None:
+    width, height = binary_image.size
+    pixels = binary_image.load()
+    visited: set[tuple[int, int]] = set()
+    kept_boxes: list[tuple[int, int, int, int]] = []
+
+    for y in range(height):
+        for x in range(width):
+            if (x, y) in visited or pixels[x, y] != 0:
+                continue
+
+            queue = deque([(x, y)])
+            min_x = max_x = x
+            min_y = max_y = y
+            count = 0
+            touches_edge = False
+
+            while queue:
+                cx, cy = queue.popleft()
+                if (cx, cy) in visited:
+                    continue
+                visited.add((cx, cy))
+                if pixels[cx, cy] != 0:
+                    continue
+
+                count += 1
+                min_x = min(min_x, cx)
+                max_x = max(max_x, cx)
+                min_y = min(min_y, cy)
+                max_y = max(max_y, cy)
+                if cx in (0, width - 1) or cy in (0, height - 1):
+                    touches_edge = True
+
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = cx + dx, cy + dy
+                    if 0 <= nx < width and 0 <= ny < height and (nx, ny) not in visited:
+                        queue.append((nx, ny))
+
+            if count < 20 or touches_edge:
+                continue
+            kept_boxes.append((min_x, min_y, max_x + 1, max_y + 1))
+
+    if not kept_boxes:
+        return None
+
+    return (
+        min(box[0] for box in kept_boxes),
+        min(box[1] for box in kept_boxes),
+        max(box[2] for box in kept_boxes),
+        max(box[3] for box in kept_boxes),
+    )
+
+
+def clean_tree_crop_image(image: Image.Image, threshold: int = 245) -> Image.Image:
+    grayscale = image.convert("L")
+    binary = grayscale.point(lambda pixel: 0 if pixel < threshold else 255)
+    width, height = binary.size
+    binary_pixels = binary.load()
+    cleaned = image.copy()
+    cleaned_pixels = cleaned.load()
+    visited: set[tuple[int, int]] = set()
+
+    for y in range(height):
+        for x in range(width):
+            if (x, y) in visited or binary_pixels[x, y] != 0:
+                continue
+
+            queue = deque([(x, y)])
+            component: list[tuple[int, int]] = []
+            touches_edge = False
+
+            while queue:
+                cx, cy = queue.popleft()
+                if (cx, cy) in visited:
+                    continue
+                visited.add((cx, cy))
+                if binary_pixels[cx, cy] != 0:
+                    continue
+
+                component.append((cx, cy))
+                if cx in (0, width - 1) or cy in (0, height - 1):
+                    touches_edge = True
+
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = cx + dx, cy + dy
+                    if 0 <= nx < width and 0 <= ny < height and (nx, ny) not in visited:
+                        queue.append((nx, ny))
+
+            if not component or not touches_edge:
+                continue
+
+            for cx, cy in component:
+                cleaned_pixels[cx, cy] = (255, 255, 255)
+
+    return cleaned
 
 
 def should_crop_boxed_text(candidate_text: str) -> bool:
@@ -472,13 +685,25 @@ def attach_visual_crops(
     candidates_by_page = collect_visual_candidates(doc)
     crop_index = crop_index_start
 
-    def append_crop(question: dict[str, object], page_number: int, clipped: fitz.Rect) -> None:
+    def append_crop(
+        question: dict[str, object],
+        page_number: int,
+        clipped: fitz.Rect,
+        *,
+        clean_tree_noise: bool = False,
+    ) -> None:
         nonlocal crop_index
 
         crop_name = f"crop_id{crop_index:04d}_p{page_number}.png"
         relative_crop_path = Path("crops") / crop_name
         absolute_crop_path = out_dir / relative_crop_path
-        save_crop(doc[page_number - 1], clipped, absolute_crop_path, dpi)
+        if clean_tree_noise:
+            image = render_crop_image(doc[page_number - 1], clipped, dpi)
+            image = clean_tree_crop_image(image)
+            absolute_crop_path.parent.mkdir(parents=True, exist_ok=True)
+            image.save(absolute_crop_path)
+        else:
+            save_crop(doc[page_number - 1], clipped, absolute_crop_path, dpi)
 
         image_entry = {
             "type": "image",
@@ -511,23 +736,25 @@ def attach_visual_crops(
             question_rect.y1 + 12,
         )
         page_rect = page.rect
+        current_question_text, _ = parse_choice_text(
+            normalize_text(" ".join(line.text for line in get_included_lines(question)))
+        )
+        is_tree_question = "트리" in current_question_text
 
         if question["images"]:
             continue
 
-        for candidate in candidates_by_page.get(page_number, []):
-            center_x = (candidate.x0 + candidate.x1) / 2
-            center_y = (candidate.y0 + candidate.y1) / 2
-            if not rect_contains(expanded_rect, center_x, center_y):
-                continue
-            current_question_text, _ = parse_choice_text(
-                normalize_text(" ".join(line.text for line in get_included_lines(question)))
-            )
-            if is_text_representable_visual(current_question_text):
-                continue
+        if not is_tree_question:
+            for candidate in candidates_by_page.get(page_number, []):
+                center_x = (candidate.x0 + candidate.x1) / 2
+                center_y = (candidate.y0 + candidate.y1) / 2
+                if not rect_contains(expanded_rect, center_x, center_y):
+                    continue
+                if is_text_representable_visual(current_question_text):
+                    continue
 
-            clipped = clamp_rect(candidate, page_rect)
-            append_crop(question, page_number, clipped)
+                clipped = clamp_rect(candidate, page_rect)
+                append_crop(question, page_number, clipped)
 
         if question["images"]:
             continue
@@ -535,13 +762,13 @@ def attach_visual_crops(
         fallback_rect = detect_non_text_visual_rect(
             page=page,
             question_rect=question_rect,
-            question_text=parse_choice_text(
-                normalize_text(" ".join(line.text for line in get_included_lines(question)))
-            )[0],
+            question_text=current_question_text,
+            question_lines=get_included_lines(question),
             dpi=dpi,
         )
         if fallback_rect is not None:
-            append_crop(question, page_number, fallback_rect)
+            fallback_rect = refine_tree_crop_rect(page, fallback_rect, dpi)
+            append_crop(question, page_number, fallback_rect, clean_tree_noise=True)
 
     return image_crops
 
@@ -553,6 +780,7 @@ def parse_test1_pdf(pdf_path: Path, out_dir: Path | None = None, dpi: int = 150)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     doc = fitz.open(pdf_path)
+    page_count = doc.page_count
     try:
         lines = extract_ordered_lines(doc)
         questions = build_questions(lines)
@@ -576,7 +804,7 @@ def parse_test1_pdf(pdf_path: Path, out_dir: Path | None = None, dpi: int = 150)
         "image_crops": image_crops,
         "metadata": {
             "total_questions": len(questions),
-            "pages": 8,
+            "pages": page_count,
             "generated_image_crops": len(image_crops),
         },
     }

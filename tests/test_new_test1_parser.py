@@ -1,8 +1,16 @@
 from pathlib import Path
 
 import pytest
+from PIL import Image, ImageDraw
 
-from new.test1_parser import parse_choice_text, parse_test1_pdf
+from new.test1_parser import (
+    clean_tree_crop_image,
+    extract_ordered_lines,
+    get_non_edge_content_bbox,
+    parse_choice_text,
+    parse_test1_pdf,
+    remove_edge_vertical_noise,
+)
 
 
 TEST1_PDF_PATH = Path(__file__).resolve().parent.parent / "data" / "test-1.pdf"
@@ -19,6 +27,45 @@ def test_parse_choice_text_splits_four_choices():
     assert choices[3]["text"] == "Wirfs-Brocks 방법"
 
 
+def test_remove_edge_vertical_noise_drops_border_separator_only():
+    image = Image.new("L", (80, 80), 255)
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0, 0, 4, 79), fill=0)
+    draw.rectangle((20, 10, 60, 60), fill=0)
+
+    cleaned = remove_edge_vertical_noise(image)
+    dark_bbox = cleaned.point(lambda pixel: 255 if pixel > 0 else 0).point(
+        lambda pixel: 0 if pixel == 255 else 255
+    ).getbbox()
+
+    assert dark_bbox == (20, 10, 61, 61)
+
+
+def test_get_non_edge_content_bbox_prefers_internal_component_over_edge_noise():
+    image = Image.new("L", (100, 80), 255)
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0, 0, 30, 79), fill=0)
+    draw.rectangle((40, 8, 90, 70), fill=0)
+
+    bbox = get_non_edge_content_bbox(image)
+
+    assert bbox == (40, 8, 91, 71)
+
+
+def test_clean_tree_crop_image_whitens_edge_connected_noise():
+    image = Image.new("RGB", (80, 80), (255, 255, 255))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0, 0, 20, 30), fill=(180, 180, 180))
+    draw.line((25, 10, 55, 10), fill=(0, 0, 0), width=2)
+    draw.line((40, 10, 30, 30), fill=(0, 0, 0), width=2)
+    draw.line((40, 10, 50, 30), fill=(0, 0, 0), width=2)
+
+    cleaned = clean_tree_crop_image(image, threshold=245).convert("L")
+
+    assert cleaned.getpixel((5, 5)) == 255
+    assert cleaned.getpixel((40, 10)) < 245
+
+
 @pytest.mark.skipif(not TEST1_PDF_PATH.exists(), reason="test-1 PDF 파일이 없습니다.")
 def test_parse_test1_pdf_builds_output_schema_and_crops(tmp_path):
     result = parse_test1_pdf(TEST1_PDF_PATH, out_dir=tmp_path)
@@ -26,7 +73,6 @@ def test_parse_test1_pdf_builds_output_schema_and_crops(tmp_path):
     assert set(result.keys()) == {"source", "questions", "image_crops", "metadata"}
     assert result["source"] == "test-1.pdf"
     assert result["metadata"]["total_questions"] == 100
-    assert result["metadata"]["pages"] == 8
 
     questions = result["questions"]
     assert [question["question_number"] for question in questions] == list(range(1, 101))
@@ -41,6 +87,7 @@ def test_parse_test1_pdf_builds_output_schema_and_crops(tmp_path):
     assert q1["choices"][0]["text"].startswith("Coad")
 
     assert q100["page_number"] == 7
+    assert result["metadata"]["pages"] == q100["page_number"] + 1
     assert q100["question_text"].endswith("표준은?")
     assert len(q100["choices"]) == 4
     assert q100["choices"][3]["text"] == "SPICE"
@@ -103,3 +150,42 @@ def test_parse_test1_pdf_uses_unique_crop_paths_per_question(tmp_path):
     assert q14_path != q23_path
     assert (tmp_path / q14_path).exists()
     assert (tmp_path / q23_path).exists()
+
+
+@pytest.mark.skipif(not TEST1_PDF_PATH.exists(), reason="test-1 PDF 파일이 없습니다.")
+def test_parse_test1_pdf_crops_q23_q28_tree_only_region(tmp_path):
+    result = parse_test1_pdf(TEST1_PDF_PATH, out_dir=tmp_path)
+    by_number = {question["question_number"]: question for question in result["questions"]}
+
+    import fitz
+
+    doc = fitz.open(TEST1_PDF_PATH)
+    try:
+        lines = extract_ordered_lines(doc)
+    finally:
+        doc.close()
+
+    for question_number in [23, 28]:
+        crop_bbox = by_number[question_number]["images"][0]["bounding_box"]
+        question_lines = []
+        collecting = False
+        for line in lines:
+            import re
+
+            match = re.match(r"^(\d{1,3})\.\s*(.*)$", line.text)
+            if match and int(match.group(1)) == question_number:
+                collecting = True
+            elif match and collecting:
+                break
+            if collecting:
+                question_lines.append(line)
+
+        stem_bottom = question_lines[0].bbox[3]
+        first_choice_top = next(line.bbox[1] for line in question_lines if line.text.startswith("①"))
+
+        assert crop_bbox[1] > stem_bottom
+        assert crop_bbox[3] < first_choice_top
+
+    q28_crop_bbox = by_number[28]["images"][0]["bounding_box"]
+    q28_question_bbox = by_number[28]["bounding_box"]
+    assert q28_crop_bbox[1] > q28_question_bbox[1]
