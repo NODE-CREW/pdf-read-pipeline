@@ -189,3 +189,49 @@ def test_parse_test1_pdf_crops_q23_q28_tree_only_region(tmp_path):
     q28_crop_bbox = by_number[28]["images"][0]["bounding_box"]
     q28_question_bbox = by_number[28]["bounding_box"]
     assert q28_crop_bbox[1] > q28_question_bbox[1]
+
+
+@pytest.mark.skipif(not TEST1_PDF_PATH.exists(), reason="test-1 PDF 파일이 없습니다.")
+def test_parse_test1_pdf_expands_q58_boxed_text_crops_to_include_labels(tmp_path):
+    result = parse_test1_pdf(TEST1_PDF_PATH, out_dir=tmp_path)
+    by_number = {question["question_number"]: question for question in result["questions"]}
+
+    import fitz
+
+    doc = fitz.open(TEST1_PDF_PATH)
+    try:
+        lines = extract_ordered_lines(doc)
+    finally:
+        doc.close()
+
+    q58_lines = []
+    collecting = False
+    for line in lines:
+        import re
+
+        match = re.match(r"^(\d{1,3})\.\s*(.*)$", line.text)
+        if match and int(match.group(1)) == 58:
+            collecting = True
+        elif match and collecting:
+            break
+        if collecting:
+            q58_lines.append(line)
+
+    condition_label = next(line for line in q58_lines if line.text == "[ 조건 ]")
+    sql_label = next(line for line in q58_lines if line.text == "[SQL 문 ]")
+    condition_last = next(line for line in q58_lines if line.text == "팀에 소속된 팀원들의 이름을 출력하는 SQL 문 작성")
+    sql_last = next(line for line in q58_lines if line.text == "WHERE 팀코드 ＝ ( ) ；")
+
+    q58_images = by_number[58]["images"]
+    assert len(q58_images) == 2
+    assert by_number[58]["question_text"].endswith("[ 조건 ]")
+    assert "[SQL 문 ]" not in by_number[58]["question_text"]
+    assert "SELECT 이름" not in by_number[58]["question_text"]
+
+    first_crop_bbox = q58_images[0]["bounding_box"]
+    second_crop_bbox = q58_images[1]["bounding_box"]
+
+    assert first_crop_bbox[1] <= condition_label.bbox[1]
+    assert first_crop_bbox[3] >= condition_last.bbox[3]
+    assert second_crop_bbox[1] <= sql_label.bbox[1]
+    assert second_crop_bbox[3] >= sql_last.bbox[3]

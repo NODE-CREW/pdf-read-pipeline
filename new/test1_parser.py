@@ -23,6 +23,8 @@ NUMBER_LIST_RE = re.compile(r"(?:\d+\s*,\s*){4,}\d+")
 CHOICE_LINE_RE = re.compile(r"^[①②③④]")
 
 CHOICE_NUMBER_MAP = {"①": 1, "②": 2, "③": 3, "④": 4}
+BOXED_TEXT_CROP_X_PADDING = 6
+BOXED_TEXT_CROP_Y_PADDING = 6
 
 
 @dataclass
@@ -592,6 +594,35 @@ def should_crop_boxed_text(candidate_text: str) -> bool:
         return True
     return False
 
+
+def expand_boxed_text_crop_rect(
+    page: fitz.Page,
+    candidate: fitz.Rect,
+    question_lines: list[TextLine],
+    matched_indexes: list[int],
+) -> fitz.Rect:
+    included_indexes = set(matched_indexes)
+    if matched_indexes:
+        previous_index = min(matched_indexes) - 1
+        if previous_index >= 0:
+            previous_text = question_lines[previous_index].text
+            if previous_text.startswith("[") and previous_text.endswith("]"):
+                included_indexes.add(previous_index)
+        included_indexes.add(previous_label_index)
+
+    line_boxes = [question_lines[index].bbox for index in sorted(included_indexes)]
+    if not line_boxes:
+        return clamp_rect(candidate, page.rect)
+
+    return clamp_rect(
+        fitz.Rect(
+            min(candidate.x0, min(box[0] for box in line_boxes) - BOXED_TEXT_CROP_X_PADDING),
+            min(candidate.y0, min(box[1] for box in line_boxes) - BOXED_TEXT_CROP_Y_PADDING),
+            max(candidate.x1, max(box[2] for box in line_boxes) + BOXED_TEXT_CROP_X_PADDING),
+            max(candidate.y1, max(box[3] for box in line_boxes) + BOXED_TEXT_CROP_Y_PADDING),
+        ),
+        page.rect,
+    )
 
 def attach_boxed_text_crops(
     doc: fitz.Document,
