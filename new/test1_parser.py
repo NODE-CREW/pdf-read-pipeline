@@ -21,6 +21,7 @@ SUBJECT_RE = re.compile(r"^제\s*\d*\s*과목")
 FOOTER_RE = re.compile(r"^-\s*\d+\s*-$")
 NUMBER_LIST_RE = re.compile(r"(?:\d+\s*,\s*){4,}\d+")
 CHOICE_LINE_RE = re.compile(r"^[①②③④]")
+BOXED_TEXT_LABEL_RE = re.compile(r"^\[\s*[^\]]+\s*\]$")
 
 CHOICE_NUMBER_MAP = {"①": 1, "②": 2, "③": 3, "④": 4}
 BOXED_TEXT_CROP_X_PADDING = 6
@@ -595,29 +596,43 @@ def should_crop_boxed_text(candidate_text: str) -> bool:
     return False
 
 
+def is_boxed_text_label(text: str) -> bool:
+    return BOXED_TEXT_LABEL_RE.match(normalize_text(text)) is not None
+
+
+def get_boxed_text_crop_line_indexes(
+    question_lines: list[TextLine], matched_indexes: list[int]
+) -> list[int]:
+    included_indexes = set(matched_indexes)
+    previous_index = min(matched_indexes) - 1
+    if previous_index >= 0 and is_boxed_text_label(question_lines[previous_index].text):
+        included_indexes.add(previous_index)
+    return sorted(included_indexes)
+
+
 def expand_boxed_text_crop_rect(
     page: fitz.Page,
     candidate: fitz.Rect,
     question_lines: list[TextLine],
-    matched_indexes: list[int],
+    included_indexes: list[int],
 ) -> fitz.Rect:
-    included_indexes = set(matched_indexes)
-    if matched_indexes:
-        previous_index = min(matched_indexes) - 1
-        if previous_index >= 0:
-            previous_text = question_lines[previous_index].text
-            if previous_text.startswith("[") and previous_text.endswith("]"):
-                included_indexes.add(previous_index)
-        included_indexes.add(previous_label_index)
-
-    line_boxes = [question_lines[index].bbox for index in sorted(included_indexes)]
+    line_boxes = [question_lines[index].bbox for index in included_indexes]
     if not line_boxes:
         return clamp_rect(candidate, page.rect)
+
+    top = min(candidate.y0, min(box[1] for box in line_boxes) - BOXED_TEXT_CROP_Y_PADDING)
+    first_included_index = min(included_indexes)
+    previous_index = first_included_index - 1
+    if previous_index >= 0:
+        previous_bottom = question_lines[previous_index].bbox[3]
+        first_included_top = question_lines[first_included_index].bbox[1]
+        if previous_bottom < first_included_top:
+            top = max(top, (previous_bottom + first_included_top) / 2)
 
     return clamp_rect(
         fitz.Rect(
             min(candidate.x0, min(box[0] for box in line_boxes) - BOXED_TEXT_CROP_X_PADDING),
-            min(candidate.y0, min(box[1] for box in line_boxes) - BOXED_TEXT_CROP_Y_PADDING),
+            top,
             max(candidate.x1, max(box[2] for box in line_boxes) + BOXED_TEXT_CROP_X_PADDING),
             max(candidate.y1, max(box[3] for box in line_boxes) + BOXED_TEXT_CROP_Y_PADDING),
         ),
@@ -699,8 +714,20 @@ def attach_boxed_text_crops(
             if not should_crop_boxed_text(candidate_text):
                 continue
 
-            question["excluded_line_indexes"].update(matched_indexes)
-            append_crop(question, page_number, clamp_rect(candidate, page.rect))
+            crop_line_indexes = get_boxed_text_crop_line_indexes(
+                question["raw_lines"], matched_indexes
+            )
+            question["excluded_line_indexes"].update(crop_line_indexes)
+            append_crop(
+                question,
+                page_number,
+                expand_boxed_text_crop_rect(
+                    page,
+                    candidate,
+                    question["raw_lines"],
+                    crop_line_indexes,
+                ),
+            )
 
     return image_crops
 

@@ -219,12 +219,14 @@ def test_parse_test1_pdf_expands_q58_boxed_text_crops_to_include_labels(tmp_path
 
     condition_label = next(line for line in q58_lines if line.text == "[ 조건 ]")
     sql_label = next(line for line in q58_lines if line.text == "[SQL 문 ]")
+    stem_last = next(line for line in q58_lines if line.text == "며 , ‘ 직원은 ’ 테이블이다 .)")
     condition_last = next(line for line in q58_lines if line.text == "팀에 소속된 팀원들의 이름을 출력하는 SQL 문 작성")
     sql_last = next(line for line in q58_lines if line.text == "WHERE 팀코드 ＝ ( ) ；")
 
     q58_images = by_number[58]["images"]
     assert len(q58_images) == 2
-    assert by_number[58]["question_text"].endswith("[ 조건 ]")
+    assert by_number[58]["question_text"].endswith("테이블이다 .)")
+    assert "[ 조건 ]" not in by_number[58]["question_text"]
     assert "[SQL 문 ]" not in by_number[58]["question_text"]
     assert "SELECT 이름" not in by_number[58]["question_text"]
 
@@ -232,6 +234,7 @@ def test_parse_test1_pdf_expands_q58_boxed_text_crops_to_include_labels(tmp_path
     second_crop_bbox = q58_images[1]["bounding_box"]
 
     assert first_crop_bbox[1] <= condition_label.bbox[1]
+    assert first_crop_bbox[1] > stem_last.bbox[3]
     assert first_crop_bbox[3] >= condition_last.bbox[3]
     assert second_crop_bbox[1] <= sql_label.bbox[1]
     assert second_crop_bbox[3] >= sql_last.bbox[3]
