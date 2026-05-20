@@ -1,0 +1,173 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1779168430678,
+  "projectRoot": "/Users/woong.park/misc/pdf-reader",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Python",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "requirements.txt"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "pip",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "scripts",
+      "tests"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "__pycache__": {
+      "path": "__pycache__",
+      "purpose": null,
+      "fileCount": 27,
+      "lastAccessed": 1779168430643,
+      "keyFiles": [
+        "10-1_batch_generate_exam_concepts_json_to_txt.cpython-314.pyc",
+        "10-2_batch_generate_exam_single_concept_json_to_txt.cpython-314.pyc",
+        "10_batch_generate_exam_answer_json_to_txt.cpython-314.pyc",
+        "11_run_exam_pdf_pipeline.cpython-314.pyc",
+        "1_extract_text_and_print.cpython-314.pyc"
+      ]
+    },
+    "data": {
+      "path": "data",
+      "purpose": "Data files",
+      "fileCount": 8,
+      "lastAccessed": 1779168430658,
+      "keyFiles": [
+        "2024-1.pdf",
+        "test-1.pdf",
+        "정보처리기사20210814(학생용).pdf",
+        "정보처리기사20200822(학생용).pdf",
+        "정보처리기사20200926(학생용).pdf"
+      ]
+    },
+    "doc": {
+      "path": "doc",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1779168430660,
+      "keyFiles": [
+        "md_enhance.md",
+        "md_plan.md"
+      ]
+    },
+    "final": {
+      "path": "final",
+      "purpose": null,
+      "fileCount": 9,
+      "lastAccessed": 1779168430661,
+      "keyFiles": [
+        "README.md",
+        "__init__.py",
+        "ai_enricher.py",
+        "normalizer.py",
+        "parse_pdf.py"
+      ]
+    },
+    "new": {
+      "path": "new",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1779168430664,
+      "keyFiles": [
+        "README.md",
+        "__init__.py",
+        "test1_parser.py"
+      ]
+    },
+    "output": {
+      "path": "output",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1779168430665,
+      "keyFiles": []
+    },
+    "pipelines": {
+      "path": "pipelines",
+      "purpose": null,
+      "fileCount": 9,
+      "lastAccessed": 1779168430665,
+      "keyFiles": [
+        "__init__.py",
+        "base.py",
+        "db_ready.py",
+        "exam_pdf.py",
+        "ocr.py"
+      ]
+    },
+    "result": {
+      "path": "result",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1779168430667,
+      "keyFiles": []
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1779168430668,
+      "keyFiles": [
+        "start_hybrid_server.sh"
+      ]
+    },
+    "skills": {
+      "path": "skills",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1779168430669,
+      "keyFiles": []
+    },
+    "tests": {
+      "path": "tests",
+      "purpose": "Test files",
+      "fileCount": 47,
+      "lastAccessed": 1779168430671,
+      "keyFiles": [
+        "conftest.py",
+        "test_10_1_batch_generate_exam_concepts_json_to_txt.py",
+        "test_10_2_batch_generate_exam_single_concept_json_to_txt.py",
+        "test_10_batch_generate_exam_answer_json_to_txt.py",
+        "test_build_latex_from_pdf_images.py"
+      ]
+    },
+    "tiger": {
+      "path": "tiger",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1779168430674,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}

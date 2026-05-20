@@ -34,6 +34,7 @@
 3. 여러 PDF를 안정적으로 처리하려면 `8`
 4. SaaS OCR 우선 사용이 필요하면 `8-1`
 5. `8-2`는 비교 실험이 필요한 경우에만 사용
+6. 최종 JSON 스키마(`content`, `question_source`, `images`, `options`, 해설 포함)가 필요하면 `final/` 파이프라인을 사용
 
 ## 빠른 실행 예시
 
@@ -64,6 +65,17 @@ python3 ./new/test1_parser.py \
   --pdf ./data/test-1.pdf \
   --output-dir ./new/output/test-1
 ```
+
+최종 JSON 스키마로 변환:
+
+```bash
+python ./final/parse_pdf.py \
+  --pdf ./data/test-1.pdf \
+  --output-dir ./final/output/test-1 \
+  --parser auto
+```
+
+상세 설계와 AI endpoint 설정은 [`final/README.md`](final/README.md)를 참고합니다.
 
 SaaS OCR 우선 사용:
 
