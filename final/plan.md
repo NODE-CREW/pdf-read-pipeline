@@ -14,6 +14,7 @@ final/
   sinagong_pdf_parser.py
   normalizer.py
   schema.py
+  text_refiner.py
   ai_enricher.py
   result_pdf_parser/
     extract_pdf.py
@@ -47,8 +48,9 @@ final/
 5. `schema.py`가 이미지 ID를 전역 순번으로 부여하고 최종 JSON 구조를 만든다.
 6. 이미지 파일은 `images/image001.png` 형식으로 복사한다.
 7. 문제/선지 본문에는 이미지 참조 토큰 `[image001]`을 삽입한다.
-8. `ai_enricher.py`가 필요한 필드만 AI로 보강한다.
-9. `questions_final.json`을 저장한다.
+8. `text_refiner.py`가 문제 본문과 선지 본문의 OCR/파싱 오타를 정제한다.
+9. `ai_enricher.py`가 필요한 필드만 AI로 보강한다.
+10. `questions_final.json`을 저장한다.
 
 ## 최종 스키마 규칙
 
@@ -62,6 +64,15 @@ final/
 ## AI 보강 범위
 
 AI는 파서만으로 안정적으로 만들기 어려운 정보에 한정해서 사용한다.
+
+텍스트 정제 단계는 `text_refiner.py`가 담당하며, 아래 필드만 수정한다.
+
+- 문제 본문: `content`
+- 선지 본문: `options[].content`
+
+텍스트 정제 프롬프트는 특정 오류 예시가 아니라 PDF 파싱 손상 복원 원칙을 전달한다. LLM 응답의 `corrections`와 `confidence`는 최종 문제 객체에 넣지 않고 `metadata.text_refinement.refined_questions`에 기록한다. `confidence`가 낮거나 artifact가 남으면 검수 대상으로 남긴다.
+
+이미지 토큰(`[image001]`)은 유지하고, 새 정보나 정답/해설은 만들지 않는다.
 
 - 이미지 설명: `image_caption`
 - 문제 해설 또는 힌트: `hint_explanation`
@@ -89,6 +100,7 @@ UI 변경이 아니므로 테스트를 먼저 작성한다.
 - 이미지 ID 전역 순번 확인
 - `[image001]` 토큰 삽입 확인
 - AI 응답 JSON 검증 및 재시도 확인
+- LLM 텍스트 정제 성공/실패 동작 확인
 - `--parser auto` fallback 확인
 - `data/test-1.pdf`가 있으면 통합 실행으로 `questions_final.json`과 `images/` 생성을 확인
 

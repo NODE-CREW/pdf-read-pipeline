@@ -28,6 +28,7 @@ def test_final_parser_modules_are_importable():
     assert importlib.import_module("final.result_pdf_parser.generate_concept")
     assert importlib.import_module("final.result_pdf_parser.batch_generate_concept")
     assert importlib.import_module("final.result_pdf_parser.extract_questions")
+    assert importlib.import_module("final.text_refiner")
 
 
 def test_build_final_output_assigns_global_image_ids_and_tokens(tmp_path):
@@ -247,3 +248,272 @@ def test_ai_enrichment_stops_after_max_failures(monkeypatch):
     assert calls == ["sample.pdf 1번 문제", "sample.pdf 2번 문제"]
     assert enriched["metadata"]["ai_enrichment"]["failed_questions"] == 2
     assert enriched["metadata"]["ai_enrichment"]["skipped_questions"] == 3
+
+
+def test_text_refiner_updates_question_and_option_content():
+    from final.text_refiner import refine_question_text
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            content = json.dumps(
+                {
+                    "content": "객체지향 분석 방법론 중 E-R 다이어그램을 사용하는 것은? [image001]",
+                    "options": [
+                        {"order": 1, "content": "Coad와 Yourdon 방법"},
+                        {"order": 2, "content": "Booch 방법"},
+                    ],
+                    "corrections": [
+                        {
+                            "before": "사용 하는 것은 ?",
+                            "after": "사용하는 것은?",
+                            "reason": "띄어쓰기와 문장부호 위치 정리",
+                        }
+                    ],
+                    "confidence": "high",
+                },
+                ensure_ascii=False,
+            )
+            message = type("Message", (), {"content": content})()
+            choice = type("Choice", (), {"message": message})()
+            return type("Response", (), {"choices": [choice]})()
+
+    class FakeClient:
+        def __init__(self):
+            self.chat = type("Chat", (), {"completions": FakeCompletions()})()
+
+    question = {
+        "content": "객체지향 분석 방법론 중 E-R 다이어그램을 사용 하는 것은 ? [image001]",
+        "options": [
+            {"order": 1, "content": "Coad 와 Yourdon 방법"},
+            {"order": 2, "content": "Booch 방법"},
+        ],
+    }
+
+    result = refine_question_text(
+        client=FakeClient(),
+        model="local-model",
+        question=question,
+        max_retries=1,
+    )
+    refined = result["question"]
+
+    assert refined["content"] == "객체지향 분석 방법론 중 E-R 다이어그램을 사용하는 것은? [image001]"
+    assert refined["options"][0]["content"] == "Coad와 Yourdon 방법"
+    assert result["confidence"] == "high"
+    assert result["corrections"][0]["before"] == "사용 하는 것은 ?"
+
+
+def test_text_refiner_uses_generic_prompt_and_records_corrections():
+    from final.text_refiner import refine_question_text
+
+    class FakeCompletions:
+        def __init__(self):
+            self.calls = 0
+            self.prompts = []
+
+        def create(self, **kwargs):
+            self.calls += 1
+            self.prompts.append(kwargs["messages"][0]["content"])
+            content = json.dumps(
+                {
+                    "content": "럼바우 분석 기법에서 정보 모델링이라고도 하며, 시스템에서 요구되는 객체를 찾는다.",
+                    "options": [
+                        {
+                            "order": 1,
+                            "content": "‘ 금융 시스템은 조회, 인출, 입금, 송금의 기능이 있어야 한다 ’",
+                        }
+                    ],
+                    "corrections": [
+                        {
+                            "before": "조회인출입금송금의 , , ,",
+                            "after": "조회, 인출, 입금, 송금의",
+                            "reason": "붙은 명사열과 밀린 목록 구분자를 자연스러운 목록 표현으로 복원",
+                        }
+                    ],
+                    "confidence": "high",
+                },
+                ensure_ascii=False,
+            )
+            message = type("Message", (), {"content": content})()
+            choice = type("Choice", (), {"message": message})()
+            return type("Response", (), {"choices": [choice]})()
+
+    class FakeClient:
+        def __init__(self):
+            self.completions = FakeCompletions()
+            self.chat = type("Chat", (), {"completions": self.completions})()
+
+    question = {
+        "content": "럼바우 분석 기법에서 정보 모델링이라고도 하며시스 , 템에서 요구되는 객체를 찾는다.",
+        "options": [
+            {
+                "order": 1,
+                "content": "‘ 금융 시스템은 조회인출입금송금의 , , , 기능이 있어야 한다 ’",
+            }
+        ],
+    }
+    client = FakeClient()
+
+    result = refine_question_text(
+        client=client,
+        model="local-model",
+        question=question,
+        max_retries=2,
+    )
+    refined = result["question"]
+
+    assert "하며, 시스템에서" in refined["content"]
+    assert "조회, 인출, 입금, 송금의 기능" in refined["options"][0]["content"]
+    assert result["confidence"] == "high"
+    assert result["corrections"][0]["after"] == "조회, 인출, 입금, 송금의"
+    assert "PDF 파싱 과정에서 글자 순서는 대체로 보존" in client.completions.prompts[0]
+    assert "반드시 고쳐야 하는 예시" not in client.completions.prompts[0]
+
+
+def test_text_refinement_marks_unresolved_artifacts_without_hardcoded_fix(monkeypatch):
+    from final.parse_pdf import apply_text_refinement
+
+    output = {
+        "source_pdf": "sample.pdf",
+        "questions": [
+            {
+                "content": "문제",
+                "question_source": "sample.pdf 1번 문제",
+                "images": [],
+                "hint_explanation": "",
+                "options": [
+                    {
+                        "order": 1,
+                        "is_correct": False,
+                        "content": "조회인출입금송금의 , , , 기능",
+                        "images": [],
+                        "option_explanation": "",
+                    }
+                ],
+            }
+        ],
+        "metadata": {
+            "total_questions": 1,
+            "total_images": 0,
+            "requires_answer_review": False,
+        },
+    }
+
+    monkeypatch.setattr("final.parse_pdf.create_openai_client", lambda **kwargs: object())
+    monkeypatch.setattr(
+        "final.parse_pdf.refine_question_text",
+        lambda **kwargs: {
+            "question": kwargs["question"],
+            "corrections": [],
+            "confidence": "medium",
+        },
+    )
+
+    refined = apply_text_refinement(
+        output=output,
+        ai_base_url="https://example.ngrok-free.dev/v1",
+        ai_api_key="token",
+        model="local-model",
+        max_retries=1,
+    )
+
+    assert refined["metadata"]["requires_answer_review"] is True
+    assert refined["metadata"]["text_refinement"]["unresolved_artifact_questions"] == 1
+
+
+def test_text_refinement_records_metadata_and_low_confidence(monkeypatch):
+    from final.parse_pdf import apply_text_refinement
+
+    output = {
+        "source_pdf": "sample.pdf",
+        "questions": [
+            {
+                "content": "원문",
+                "question_source": "sample.pdf 1번 문제",
+                "images": [],
+                "hint_explanation": "",
+                "options": [
+                    {
+                        "order": 1,
+                        "is_correct": False,
+                        "content": "선지",
+                        "images": [],
+                        "option_explanation": "",
+                    }
+                ],
+            }
+        ],
+        "metadata": {
+            "total_questions": 1,
+            "total_images": 0,
+            "requires_answer_review": False,
+        },
+    }
+
+    monkeypatch.setattr("final.parse_pdf.create_openai_client", lambda **kwargs: object())
+
+    def low_confidence_refine(**kwargs):
+        kwargs["question"]["content"] = "정제된 원문"
+        return {
+            "question": kwargs["question"],
+            "corrections": [{"before": "원문", "after": "정제된 원문", "reason": "복원"}],
+            "confidence": "low",
+        }
+
+    monkeypatch.setattr("final.parse_pdf.refine_question_text", low_confidence_refine)
+
+    refined = apply_text_refinement(
+        output=output,
+        ai_base_url="https://example.ngrok-free.dev/v1",
+        ai_api_key="token",
+        model="local-model",
+        max_retries=1,
+    )
+
+    metadata = refined["metadata"]["text_refinement"]
+    assert refined["questions"][0]["content"] == "정제된 원문"
+    assert refined["metadata"]["requires_answer_review"] is True
+    assert metadata["refined_questions"][0]["confidence"] == "low"
+    assert metadata["low_confidence_questions"][0]["question_source"] == "sample.pdf 1번 문제"
+    assert refined["metadata"]["text_refinement"]["unresolved_artifact_questions"] == 1
+
+
+def test_text_refinement_failure_keeps_parser_text(monkeypatch):
+    from final.parse_pdf import apply_text_refinement
+
+    output = {
+        "source_pdf": "sample.pdf",
+        "questions": [
+            {
+                "content": "파서 원문",
+                "question_source": "sample.pdf 1번 문제",
+                "images": [],
+                "hint_explanation": "",
+                "options": [],
+            }
+        ],
+        "metadata": {
+            "total_questions": 1,
+            "total_images": 0,
+            "requires_answer_review": False,
+        },
+    }
+
+    monkeypatch.setattr("final.parse_pdf.create_openai_client", lambda **kwargs: object())
+
+    def fail_refine(*args, **kwargs):
+        raise RuntimeError("text refine failed")
+
+    monkeypatch.setattr("final.parse_pdf.refine_question_text", fail_refine)
+
+    refined = apply_text_refinement(
+        output=output,
+        ai_base_url="https://example.ngrok-free.dev/v1",
+        ai_api_key="token",
+        model="local-model",
+        max_retries=1,
+    )
+
+    assert refined["questions"][0]["content"] == "파서 원문"
+    assert refined["metadata"]["requires_answer_review"] is True
+    assert refined["metadata"]["text_refinement"]["failed_questions"] == 1

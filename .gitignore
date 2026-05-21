@@ -1,6 +1,10 @@
-data
-output
+data/
+output/
 .env
+.omc/
+.venv/
+.pytest_cache/
 *.pdf
-__pycache__
+__pycache__/
+*.py[cod]
 .DS_Store

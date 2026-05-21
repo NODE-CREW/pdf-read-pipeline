@@ -17,6 +17,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 from final.ai_enricher import create_openai_client, enrich_question
 from final.normalizer import normalize_parser_result
 from final.schema import build_final_output, validate_final_output
+from final.text_refiner import collect_question_text_artifacts, refine_question_text
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -45,6 +46,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="AI 보강 모델명",
     )
     parser.add_argument("--max-retries", type=int, default=3, help="AI JSON 응답 재시도 횟수")
+    parser.add_argument(
+        "--skip-text-refine",
+        action="store_true",
+        help="AI endpoint가 있어도 문제/선지 텍스트 LLM 정제를 건너뜀",
+    )
     return parser.parse_args(argv)
 
 
@@ -127,6 +133,96 @@ def apply_ai_enrichment(
     return output
 
 
+def apply_text_refinement(
+    *,
+    output: dict[str, Any],
+    ai_base_url: str | None,
+    ai_api_key: str,
+    model: str,
+    max_retries: int,
+    ai_timeout: float = 10.0,
+    ai_max_failures: int = 3,
+    enabled: bool = True,
+) -> dict[str, Any]:
+    if not ai_base_url or not enabled:
+        output["metadata"]["text_refinement"] = {"enabled": False}
+        return output
+
+    client = create_openai_client(base_url=ai_base_url, api_key=ai_api_key, timeout=ai_timeout)
+    errors: list[dict[str, str]] = []
+    refined_questions: list[dict[str, Any]] = []
+    low_confidence_questions: list[dict[str, str]] = []
+    unresolved_artifacts: list[dict[str, Any]] = []
+    skipped_questions = 0
+    for index, question in enumerate(output["questions"]):
+        if len(errors) >= max(ai_max_failures, 1):
+            skipped_questions = len(output["questions"]) - index
+            break
+        question_source = question.get("question_source", "")
+        try:
+            refinement = refine_question_text(
+                client=client,
+                model=model,
+                question=question,
+                max_retries=max_retries,
+            )
+        except Exception as exc:
+            errors.append(
+                {
+                    "question_source": str(question_source),
+                    "error": str(exc),
+                }
+            )
+            continue
+
+        confidence = str(refinement.get("confidence", "medium"))
+        corrections = refinement.get("corrections", [])
+        if corrections:
+            refined_questions.append(
+                {
+                    "question_source": str(question_source),
+                    "confidence": confidence,
+                    "corrections": corrections,
+                }
+            )
+        if confidence == "low":
+            low_confidence_questions.append(
+                {
+                    "question_source": str(question_source),
+                    "reason": "LLM 텍스트 정제 신뢰도가 낮음",
+                }
+            )
+
+        artifacts = collect_question_text_artifacts(question)
+        if artifacts or confidence == "low":
+            unresolved_artifacts.append(
+                {
+                    "question_source": str(question_source),
+                    "artifacts": artifacts,
+                    "confidence": confidence,
+                }
+            )
+
+    output["metadata"]["requires_answer_review"] = (
+        output["metadata"].get("requires_answer_review", False)
+        or bool(errors)
+        or bool(low_confidence_questions)
+        or bool(unresolved_artifacts)
+    )
+    output["metadata"]["text_refinement"] = {
+        "enabled": True,
+        "failed_questions": len(errors),
+        "skipped_questions": skipped_questions,
+        "refined_questions": refined_questions[:50],
+        "low_confidence_questions": low_confidence_questions[:50],
+        "unresolved_artifact_questions": len(unresolved_artifacts),
+        "unresolved_artifacts": unresolved_artifacts[:10],
+        "errors": errors[:10],
+    }
+    validate_final_output(output)
+    return output
+
+
 def run_pipeline(
     *,
     pdf_path: Path,
@@ -139,6 +235,7 @@ def run_pipeline(
     ai_api_key: str = "any-string-ok",
     ai_timeout: float = 10.0,
     ai_max_failures: int = 3,
+    refine_text: bool = True,
 ) -> Path:
     pdf_path = pdf_path.expanduser().resolve()
     if not pdf_path.is_file():
@@ -155,6 +252,16 @@ def run_pipeline(
     )
     normalized = normalize_parser_result(parser_result, source_pdf=pdf_path)
     output = build_final_output(normalized, output_dir=output_dir)
+    output = apply_text_refinement(
+        output=output,
+        ai_base_url=ai_base_url,
+        ai_api_key=ai_api_key,
+        model=model,
+        max_retries=max_retries,
+        ai_timeout=ai_timeout,
+        ai_max_failures=ai_max_failures,
+        enabled=refine_text,
+    )
     output = apply_ai_enrichment(
         output=output,
         ai_base_url=ai_base_url,
@@ -186,6 +293,7 @@ def main(argv: list[str] | None = None) -> None:
         ai_max_failures=args.ai_max_failures,
         model=args.model,
         max_retries=args.max_retries,
+        refine_text=not args.skip_text_refine,
     )
     print(output_path)
 

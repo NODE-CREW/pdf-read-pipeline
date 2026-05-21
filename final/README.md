@@ -20,6 +20,7 @@ final/
   sinagong_pdf_parser.py
   normalizer.py
   schema.py
+  text_refiner.py
   ai_enricher.py
   result_pdf_parser/
     extract_pdf.py
@@ -57,6 +58,8 @@ python final/parse_pdf.py \
   --output-dir ./final/output/test-1 \
   --parser sinagong
 ```
+
+AI endpoint는 사용하되 문제/선지 텍스트 정제를 건너뛰려면 `--skip-text-refine`을 추가한다.
 
 ## 출력 구조
 
@@ -117,7 +120,21 @@ client = OpenAI(
 )
 ```
 
-AI는 다음 값 보강에만 사용한다.
+AI는 두 단계로 사용한다.
+
+1. `text_refiner.py`: 문제 본문과 선지 본문의 OCR/파싱 오타, 띄어쓰기, 붙은 단어를 정제한다.
+2. `ai_enricher.py`: 해설, 이미지 설명, 정답 추론을 보강한다.
+
+`text_refiner.py`는 다음 필드만 수정한다.
+
+- `content`
+- `options[].content`
+
+프롬프트는 특정 오류 예시가 아니라 PDF 파싱 손상 복원 원칙을 전달한다. 글자 순서는 대체로 보존되지만 단어 경계, 띄어쓰기, 구두점 위치, 목록 구분자가 깨질 수 있다는 전제로 원문 시험지에 가까운 문장을 복원하도록 요청한다.
+
+LLM은 `corrections`와 `confidence`도 함께 반환한다. 실제 최종 문제 객체에는 `content`와 `options[].content`만 반영하고, 수정 이력과 신뢰도는 `metadata.text_refinement.refined_questions`에 남긴다. `confidence`가 `low`이거나 artifact detector가 여전히 문제를 찾으면 `metadata.text_refinement.unresolved_artifacts`에 남겨 검수 대상으로 표시한다.
+
+`ai_enricher.py`는 다음 값 보강에 사용한다.
 
 - `image_caption`
 - `hint_explanation`
@@ -127,7 +144,7 @@ AI는 다음 값 보강에만 사용한다.
 
 문제 번호, 기본 문제 본문, 기본 선지 텍스트, 이미지 파일명, 이미지 ID, crop 생성은 파서와 로컬 로직으로 처리한다.
 
-AI endpoint가 죽어 있거나 ngrok upstream이 연결되지 않으면 전체 변환은 중단하지 않는다. 파서 기반 `questions_final.json`을 저장하고, 실패 정보는 `metadata.ai_enrichment`에 기록한다. 반복 실패가 `--ai-max-failures`에 도달하면 남은 AI 보강은 건너뛴다.
+AI endpoint가 죽어 있거나 ngrok upstream이 연결되지 않으면 전체 변환은 중단하지 않는다. 파서 기반 `questions_final.json`을 저장하고, 실패 정보는 `metadata.text_refinement` 또는 `metadata.ai_enrichment`에 기록한다. 반복 실패가 `--ai-max-failures`에 도달하면 남은 AI 작업은 건너뛴다.
 
 ## 검수 필요 조건
 
@@ -136,6 +153,7 @@ AI endpoint가 죽어 있거나 ngrok upstream이 연결되지 않으면 전체 
 - 정답표가 없고 AI도 정답을 확정하지 못한 경우
 - 선택지는 있으나 `is_correct: true`인 선지가 없는 경우
 - 이미지 OCR 또는 caption 생성이 실패한 경우
+- 텍스트 정제가 실패한 경우
 - 파서가 문제/선지 경계를 불완전하게 추정한 경우
 
 ## 한계
