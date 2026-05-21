@@ -101,12 +101,16 @@ def build_text_refine_prompt(question: dict[str, Any], artifacts: list[str] | No
         "- 선지 순서\n"
         "- 이미지 토큰\n\n"
         f"{artifact_hint}"
-        "출력은 JSON만 사용하라.\n"
+        "출력은 JSON 객체 하나만 사용하라. 마크다운 코드블록, ```json, 설명 문장을 절대 출력하지 마라.\n"
+        "JSON은 한 줄이어도 좋다. 문자열은 반드시 닫아라.\n"
+        "corrections는 꼭 필요한 핵심 수정만 최대 5개까지 작성하라.\n"
+        "corrections.before와 corrections.after는 각각 80자 이내의 짧은 핵심 구간만 넣어라.\n"
+        "corrections.reason은 60자 이내로 짧게 작성하라.\n"
         "출력 형식:\n"
         "{\n"
         '  "content": "정제된 문제 본문",\n'
         '  "options": [{"order": 1, "content": "정제된 선지"}],\n'
-        '  "corrections": [{"before": "수정 전 핵심 구간", "after": "수정 후 핵심 구간", "reason": "수정 이유"}],\n'
+        '  "corrections": [{"before": "80자 이내", "after": "80자 이내", "reason": "60자 이내"}],\n'
         '  "confidence": "high|medium|low"\n'
         "}\n\n"
         "입력:\n"
@@ -143,6 +147,48 @@ def _normalize_confidence(value: Any) -> str:
     return "medium"
 
 
+def _snapshot_question_texts(question: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "content": str(question.get("content", "")),
+        "options": {
+            int(option.get("order", 0)): str(option.get("content", ""))
+            for option in question.get("options", [])
+        },
+    }
+
+
+def _collect_text_changes(
+    before: dict[str, Any],
+    question: dict[str, Any],
+) -> list[dict[str, Any]]:
+    changes: list[dict[str, Any]] = []
+    after_content = str(question.get("content", ""))
+    if before["content"] != after_content:
+        changes.append(
+            {
+                "field": "content",
+                "before": before["content"],
+                "after": after_content,
+            }
+        )
+
+    before_options = before["options"]
+    for option in question.get("options", []):
+        order = int(option.get("order", 0))
+        before_content = before_options.get(order, "")
+        after_option_content = str(option.get("content", ""))
+        if before_content != after_option_content:
+            changes.append(
+                {
+                    "field": "option",
+                    "order": order,
+                    "before": before_content,
+                    "after": after_option_content,
+                }
+            )
+    return changes
+
+
 def refine_question_text(
     *,
     client,
@@ -154,6 +200,7 @@ def refine_question_text(
     question["content"] = repair_mechanical_parse_artifacts(str(question.get("content", "")))
     for option in question.get("options", []):
         option["content"] = repair_mechanical_parse_artifacts(str(option.get("content", "")))
+    original_texts = _snapshot_question_texts(question)
 
     all_corrections: list[dict[str, str]] = []
     confidence = "medium"
@@ -195,4 +242,5 @@ def refine_question_text(
         "question": question,
         "corrections": all_corrections,
         "confidence": confidence,
+        "changes": _collect_text_changes(original_texts, question),
     }

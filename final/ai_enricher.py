@@ -15,7 +15,7 @@ def create_openai_client(
     *,
     base_url: str,
     api_key: str = "any-string-ok",
-    timeout: float = 10.0,
+    timeout: float = 60.0,
 ):
     from openai import OpenAI
 
@@ -47,14 +47,28 @@ def request_json_with_retries(
     max_retries: int = 3,
 ) -> dict[str, Any]:
     last_error: Exception | None = None
+    last_response_text = ""
     for _ in range(max(max_retries, 1)):
-        response = client.chat.completions.create(model=model, messages=messages)
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=0,
+            max_tokens=4096,
+        )
         content = response.choices[0].message.content or ""
+        last_response_text = content
         try:
             return parse_json_response(content)
         except (json.JSONDecodeError, ValueError) as exc:
             last_error = exc
-    raise RuntimeError(f"유효한 JSON AI 응답을 받지 못했다: {last_error}")
+
+    preview = last_response_text[:2000]
+    if len(last_response_text) > len(preview):
+        preview += "\n...<truncated>"
+    raise RuntimeError(
+        f"유효한 JSON AI 응답을 받지 못했다: {last_error}\n"
+        f"응답 원문 preview:\n{preview}"
+    )
 
 
 def build_enrichment_prompt(question: dict[str, Any]) -> str:

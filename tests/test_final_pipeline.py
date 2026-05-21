@@ -117,6 +117,30 @@ def test_ai_json_request_retries_invalid_json_then_succeeds():
     assert payload == {"ok": True}
 
 
+def test_ai_json_request_error_includes_response_preview():
+    class FakeCompletions:
+        def create(self, **kwargs):
+            message = type("Message", (), {"content": '{"content": "unterminated'})()
+            choice = type("Choice", (), {"message": message})()
+            return type("Response", (), {"choices": [choice]})()
+
+    class FakeClient:
+        def __init__(self):
+            self.chat = type("Chat", (), {"completions": FakeCompletions()})()
+
+    with pytest.raises(RuntimeError) as exc_info:
+        request_json_with_retries(
+            client=FakeClient(),
+            model="local-model",
+            messages=[{"role": "user", "content": "JSON"}],
+            max_retries=1,
+        )
+
+    message = str(exc_info.value)
+    assert "응답 원문 preview" in message
+    assert '{"content": "unterminated' in message
+
+
 def test_parse_pdf_auto_falls_back_to_result_parser(monkeypatch, tmp_path):
     from final import parse_pdf
 
@@ -250,6 +274,58 @@ def test_ai_enrichment_stops_after_max_failures(monkeypatch):
     assert enriched["metadata"]["ai_enrichment"]["skipped_questions"] == 3
 
 
+def test_ai_enrichment_preserves_existing_review_requirement(monkeypatch):
+    from final.parse_pdf import apply_ai_enrichment
+
+    output = {
+        "source_pdf": "sample.pdf",
+        "questions": [
+            {
+                "content": "문제",
+                "question_source": "sample.pdf 1번 문제",
+                "images": [],
+                "hint_explanation": "",
+                "options": [
+                    {
+                        "order": 1,
+                        "is_correct": True,
+                        "content": "선지",
+                        "images": [],
+                        "option_explanation": "",
+                    }
+                ],
+            }
+        ],
+        "metadata": {
+            "total_questions": 1,
+            "total_images": 0,
+            "requires_answer_review": True,
+            "text_refinement": {
+                "enabled": True,
+                "low_confidence_questions": [
+                    {
+                        "question_source": "sample.pdf 1번 문제",
+                        "reason": "LLM 텍스트 정제 신뢰도가 낮음",
+                    }
+                ],
+            },
+        },
+    }
+
+    monkeypatch.setattr("final.parse_pdf.create_openai_client", lambda **kwargs: object())
+    monkeypatch.setattr("final.parse_pdf.enrich_question", lambda **kwargs: kwargs["question"])
+
+    enriched = apply_ai_enrichment(
+        output=output,
+        ai_base_url="https://example.ngrok-free.dev/v1",
+        ai_api_key="token",
+        model="local-model",
+        max_retries=1,
+    )
+
+    assert enriched["metadata"]["requires_answer_review"] is True
+
+
 def test_text_refiner_updates_question_and_option_content():
     from final.text_refiner import refine_question_text
 
@@ -301,6 +377,8 @@ def test_text_refiner_updates_question_and_option_content():
     assert refined["options"][0]["content"] == "Coad와 Yourdon 방법"
     assert result["confidence"] == "high"
     assert result["corrections"][0]["before"] == "사용 하는 것은 ?"
+    assert result["changes"][0]["field"] == "content"
+    assert result["changes"][1]["field"] == "option"
 
 
 def test_text_refiner_uses_generic_prompt_and_records_corrections():
@@ -368,6 +446,8 @@ def test_text_refiner_uses_generic_prompt_and_records_corrections():
     assert result["corrections"][0]["after"] == "조회, 인출, 입금, 송금의"
     assert "PDF 파싱 과정에서 글자 순서는 대체로 보존" in client.completions.prompts[0]
     assert "반드시 고쳐야 하는 예시" not in client.completions.prompts[0]
+    assert "마크다운 코드블록" in client.completions.prompts[0]
+    assert "80자 이내" in client.completions.prompts[0]
 
 
 def test_text_refinement_marks_unresolved_artifacts_without_hardcoded_fix(monkeypatch):
@@ -421,7 +501,7 @@ def test_text_refinement_marks_unresolved_artifacts_without_hardcoded_fix(monkey
     assert refined["metadata"]["text_refinement"]["unresolved_artifact_questions"] == 1
 
 
-def test_text_refinement_records_metadata_and_low_confidence(monkeypatch):
+def test_text_refinement_records_metadata_and_low_confidence(monkeypatch, capsys):
     from final.parse_pdf import apply_text_refinement
 
     output = {
@@ -458,6 +538,7 @@ def test_text_refinement_records_metadata_and_low_confidence(monkeypatch):
             "question": kwargs["question"],
             "corrections": [{"before": "원문", "after": "정제된 원문", "reason": "복원"}],
             "confidence": "low",
+            "changes": [{"field": "content", "before": "원문", "after": "정제된 원문"}],
         }
 
     monkeypatch.setattr("final.parse_pdf.refine_question_text", low_confidence_refine)
@@ -471,14 +552,19 @@ def test_text_refinement_records_metadata_and_low_confidence(monkeypatch):
     )
 
     metadata = refined["metadata"]["text_refinement"]
+    captured = capsys.readouterr()
     assert refined["questions"][0]["content"] == "정제된 원문"
     assert refined["metadata"]["requires_answer_review"] is True
     assert metadata["refined_questions"][0]["confidence"] == "low"
+    assert metadata["refined_questions"][0]["changes"][0]["after"] == "정제된 원문"
     assert metadata["low_confidence_questions"][0]["question_source"] == "sample.pdf 1번 문제"
+    assert "[text-refine changed] sample.pdf 1번 문제 / content" in captured.err
+    assert "- before: 원문" in captured.err
+    assert "- after: 정제된 원문" in captured.err
     assert refined["metadata"]["text_refinement"]["unresolved_artifact_questions"] == 1
 
 
-def test_text_refinement_failure_keeps_parser_text(monkeypatch):
+def test_text_refinement_failure_keeps_parser_text(monkeypatch, capsys):
     from final.parse_pdf import apply_text_refinement
 
     output = {
@@ -517,3 +603,107 @@ def test_text_refinement_failure_keeps_parser_text(monkeypatch):
     assert refined["questions"][0]["content"] == "파서 원문"
     assert refined["metadata"]["requires_answer_review"] is True
     assert refined["metadata"]["text_refinement"]["failed_questions"] == 1
+    assert "[text-refine failed] sample.pdf 1번 문제: text refine failed" in capsys.readouterr().err
+
+
+def test_text_refinement_does_not_skip_after_timeout(monkeypatch, capsys):
+    from final.parse_pdf import apply_text_refinement
+
+    output = {
+        "source_pdf": "sample.pdf",
+        "questions": [
+            {
+                "content": f"문제 {index}",
+                "question_source": f"sample.pdf {index}번 문제",
+                "images": [],
+                "hint_explanation": "",
+                "options": [],
+            }
+            for index in range(1, 4)
+        ],
+        "metadata": {
+            "total_questions": 3,
+            "total_images": 0,
+            "requires_answer_review": False,
+        },
+    }
+
+    monkeypatch.setattr("final.parse_pdf.create_openai_client", lambda **kwargs: object())
+
+    calls = []
+
+    def fail_then_succeed(*args, **kwargs):
+        calls.append(kwargs["question"]["question_source"])
+        if len(calls) == 1:
+            raise RuntimeError("Request timed out.")
+        return {
+            "question": kwargs["question"],
+            "corrections": [],
+            "confidence": "medium",
+            "changes": [],
+        }
+
+    monkeypatch.setattr("final.parse_pdf.refine_question_text", fail_then_succeed)
+
+    refined = apply_text_refinement(
+        output=output,
+        ai_base_url="https://example.ngrok-free.dev/v1",
+        ai_api_key="token",
+        model="local-model",
+        max_retries=1,
+        ai_max_failures=1,
+    )
+
+    stderr = capsys.readouterr().err
+    assert calls == ["sample.pdf 1번 문제", "sample.pdf 2번 문제", "sample.pdf 3번 문제"]
+    assert refined["metadata"]["text_refinement"]["failed_questions"] == 0
+    assert refined["metadata"]["text_refinement"]["timeout_questions"] == 1
+    assert refined["metadata"]["text_refinement"]["skipped_questions"] == 0
+    assert "[text-refine failed] sample.pdf 1번 문제: Request timed out." in stderr
+    assert "[text-refine skipped]" not in stderr
+
+
+def test_text_refinement_logs_skipped_questions_after_non_timeout_failures(monkeypatch, capsys):
+    from final.parse_pdf import apply_text_refinement
+
+    output = {
+        "source_pdf": "sample.pdf",
+        "questions": [
+            {
+                "content": f"문제 {index}",
+                "question_source": f"sample.pdf {index}번 문제",
+                "images": [],
+                "hint_explanation": "",
+                "options": [],
+            }
+            for index in range(1, 4)
+        ],
+        "metadata": {
+            "total_questions": 3,
+            "total_images": 0,
+            "requires_answer_review": False,
+        },
+    }
+
+    monkeypatch.setattr("final.parse_pdf.create_openai_client", lambda **kwargs: object())
+
+    def fail_refine(*args, **kwargs):
+        raise RuntimeError("invalid json")
+
+    monkeypatch.setattr("final.parse_pdf.refine_question_text", fail_refine)
+
+    refined = apply_text_refinement(
+        output=output,
+        ai_base_url="https://example.ngrok-free.dev/v1",
+        ai_api_key="token",
+        model="local-model",
+        max_retries=1,
+        ai_max_failures=1,
+    )
+
+    stderr = capsys.readouterr().err
+    assert refined["metadata"]["text_refinement"]["failed_questions"] == 1
+    assert refined["metadata"]["text_refinement"]["timeout_questions"] == 0
+    assert refined["metadata"]["text_refinement"]["skipped_questions"] == 2
+    assert "[text-refine failed] sample.pdf 1번 문제: invalid json" in stderr
+    assert "[text-refine skipped] 2 questions skipped after 1 failures." in stderr

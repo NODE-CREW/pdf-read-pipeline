@@ -33,7 +33,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dpi", type=int, default=150, help="이미지 crop DPI")
     parser.add_argument("--ai-base-url", default=None, help="OpenAI-compatible endpoint base_url")
     parser.add_argument("--ai-api-key", default="any-string-ok", help="AI endpoint API key")
-    parser.add_argument("--ai-timeout", type=float, default=10.0, help="AI 요청 timeout 초")
+    parser.add_argument("--ai-timeout", type=float, default=60.0, help="AI 요청 timeout 초")
     parser.add_argument(
         "--ai-max-failures",
         type=int,
@@ -91,7 +91,7 @@ def apply_ai_enrichment(
     ai_api_key: str,
     model: str,
     max_retries: int,
-    ai_timeout: float = 10.0,
+    ai_timeout: float = 60.0,
     ai_max_failures: int = 3,
 ) -> dict[str, Any]:
     if not ai_base_url:
@@ -119,10 +119,14 @@ def apply_ai_enrichment(
                     "error": str(exc),
                 }
             )
-    output["metadata"]["requires_answer_review"] = any(
-        question["options"] and not any(option["is_correct"] for option in question["options"])
-        for question in output["questions"]
-    ) or bool(ai_errors)
+    output["metadata"]["requires_answer_review"] = (
+        output["metadata"].get("requires_answer_review", False)
+        or any(
+            question["options"] and not any(option["is_correct"] for option in question["options"])
+            for question in output["questions"]
+        )
+        or bool(ai_errors)
+    )
     output["metadata"]["ai_enrichment"] = {
         "enabled": True,
         "failed_questions": len(ai_errors),
@@ -140,7 +144,7 @@ def apply_text_refinement(
     ai_api_key: str,
     model: str,
     max_retries: int,
-    ai_timeout: float = 10.0,
+    ai_timeout: float = 60.0,
     ai_max_failures: int = 3,
     enabled: bool = True,
 ) -> dict[str, Any]:
@@ -150,6 +154,7 @@ def apply_text_refinement(
 
     client = create_openai_client(base_url=ai_base_url, api_key=ai_api_key, timeout=ai_timeout)
     errors: list[dict[str, str]] = []
+    timeout_errors: list[dict[str, str]] = []
     refined_questions: list[dict[str, Any]] = []
     low_confidence_questions: list[dict[str, str]] = []
     unresolved_artifacts: list[dict[str, Any]] = []
@@ -157,6 +162,11 @@ def apply_text_refinement(
     for index, question in enumerate(output["questions"]):
         if len(errors) >= max(ai_max_failures, 1):
             skipped_questions = len(output["questions"]) - index
+            print(
+                f"[text-refine skipped] {skipped_questions} questions skipped "
+                f"after {len(errors)} failures.",
+                file=sys.stderr,
+            )
             break
         question_source = question.get("question_source", "")
         try:
@@ -167,22 +177,39 @@ def apply_text_refinement(
                 max_retries=max_retries,
             )
         except Exception as exc:
+            error_text = str(exc)
+            print(
+                f"[text-refine failed] {question_source}: {error_text}",
+                file=sys.stderr,
+            )
+            if is_timeout_error(exc):
+                timeout_errors.append(
+                    {
+                        "question_source": str(question_source),
+                        "error": error_text,
+                    }
+                )
+                continue
             errors.append(
                 {
                     "question_source": str(question_source),
-                    "error": str(exc),
+                    "error": error_text,
                 }
             )
             continue
 
         confidence = str(refinement.get("confidence", "medium"))
         corrections = refinement.get("corrections", [])
-        if corrections:
+        changes = refinement.get("changes", [])
+        if changes:
+            log_text_refinement_changes(str(question_source), changes)
+        if corrections or changes:
             refined_questions.append(
                 {
                     "question_source": str(question_source),
                     "confidence": confidence,
                     "corrections": corrections,
+                    "changes": changes,
                 }
             )
         if confidence == "low":
@@ -206,21 +233,45 @@ def apply_text_refinement(
     output["metadata"]["requires_answer_review"] = (
         output["metadata"].get("requires_answer_review", False)
         or bool(errors)
+        or bool(timeout_errors)
         or bool(low_confidence_questions)
         or bool(unresolved_artifacts)
     )
     output["metadata"]["text_refinement"] = {
         "enabled": True,
         "failed_questions": len(errors),
+        "timeout_questions": len(timeout_errors),
         "skipped_questions": skipped_questions,
         "refined_questions": refined_questions[:50],
         "low_confidence_questions": low_confidence_questions[:50],
         "unresolved_artifact_questions": len(unresolved_artifacts),
         "unresolved_artifacts": unresolved_artifacts[:10],
         "errors": errors[:10],
+        "timeout_errors": timeout_errors[:10],
     }
     validate_final_output(output)
     return output
+
+
+def log_text_refinement_changes(question_source: str, changes: list[dict[str, Any]]) -> None:
+    for change in changes:
+        field = change.get("field")
+        if field == "option":
+            label = f"option {change.get('order')}"
+        else:
+            label = str(field)
+        print(
+            "[text-refine changed] "
+            f"{question_source} / {label}\n"
+            f"- before: {change.get('before', '')}\n"
+            f"- after: {change.get('after', '')}",
+            file=sys.stderr,
+        )
+
+
+def is_timeout_error(exc: Exception) -> bool:
+    text = str(exc).lower()
+    return "timed out" in text or "timeout" in text
 
 
 def run_pipeline(
@@ -233,7 +284,7 @@ def run_pipeline(
     model: str,
     max_retries: int,
     ai_api_key: str = "any-string-ok",
-    ai_timeout: float = 10.0,
+    ai_timeout: float = 60.0,
     ai_max_failures: int = 3,
     refine_text: bool = True,
 ) -> Path:
