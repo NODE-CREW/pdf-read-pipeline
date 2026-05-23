@@ -434,6 +434,35 @@ def test_run_pipeline_generates_image_captions_before_ai_enrichment(monkeypatch,
     assert seen_by_enrichment["caption"] == "이미지 설명"
 
 
+def test_resolve_parser_image_paths_uses_parser_output_dir(tmp_path):
+    from final.parse_pdf import resolve_parser_image_paths
+
+    raw_dir = tmp_path / "_sinagong_raw"
+    crop_dir = raw_dir / "crops"
+    crop_dir.mkdir(parents=True)
+    write_minimal_png(crop_dir / "crop_id0001_p2.png")
+
+    parser_result = {
+        "questions": [
+            {
+                "images": [
+                    {
+                        "crop_path": "crops/crop_id0001_p2.png",
+                        "source": "crops/crop_id0001_p2.png",
+                    }
+                ],
+                "choices": [],
+            }
+        ],
+    }
+
+    resolve_parser_image_paths(parser_result, raw_dir)
+
+    image = parser_result["questions"][0]["images"][0]
+    assert image["crop_path"] == str(crop_dir / "crop_id0001_p2.png")
+    assert image["source"] == str(crop_dir / "crop_id0001_p2.png")
+
+
 def test_parse_pdf_rejects_unknown_parser(tmp_path):
     from final import parse_pdf
 

@@ -72,16 +72,52 @@ def resolve_parser_name(parser_name: str | None) -> str:
         print(f"지원하지 않는 parser입니다: {selected}", file=sys.stderr)
 
 
+def resolve_parser_image_paths(parser_result: dict[str, Any], parser_output_dir: Path) -> dict[str, Any]:
+    """파서 출력 디렉토리 기준 상대 이미지 경로를 실제 파일 경로로 변환한다."""
+    parser_output_dir = Path(parser_output_dir).expanduser().resolve()
+
+    def resolve_image(image: dict[str, Any]) -> None:
+        for key in ("crop_path", "source", "path"):
+            value = image.get(key)
+            if not value:
+                continue
+            path = Path(str(value))
+            if path.is_absolute():
+                continue
+            resolved = parser_output_dir / path
+            if resolved.is_file():
+                image[key] = str(resolved)
+
+    for question in parser_result.get("questions", []):
+        if not isinstance(question, dict):
+            continue
+        for image in question.get("images", []):
+            if isinstance(image, dict):
+                resolve_image(image)
+        for option in question.get("options", question.get("choices", [])):
+            if not isinstance(option, dict):
+                continue
+            for image in option.get("images", []):
+                if isinstance(image, dict):
+                    resolve_image(image)
+
+    return parser_result
+
+
 def run_sinagong_parser(pdf_path: Path, output_dir: Path, dpi: int) -> dict[str, Any]:
     from final.sinagong_pdf_parser import parse_test1_pdf
 
-    return parse_test1_pdf(pdf_path, out_dir=output_dir / "_sinagong_raw", dpi=dpi)
+    parser_output_dir = output_dir / "_sinagong_raw"
+    parser_result = parse_test1_pdf(pdf_path, out_dir=parser_output_dir, dpi=dpi)
+    return resolve_parser_image_paths(parser_result, parser_output_dir)
 
 
 def run_normal_parser(pdf_path: Path, output_dir: Path, dpi: int) -> dict[str, Any]:
     from final.normal_pdf_parser.extract_questions import parse_questions_from_pdf
 
-    return parse_questions_from_pdf(pdf_path, out_dir=output_dir / "_normal_raw", dpi=dpi)
+    parser_output_dir = output_dir / "_normal_raw"
+    parser_result = parse_questions_from_pdf(pdf_path, out_dir=parser_output_dir, dpi=dpi)
+    return resolve_parser_image_paths(parser_result, parser_output_dir)
 
 
 def parse_with_selected_parser(
