@@ -4,7 +4,7 @@
 
 - [x] `final/` 폴더 생성
 - [x] `new/test1_parser.py`를 `final/sinagong_pdf_parser.py`로 복사
-- [x] `result/pdf_split_answer_concept_extract` 기반 파일을 `final/result_pdf_parser/`로 복사
+- [x] `result/pdf_split_answer_concept_extract` 기반 파일을 `final/normal_pdf_parser/`로 복사
 - [x] `final/README.md` 작성
 - [x] `final/plan.md` 작성
 - [x] `final/tasklist.md` 작성
@@ -12,12 +12,12 @@
 ## 2. 테스트 작성
 
 - [x] `sinagong_pdf_parser.py` import 테스트 추가
-- [x] `result_pdf_parser` import 테스트 추가
+- [x] `normal_pdf_parser` import 테스트 추가
 - [x] 최종 스키마 생성 테스트 추가
 - [x] 이미지 ID 전역 순번 테스트 추가
 - [x] `[image001]` 토큰 삽입 테스트 추가
 - [x] AI JSON 재시도 테스트 추가
-- [x] `--parser auto` fallback 테스트 추가
+- [x] `--parser` 입력값 기반 선택 테스트 추가
 
 ## 3. 구현
 
@@ -26,7 +26,7 @@
 - [x] `schema.py` 구현 완료
 - [x] `text_refiner.py` 구현 완료
 - [x] `ai_enricher.py` 구현 완료
-- [x] 이름 변경으로 깨진 result parser 내부 참조 수정
+- [x] 이름 변경으로 깨진 normal parser 내부 참조 수정
 - [x] `questions_final.json` 저장 구현
 - [x] `images/` 복사 구현
 - [x] AI 보강 옵션 구현

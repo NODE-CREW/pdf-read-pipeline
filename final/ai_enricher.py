@@ -19,7 +19,7 @@ def create_openai_client(
 ):
     from openai import OpenAI
 
-    return OpenAI(base_url=base_url, api_key=api_key, timeout=timeout)
+    return OpenAI(base_url=base_url, api_key=api_key, timeout=timeout, max_retries=0)
 
 
 def encode_image_as_data_url(image_path: Path) -> str:
@@ -49,18 +49,25 @@ def request_json_with_retries(
     last_error: Exception | None = None
     last_response_text = ""
     for _ in range(max(max_retries, 1)):
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=0,
-            max_tokens=4096,
-        )
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=0,
+                max_tokens=4096,
+            )
+        except Exception as exc:
+            last_error = exc
+            continue
         content = response.choices[0].message.content or ""
         last_response_text = content
         try:
             return parse_json_response(content)
         except (json.JSONDecodeError, ValueError) as exc:
             last_error = exc
+
+    if last_response_text == "" and last_error is not None:
+        raise last_error
 
     preview = last_response_text[:2000]
     if len(last_response_text) > len(preview):
@@ -74,8 +81,7 @@ def request_json_with_retries(
 def build_enrichment_prompt(question: dict[str, Any]) -> str:
     return (
         "다음 시험 문제 JSON을 보강하라. JSON만 출력하라. "
-        "필드는 image_captions, hint_explanation, option_explanations, correct_orders만 허용한다. "
-        "image_captions는 image_id를 key로 하는 객체다. "
+        "필드는 hint_explanation, option_explanations, correct_orders만 허용한다. "
         "option_explanations는 선지 order를 문자열 key로 하는 객체다. "
         "correct_orders는 정답 선지 번호 배열이다.\n"
         f"{json.dumps(question, ensure_ascii=False, indent=2)}"
@@ -96,18 +102,6 @@ def enrich_question(
         messages=[{"role": "user", "content": build_enrichment_prompt(question)}],
         max_retries=max_retries,
     )
-
-    image_captions = payload.get("image_captions", {})
-    if isinstance(image_captions, dict):
-        for image in question.get("images", []):
-            caption = image_captions.get(image.get("image_id"))
-            if isinstance(caption, str) and caption.strip():
-                image["image_caption"] = caption.strip()
-        for option in question.get("options", []):
-            for image in option.get("images", []):
-                caption = image_captions.get(image.get("image_id"))
-                if isinstance(caption, str) and caption.strip():
-                    image["image_caption"] = caption.strip()
 
     hint_explanation = payload.get("hint_explanation")
     if isinstance(hint_explanation, str) and hint_explanation.strip():

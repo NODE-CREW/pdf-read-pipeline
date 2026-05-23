@@ -16,7 +16,7 @@ final/
   schema.py
   text_refiner.py
   ai_enricher.py
-  result_pdf_parser/
+  normal_pdf_parser/
     extract_pdf.py
     generate_answer.py
     batch_generate_answer.py
@@ -30,20 +30,20 @@ final/
 | 원본 | final 복사본 |
 | --- | --- |
 | `new/test1_parser.py` | `final/sinagong_pdf_parser.py` |
-| `result/pdf_split_answer_concept_extract/1_extract_all_text_and_save_latex_split_images.py` | `final/result_pdf_parser/extract_pdf.py` |
-| `result/pdf_split_answer_concept_extract/2-1_generate_exam_answer_json_to_txt.py` | `final/result_pdf_parser/generate_answer.py` |
-| `result/pdf_split_answer_concept_extract/2-2_batch_generate_exam_answer_json_to_txt.py` | `final/result_pdf_parser/batch_generate_answer.py` |
-| `result/pdf_split_answer_concept_extract/3-1_generate_exam_single_concept_json_to_txt.py` | `final/result_pdf_parser/generate_concept.py` |
-| `result/pdf_split_answer_concept_extract/3-2_batch_generate_exam_single_concept_json_to_txt.py` | `final/result_pdf_parser/batch_generate_concept.py` |
-| `result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py` | `final/result_pdf_parser/extract_questions.py` |
+| `result/pdf_split_answer_concept_extract/1_extract_all_text_and_save_latex_split_images.py` | `final/normal_pdf_parser/extract_pdf.py` |
+| `result/pdf_split_answer_concept_extract/2-1_generate_exam_answer_json_to_txt.py` | `final/normal_pdf_parser/generate_answer.py` |
+| `result/pdf_split_answer_concept_extract/2-2_batch_generate_exam_answer_json_to_txt.py` | `final/normal_pdf_parser/batch_generate_answer.py` |
+| `result/pdf_split_answer_concept_extract/3-1_generate_exam_single_concept_json_to_txt.py` | `final/normal_pdf_parser/generate_concept.py` |
+| `result/pdf_split_answer_concept_extract/3-2_batch_generate_exam_single_concept_json_to_txt.py` | `final/normal_pdf_parser/batch_generate_concept.py` |
+| `result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py` | `final/normal_pdf_parser/extract_questions.py` |
 
 복사 후 동적 import나 실행 스크립트 내부에서 기존 숫자 파일명을 참조하는 부분은 새 파일명에 맞게 수정한다.
 
 ## 처리 흐름
 
 1. `parse_pdf.py`가 PDF 경로, 출력 디렉토리, 파서 선택값을 받는다.
-2. `--parser auto`이면 `sinagong` 파서를 먼저 실행한다.
-3. `sinagong` 파서가 실패하면 `result` 파서로 fallback한다.
+2. `--parser` 입력값에 따라 `sinagong` 또는 `normal` 파서를 실행한다.
+3. `--parser`가 없으면 `input()`으로 파서를 다시 묻는다.
 4. 파서 출력은 `normalizer.py`에서 공통 중간 구조로 변환한다.
 5. `schema.py`가 이미지 ID를 전역 순번으로 부여하고 최종 JSON 구조를 만든다.
 6. 이미지 파일은 `images/image001.png` 형식으로 복사한다.
@@ -95,13 +95,13 @@ AI를 쓰지 않고 결정할 값은 로컬 로직으로 처리한다.
 UI 변경이 아니므로 테스트를 먼저 작성한다.
 
 - `sinagong_pdf_parser.py` import 확인
-- `result_pdf_parser` 하위 모듈 import 확인
+- `normal_pdf_parser` 하위 모듈 import 확인
 - 최종 스키마 생성 확인
 - 이미지 ID 전역 순번 확인
 - `[image001]` 토큰 삽입 확인
 - AI 응답 JSON 검증 및 재시도 확인
 - LLM 텍스트 정제 성공/실패 동작 확인
-- `--parser auto` fallback 확인
+- `--parser` 입력값 기반 선택 확인
 - `data/test-1.pdf`가 있으면 통합 실행으로 `questions_final.json`과 `images/` 생성을 확인
 
 ## 문서 반영

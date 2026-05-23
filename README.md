@@ -72,7 +72,7 @@ python3 ./new/test1_parser.py \
 python ./final/parse_pdf.py \
   --pdf ./data/test-1.pdf \
   --output-dir ./final/output/test-1 \
-  --parser auto
+  --parser sinagong
 ```
 
 상세 설계와 AI endpoint 설정은 [`final/README.md`](final/README.md)를 참고합니다.

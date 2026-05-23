@@ -113,7 +113,7 @@ def _normalize_question(raw_question: dict[str, Any], source_pdf: Path) -> dict[
 
 
 def normalize_parser_result(parser_result: dict[str, Any], source_pdf: Path) -> dict[str, Any]:
-    """sinagong/result 계열 파서 출력을 공통 dict로 맞춘다."""
+    """sinagong/normal 계열 파서 출력을 공통 dict로 맞춘다."""
     questions = [
         _normalize_question(question, source_pdf)
         for question in parser_result.get("questions", [])

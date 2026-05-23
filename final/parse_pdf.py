@@ -15,9 +15,14 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from final.ai_enricher import create_openai_client, enrich_question
+from final.image_captioner import caption_image, iter_image_caption_targets
 from final.normalizer import normalize_parser_result
 from final.schema import build_final_output, validate_final_output
 from final.text_refiner import collect_question_text_artifacts, refine_question_text
+
+PARSER_CHOICES = ("sinagong", "normal")
+DEFAULT_AI_TIMEOUT = 60.0
+DEFAULT_AI_MAX_FAILURES = 3
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -26,32 +31,45 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--output-dir", type=Path, required=True, help="출력 디렉토리")
     parser.add_argument(
         "--parser",
-        choices=["auto", "sinagong", "result"],
-        default="auto",
+        choices=PARSER_CHOICES,
         help="사용할 파서",
     )
     parser.add_argument("--dpi", type=int, default=150, help="이미지 crop DPI")
     parser.add_argument("--ai-base-url", default=None, help="OpenAI-compatible endpoint base_url")
     parser.add_argument("--ai-api-key", default="any-string-ok", help="AI endpoint API key")
-    parser.add_argument("--ai-timeout", type=float, default=60.0, help="AI 요청 timeout 초")
-    parser.add_argument(
-        "--ai-max-failures",
-        type=int,
-        default=3,
-        help="AI 보강 실패가 이 횟수에 도달하면 남은 문제 보강을 중단",
-    )
     parser.add_argument(
         "--model",
         default="mlx-community/gemma-4-26b-a4b-it-4bit",
         help="AI 보강 모델명",
     )
-    parser.add_argument("--max-retries", type=int, default=3, help="AI JSON 응답 재시도 횟수")
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        default=3,
+        help="AI JSON 응답 재시도 횟수",
+    )
     parser.add_argument(
         "--skip-text-refine",
         action="store_true",
         help="AI endpoint가 있어도 문제/선지 텍스트 LLM 정제를 건너뜀",
     )
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.parser is None and not sys.stdin.isatty():
+        parser.error("--parser는 비대화형 실행에서 필수입니다.")
+    args.parser = resolve_parser_name(args.parser)
+    return args
+
+
+def resolve_parser_name(parser_name: str | None) -> str:
+    if parser_name:
+        return parser_name
+
+    choices = "/".join(PARSER_CHOICES)
+    while True:
+        selected = input(f"parser를 선택하세요 ({choices}): ").strip()
+        if selected in PARSER_CHOICES:
+            return selected
+        print(f"지원하지 않는 parser입니다: {selected}", file=sys.stderr)
 
 
 def run_sinagong_parser(pdf_path: Path, output_dir: Path, dpi: int) -> dict[str, Any]:
@@ -60,10 +78,10 @@ def run_sinagong_parser(pdf_path: Path, output_dir: Path, dpi: int) -> dict[str,
     return parse_test1_pdf(pdf_path, out_dir=output_dir / "_sinagong_raw", dpi=dpi)
 
 
-def run_result_parser(pdf_path: Path, output_dir: Path, dpi: int) -> dict[str, Any]:
-    from final.result_pdf_parser.extract_questions import parse_questions_from_pdf
+def run_normal_parser(pdf_path: Path, output_dir: Path, dpi: int) -> dict[str, Any]:
+    from final.normal_pdf_parser.extract_questions import parse_questions_from_pdf
 
-    return parse_questions_from_pdf(pdf_path, out_dir=output_dir / "_result_raw", dpi=dpi)
+    return parse_questions_from_pdf(pdf_path, out_dir=output_dir / "_normal_raw", dpi=dpi)
 
 
 def parse_with_selected_parser(
@@ -75,13 +93,10 @@ def parse_with_selected_parser(
 ) -> dict[str, Any]:
     if parser_name == "sinagong":
         return run_sinagong_parser(pdf_path, output_dir, dpi)
-    if parser_name == "result":
-        return run_result_parser(pdf_path, output_dir, dpi)
+    if parser_name == "normal":
+        return run_normal_parser(pdf_path, output_dir, dpi)
 
-    try:
-        return run_sinagong_parser(pdf_path, output_dir, dpi)
-    except Exception:
-        return run_result_parser(pdf_path, output_dir, dpi)
+    raise ValueError(f"지원하지 않는 parser입니다: {parser_name}")
 
 
 def apply_ai_enrichment(
@@ -91,8 +106,8 @@ def apply_ai_enrichment(
     ai_api_key: str,
     model: str,
     max_retries: int,
-    ai_timeout: float = 60.0,
-    ai_max_failures: int = 3,
+    ai_timeout: float = DEFAULT_AI_TIMEOUT,
+    ai_max_failures: int = DEFAULT_AI_MAX_FAILURES,
 ) -> dict[str, Any]:
     if not ai_base_url:
         return output
@@ -137,6 +152,90 @@ def apply_ai_enrichment(
     return output
 
 
+def apply_image_captioning(
+    *,
+    output: dict[str, Any],
+    output_dir: Path,
+    ai_base_url: str | None,
+    ai_api_key: str,
+    model: str,
+    max_retries: int,
+    ai_timeout: float = DEFAULT_AI_TIMEOUT,
+    ai_max_failures: int = DEFAULT_AI_MAX_FAILURES,
+) -> dict[str, Any]:
+    if not ai_base_url:
+        output["metadata"]["image_captioning"] = {"enabled": False}
+        validate_final_output(output)
+        return output
+
+    client = create_openai_client(base_url=ai_base_url, api_key=ai_api_key, timeout=ai_timeout)
+    output_dir = Path(output_dir)
+    targets = list(iter_image_caption_targets(output))
+    errors: list[dict[str, str]] = []
+    skipped_images = 0
+    captioned_images = 0
+
+    for index, target in enumerate(targets):
+        if len(errors) >= max(ai_max_failures, 1):
+            skipped_images = len(targets) - index
+            break
+
+        question = target["question"]
+        option = target["option"]
+        image = target["image"]
+        question_source = str(question.get("question_source", ""))
+        image_id = str(image.get("image_id", ""))
+        image_name = str(image.get("image_name", ""))
+        image_path = output_dir / "images" / image_name
+        try:
+            caption = caption_image(
+                client=client,
+                model=model,
+                question=question,
+                option=option,
+                image=image,
+                image_path=image_path,
+                max_retries=max_retries,
+            )
+        except Exception as exc:
+            print(
+                f"[image-caption failed] {index + 1}/{len(targets)} "
+                f"{question_source} {image_id} {image_name}: {exc}",
+                file=sys.stderr,
+            )
+            errors.append(
+                {
+                    "question_source": question_source,
+                    "image_id": image_id,
+                    "image_name": image_name,
+                    "error": str(exc),
+                }
+            )
+            continue
+
+        if caption:
+            captioned_images += 1
+            print(
+                f"[image-caption completed] {index + 1}/{len(targets)} "
+                f"{question_source} {image_id} {image_name}",
+                file=sys.stderr,
+            )
+
+    output["metadata"]["requires_answer_review"] = (
+        output["metadata"].get("requires_answer_review", False) or bool(errors)
+    )
+    output["metadata"]["image_captioning"] = {
+        "enabled": True,
+        "total_images": len(targets),
+        "captioned_images": captioned_images,
+        "failed_images": len(errors),
+        "skipped_images": skipped_images,
+        "errors": errors[:10],
+    }
+    validate_final_output(output)
+    return output
+
+
 def apply_text_refinement(
     *,
     output: dict[str, Any],
@@ -144,8 +243,8 @@ def apply_text_refinement(
     ai_api_key: str,
     model: str,
     max_retries: int,
-    ai_timeout: float = 60.0,
-    ai_max_failures: int = 3,
+    ai_timeout: float = DEFAULT_AI_TIMEOUT,
+    ai_max_failures: int = DEFAULT_AI_MAX_FAILURES,
     enabled: bool = True,
 ) -> dict[str, Any]:
     if not ai_base_url or not enabled:
@@ -160,11 +259,12 @@ def apply_text_refinement(
     unresolved_artifacts: list[dict[str, Any]] = []
     skipped_questions = 0
     for index, question in enumerate(output["questions"]):
-        if len(errors) >= max(ai_max_failures, 1):
+        if len(errors) + len(timeout_errors) >= max(ai_max_failures, 1):
             skipped_questions = len(output["questions"]) - index
+            failure_count = len(errors) + len(timeout_errors)
             print(
                 f"[text-refine skipped] {skipped_questions} questions skipped "
-                f"after {len(errors)} failures.",
+                f"after {failure_count} failures.",
                 file=sys.stderr,
             )
             break
@@ -284,8 +384,8 @@ def run_pipeline(
     model: str,
     max_retries: int,
     ai_api_key: str = "any-string-ok",
-    ai_timeout: float = 60.0,
-    ai_max_failures: int = 3,
+    ai_timeout: float = DEFAULT_AI_TIMEOUT,
+    ai_max_failures: int = DEFAULT_AI_MAX_FAILURES,
     refine_text: bool = True,
 ) -> Path:
     pdf_path = pdf_path.expanduser().resolve()
@@ -312,6 +412,16 @@ def run_pipeline(
         ai_timeout=ai_timeout,
         ai_max_failures=ai_max_failures,
         enabled=refine_text,
+    )
+    output = apply_image_captioning(
+        output=output,
+        output_dir=output_dir,
+        ai_base_url=ai_base_url,
+        ai_api_key=ai_api_key,
+        model=model,
+        max_retries=max_retries,
+        ai_timeout=ai_timeout,
+        ai_max_failures=ai_max_failures,
     )
     output = apply_ai_enrichment(
         output=output,
@@ -340,8 +450,6 @@ def main(argv: list[str] | None = None) -> None:
         dpi=args.dpi,
         ai_base_url=args.ai_base_url,
         ai_api_key=args.ai_api_key,
-        ai_timeout=args.ai_timeout,
-        ai_max_failures=args.ai_max_failures,
         model=args.model,
         max_retries=args.max_retries,
         refine_text=not args.skip_text_refine,
