@@ -276,6 +276,7 @@ def test_image_captioner_sends_problem_context_and_image_url(tmp_path):
     assert caption == "E-R 다이어그램 그림"
     assert image["image_caption"] == "E-R 다이어그램 그림"
     assert message_content[0]["type"] == "text"
+    assert "image_caption은 한국어로 작성하라" in message_content[0]["text"]
     assert "다음 E-R 다이어그램" in message_content[0]["text"]
     assert "개체와 관계를 표현한다." in message_content[0]["text"]
     assert message_content[1]["type"] == "image_url"
