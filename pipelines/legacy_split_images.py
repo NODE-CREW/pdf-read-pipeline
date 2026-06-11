@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Usage:
-  python ./3_extract_all_text_and_save_latex.py --pdf ./level2.pdf
-
 What it does:
 - PDF 각 페이지를 PNG로 렌더링
 - 렌더링된 이미지를 포함한 .tex 파일 생성
+- 각 문항 텍스트를 "문제"와 "선택지"로 분리해 txt 파일 저장
+- 각 문항 이미지를 "문제"와 "선택지"로 분리해 PNG 저장
+
+Note:
+- 루트 실행 스크립트에서 내부화한 legacy 구현입니다.
+- 외부 실행 진입점으로 사용하지 않고 `pipelines.base`에서 동적으로 로드합니다.
 
 왜 이 방식인가:
 - 폰트 인코딩 문제로 텍스트 추출 시 수식이 깨질 수 있음 (예: PUA glyph)
@@ -20,9 +23,10 @@ import argparse
 import os
 import re
 import statistics
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 QUESTION_START_RE = re.compile(
@@ -38,6 +42,10 @@ QUESTION_START_RE = re.compile(
     """,
     re.VERBOSE,
 )
+QUESTION_START_BODY_RE = re.compile(r"[0-9A-Za-z가-힣]")
+
+CHOICE_LINE_RE = re.compile(r"^\s*[①②③④⑤⑥⑦⑧⑨⑩]\s*")
+ALT_CHOICE_RE = re.compile(r"^\s*\(\s*[1-5]\s*\)\s*")
 
 
 @dataclass
@@ -67,7 +75,16 @@ class QuestionSpan:
 class QuestionImageSet:
     index: int
     qno: Optional[int]
-    rel_image_paths: List[str]
+    problem_image_paths: List[str]
+    choices_image_paths: List[str]
+
+
+@dataclass
+class QuestionTextSet:
+    index: int
+    qno: Optional[int]
+    question_text: str
+    choices_text: str
 
 
 def escape_latex_text(text: str) -> str:
@@ -86,6 +103,22 @@ def escape_latex_text(text: str) -> str:
     return "".join(replacements.get(ch, ch) for ch in text)
 
 
+def split_question_and_choices(question_text: str) -> Tuple[str, str]:
+    lines = question_text.splitlines()
+    first_choice_idx: Optional[int] = None
+    for idx, line in enumerate(lines):
+        if CHOICE_LINE_RE.match(line) or ALT_CHOICE_RE.match(line):
+            first_choice_idx = idx
+            break
+
+    if first_choice_idx is None:
+        return question_text.strip(), ""
+
+    problem = "\n".join(lines[:first_choice_idx]).strip()
+    choices = "\n".join(lines[first_choice_idx:]).strip()
+    return problem, choices
+
+
 def parse_question_number(text: str) -> Optional[int]:
     num_m = re.search(r"(\d+)", text)
     if not num_m:
@@ -100,6 +133,27 @@ def is_reasonable_question_number(qno: Optional[int]) -> bool:
     if qno is None:
         return False
     return 1 <= qno <= 100
+
+
+def is_valid_question_start_line(text: str) -> bool:
+    if not text:
+        return False
+
+    match = QUESTION_START_RE.match(text)
+    if match is None:
+        return False
+
+    qno = parse_question_number(text)
+    if not is_reasonable_question_number(qno):
+        return False
+
+    remainder = text[match.end():].strip()
+    if not remainder:
+        return False
+
+    # 수식 꼬리 조각 같은 "1)))}" 류를 문항 시작으로 오탐하지 않도록
+    # 접두부 뒤에는 실제 본문을 나타내는 문자/숫자가 최소 한 개 있어야 한다.
+    return QUESTION_START_BODY_RE.search(remainder) is not None
 
 
 def should_render_segment(part_index: int, segment_height: float) -> bool:
@@ -148,6 +202,29 @@ def normalize_two_columns(columns: List[tuple[float, float]]) -> List[tuple[floa
     return [left_fixed, right_fixed]
 
 
+def expand_column_bounds(
+    columns: List[tuple[float, float]],
+    column_index: int,
+    page_width: float,
+    margin: float = 18.0,
+    gap_guard: float = 2.0,
+) -> tuple[float, float]:
+    x0, x1 = columns[column_index]
+    expanded_x0 = max(0.0, x0 - margin)
+    expanded_x1 = min(page_width, x1 + margin)
+
+    if column_index > 0:
+        prev_x1 = columns[column_index - 1][1]
+        expanded_x0 = max(expanded_x0, prev_x1 + gap_guard)
+    if column_index < len(columns) - 1:
+        next_x0 = columns[column_index + 1][0]
+        expanded_x1 = min(expanded_x1, next_x0 - gap_guard)
+
+    if expanded_x1 <= expanded_x0 + 4.0:
+        return x0, x1
+    return expanded_x0, expanded_x1
+
+
 def refine_clip_y_to_text_blocks(
     raw_y0: float,
     raw_y1: float,
@@ -179,9 +256,18 @@ def refine_clip_x_to_text_blocks(
     text_x0 = min(x0 for x0, _, _, _ in text_block_boxes)
     text_x1 = max(x1 for _, _, x1, _ in text_block_boxes)
 
-    pad = 3.0
-    refined_x0 = max(raw_x0, text_x0 - pad)
-    refined_x1 = min(raw_x1, text_x1 + pad)
+    # 블록 bbox 오차로 문장 우측 끝이 잘리는 경우를 막기 위해
+    # 여백이 충분히 큰 경우에만 x축을 줄인다.
+    pad = 12.0
+    trim_threshold = 24.0
+
+    refined_x0 = raw_x0
+    refined_x1 = raw_x1
+
+    if (text_x0 - raw_x0) > trim_threshold:
+        refined_x0 = max(raw_x0, text_x0 - pad)
+    if (raw_x1 - text_x1) > trim_threshold:
+        refined_x1 = min(raw_x1, text_x1 + pad)
 
     if refined_x1 <= refined_x0 + 4.0:
         return raw_x0, raw_x1
@@ -308,12 +394,10 @@ def get_question_starts(doc, page_columns: List[List[tuple[float, float]]]) -> L
                 spans = line.get("spans", [])
                 span_text = "".join(span.get("text", "") for span in spans)
                 span_text = span_text.strip()
-                if not span_text or not QUESTION_START_RE.match(span_text):
+                if not is_valid_question_start_line(span_text):
                     continue
 
                 qno = parse_question_number(span_text)
-                if not is_reasonable_question_number(qno):
-                    continue
 
                 if spans:
                     x0 = float(spans[0].get("bbox", [0, 0, 0, 0])[0])
@@ -415,7 +499,52 @@ def render_pdf_pages_to_png(doc, image_dir: str, dpi: int = 200) -> List[str]:
     return rendered_paths
 
 
-def render_pdf_questions_to_png(pdf_path: str, image_dir: str, dpi: int = 200) -> List[QuestionImageSet]:
+def save_split_texts(out_dir: Path | str, question_texts: List[QuestionTextSet]) -> None:
+    out_dir_path = Path(out_dir)
+    out_dir_path.mkdir(parents=True, exist_ok=True)
+
+    for item in question_texts:
+        q_path = out_dir_path / f"question_{item.index:03d}_problem.txt"
+        c_path = out_dir_path / f"question_{item.index:03d}_choices.txt"
+        q_path.write_text(item.question_text, encoding="utf-8")
+        c_path.write_text(item.choices_text, encoding="utf-8")
+
+
+def split_problem_and_choices_clip_by_choice_blocks(
+    clip_y0: float,
+    clip_y1: float,
+    text_blocks: List[tuple[float, float, str]],
+) -> tuple[Optional[tuple[float, float]], Optional[tuple[float, float]]]:
+    choice_starts: List[float] = []
+
+    for block_y0, _, block_text in text_blocks:
+        for line in block_text.splitlines():
+            if CHOICE_LINE_RE.match(line) or ALT_CHOICE_RE.match(line):
+                choice_starts.append(max(clip_y0, block_y0))
+                break
+
+    if not choice_starts:
+        return (clip_y0, clip_y1), None
+
+    split_y = min(choice_starts)
+    problem_end = min(clip_y1, split_y - 1.0)
+    choices_start = max(clip_y0, split_y)
+
+    problem_clip: Optional[tuple[float, float]]
+    choices_clip: Optional[tuple[float, float]]
+    problem_clip = (clip_y0, problem_end) if problem_end > clip_y0 + 4.0 else None
+    choices_clip = (choices_start, clip_y1) if clip_y1 > choices_start + 4.0 else None
+
+    if problem_clip is None and choices_clip is None:
+        return (clip_y0, clip_y1), None
+    return problem_clip, choices_clip
+
+
+def _render_pdf_questions_with_text(
+    pdf_path: str,
+    image_dir: str,
+    dpi: int = 200,
+) -> tuple[List[QuestionImageSet], List[QuestionTextSet]]:
     try:
         import fitz
     except ImportError as exc:
@@ -440,26 +569,53 @@ def render_pdf_questions_to_png(pdf_path: str, image_dir: str, dpi: int = 200) -
         if not spans:
             # 문항 시작점을 못 잡으면 페이지 단위 fallback
             page_images = render_pdf_pages_to_png(doc, image_dir=image_dir, dpi=dpi)
-            return [
-                QuestionImageSet(index=i + 1, qno=None, rel_image_paths=[path])
+            question_images = [
+                QuestionImageSet(
+                    index=i + 1,
+                    qno=None,
+                    problem_image_paths=[path],
+                    choices_image_paths=[],
+                )
                 for i, path in enumerate(page_images)
             ]
+            question_texts: List[QuestionTextSet] = []
+            for i, page in enumerate(doc, start=1):
+                raw_text = (page.get_text("text") or "").strip()
+                question_text, choices_text = split_question_and_choices(raw_text)
+                question_texts.append(
+                    QuestionTextSet(
+                        index=i,
+                        qno=None,
+                        question_text=question_text,
+                        choices_text=choices_text,
+                    )
+                )
+            return question_images, question_texts
 
         question_images: List[QuestionImageSet] = []
+        question_texts: List[QuestionTextSet] = []
         for span in spans:
-            rel_paths: List[str] = []
-            part = 1
+            problem_paths: List[str] = []
+            choices_paths: List[str] = []
+            extracted_text_parts: List[str] = []
+            segment_part = 1
+            problem_part = 1
+            choices_part = 1
             for segment in span.segments:
                 page = doc.load_page(segment.page_index)
                 page_width = float(page.rect.width)
                 page_height = float(page.rect.height)
-                col_x0, col_x1 = page_columns[segment.page_index][segment.column]
+                col_x0, col_x1 = expand_column_bounds(
+                    columns=page_columns[segment.page_index],
+                    column_index=segment.column,
+                    page_width=page_width,
+                )
 
                 raw_y0, raw_y1 = compute_raw_clip_bounds(
                     segment_start_y=segment.start_y,
                     segment_end_y=segment.end_y,
                     page_height=page_height,
-                    part_index=part,
+                    part_index=segment_part,
                     top_padding=top_padding,
                     boundary_gap=boundary_gap,
                     footer_margin=footer_margin,
@@ -486,22 +642,78 @@ def render_pdf_questions_to_png(pdf_path: str, image_dir: str, dpi: int = 200) -
                 )
 
                 segment_height = y1 - y0
-                if not should_render_segment(part_index=part, segment_height=segment_height):
+                if not should_render_segment(part_index=segment_part, segment_height=segment_height):
                     continue
 
                 clip = fitz.Rect(clip_x0, y0, clip_x1, y1)
-                pix = page.get_pixmap(matrix=matrix, clip=clip, alpha=False)
-                out_path = image_dir_path / f"question_{span.index:03d}_part_{part:02d}.png"
-                pix.save(out_path)
-                rel_paths.append(str(out_path))
-                part += 1
+                clip_text = (page.get_text("text", clip=clip) or "").strip()
+                if clip_text:
+                    extracted_text_parts.append(clip_text)
 
-            if rel_paths:
-                sequence_index = len(question_images) + 1
-                question_images.append(
-                    QuestionImageSet(index=sequence_index, qno=span.qno, rel_image_paths=rel_paths)
+                block_rows = page.get_text("blocks", clip=clip, sort=True)
+                text_blocks_for_split: List[tuple[float, float, str]] = []
+                for row in block_rows:
+                    if len(row) < 5:
+                        continue
+                    bx0, by0, bx1, by1, btext = row[0], row[1], row[2], row[3], row[4]
+                    if bx1 <= bx0 or by1 <= by0:
+                        continue
+                    text_blocks_for_split.append((float(by0), float(by1), str(btext or "")))
+
+                problem_clip_y, choices_clip_y = split_problem_and_choices_clip_by_choice_blocks(
+                    clip_y0=y0,
+                    clip_y1=y1,
+                    text_blocks=text_blocks_for_split,
                 )
 
+                if problem_clip_y is not None:
+                    problem_clip = fitz.Rect(clip_x0, problem_clip_y[0], clip_x1, problem_clip_y[1])
+                    pix = page.get_pixmap(matrix=matrix, clip=problem_clip, alpha=False)
+                    out_path = image_dir_path / (
+                        f"question_{span.index:03d}_problem_part_{problem_part:02d}.png"
+                    )
+                    pix.save(out_path)
+                    problem_paths.append(str(out_path))
+                    problem_part += 1
+
+                if choices_clip_y is not None:
+                    choices_clip = fitz.Rect(clip_x0, choices_clip_y[0], clip_x1, choices_clip_y[1])
+                    pix = page.get_pixmap(matrix=matrix, clip=choices_clip, alpha=False)
+                    out_path = image_dir_path / (
+                        f"question_{span.index:03d}_choices_part_{choices_part:02d}.png"
+                    )
+                    pix.save(out_path)
+                    choices_paths.append(str(out_path))
+                    choices_part += 1
+
+                segment_part += 1
+
+            if problem_paths or choices_paths:
+                sequence_index = len(question_images) + 1
+                merged_text = "\n".join(extracted_text_parts).strip()
+                question_text, choices_text = split_question_and_choices(merged_text)
+                question_images.append(
+                    QuestionImageSet(
+                        index=sequence_index,
+                        qno=span.qno,
+                        problem_image_paths=problem_paths,
+                        choices_image_paths=choices_paths,
+                    )
+                )
+                question_texts.append(
+                    QuestionTextSet(
+                        index=sequence_index,
+                        qno=span.qno,
+                        question_text=question_text,
+                        choices_text=choices_text,
+                    )
+                )
+
+    return question_images, question_texts
+
+
+def render_pdf_questions_to_png(pdf_path: str, image_dir: str, dpi: int = 200) -> List[QuestionImageSet]:
+    question_images, _ = _render_pdf_questions_with_text(pdf_path=pdf_path, image_dir=image_dir, dpi=dpi)
     return question_images
 
 
@@ -528,7 +740,22 @@ def build_latex_document(pdf_name: str, question_images: List[QuestionImageSet])
             section_title = rf"\section*{{Question {item.index} (No. {item.qno})}}"
 
         lines.append(section_title)
-        for rel_path in item.rel_image_paths:
+        if item.problem_image_paths:
+            lines.append(r"\subsection*{Problem}")
+        for rel_path in item.problem_image_paths:
+            latex_path = rel_path.replace(os.sep, "/")
+            lines.extend(
+                [
+                    r"\begin{figure}[H]",
+                    r"\centering",
+                    rf"\includegraphics[width=\textwidth]{{{latex_path}}}",
+                    r"\end{figure}",
+                    r"",
+                ]
+            )
+        if item.choices_image_paths:
+            lines.append(r"\subsection*{Choices}")
+        for rel_path in item.choices_image_paths:
             latex_path = rel_path.replace(os.sep, "/")
             lines.extend(
                 [
@@ -557,22 +784,39 @@ def main() -> None:
         default="./output/latex_pages",
         help="Directory to save rendered PNG pages (default: ./output/latex_pages)",
     )
+    parser.add_argument(
+        "--split-text-dir",
+        default="./output/question_texts",
+        help="Directory to save split question/choices text files (default: ./output/question_texts)",
+    )
     parser.add_argument("--dpi", type=int, default=200, help="Render DPI (default: 200)")
     args = parser.parse_args()
 
     if not os.path.exists(args.pdf):
         raise FileNotFoundError(f"PDF not found: {args.pdf}")
 
-    question_images = render_pdf_questions_to_png(args.pdf, args.image_dir, dpi=args.dpi)
+    question_images, question_texts = _render_pdf_questions_with_text(
+        args.pdf, args.image_dir, dpi=args.dpi
+    )
     out_tex_path = Path(args.out_tex)
     out_tex_path.parent.mkdir(parents=True, exist_ok=True)
 
     # tex 파일 기준 상대경로로 이미지 경로를 저장
     question_images_for_tex = []
     for item in question_images:
-        rel_paths = [os.path.relpath(path, start=out_tex_path.parent) for path in item.rel_image_paths]
+        problem_rel_paths = [
+            os.path.relpath(path, start=out_tex_path.parent) for path in item.problem_image_paths
+        ]
+        choices_rel_paths = [
+            os.path.relpath(path, start=out_tex_path.parent) for path in item.choices_image_paths
+        ]
         question_images_for_tex.append(
-            QuestionImageSet(index=item.index, qno=item.qno, rel_image_paths=rel_paths)
+            QuestionImageSet(
+                index=item.index,
+                qno=item.qno,
+                problem_image_paths=problem_rel_paths,
+                choices_image_paths=choices_rel_paths,
+            )
         )
 
     latex_content = build_latex_document(
@@ -580,10 +824,12 @@ def main() -> None:
         question_images=question_images_for_tex,
     )
     out_tex_path.write_text(latex_content, encoding="utf-8")
+    save_split_texts(args.split_text_dir, question_texts)
 
     print(f"Saved LaTeX: {out_tex_path}")
     print(f"Rendered question blocks: {len(question_images)}")
     print(f"Image dir: {Path(args.image_dir)}")
+    print(f"Split text dir: {Path(args.split_text_dir)}")
     print(
         "Compile example: "
         f"pdflatex -interaction=nonstopmode -output-directory {out_tex_path.parent} {out_tex_path}"

@@ -876,7 +876,7 @@ def parse_args() -> argparse.Namespace:
         "--output-dir",
         type=Path,
         default=None,
-        help="출력 디렉터리 (기본: new/output/<pdf이름>)",
+        help="출력 디렉터리 (기본: final/output/<pdf이름>)",
     )
     parser.add_argument("--dpi", type=int, default=150, help="crop 렌더 DPI")
     return parser.parse_args()
@@ -884,7 +884,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    output_dir = args.output_dir or (Path("new") / "output" / args.pdf.stem)
+    output_dir = args.output_dir or (Path("final") / "output" / args.pdf.stem)
     result = parse_test1_pdf(args.pdf, out_dir=output_dir, dpi=args.dpi)
     json_path = output_dir / f"{args.pdf.stem}_questions.json"
     json_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")

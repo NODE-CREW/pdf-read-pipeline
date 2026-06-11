@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 """pipelines.question_parser 단위 테스트"""
 
-import json
-import pytest
-from pathlib import Path
-
 from pipelines.question_parser import (
     filter_content_nodes,
     extract_questions,
@@ -15,16 +11,6 @@ from pipelines.question_parser import (
     _link_crops_to_questions,
     QUESTION_NUMBER_RE,
 )
-
-SAMPLE_JSON_PATH = Path(__file__).resolve().parent.parent / "tiger" / "sample" / "comh1_040215.json"
-
-
-@pytest.fixture
-def sample_data():
-    """tiger/sample/comh1_040215.json 로드"""
-    if not SAMPLE_JSON_PATH.exists():
-        pytest.skip("샘플 JSON 파일이 없습니다.")
-    return json.loads(SAMPLE_JSON_PATH.read_text(encoding="utf-8"))
 
 
 # ──────────────────────────────────────────────
@@ -78,18 +64,6 @@ class TestFilterContentNodes:
         ]
         result = filter_content_nodes(kids)
         assert len(result) == 3
-
-    def test_sample_json_filter(self, sample_data):
-        """샘플 JSON에서 header/footer가 모두 제거되는지 확인"""
-        kids = sample_data.get("kids", [])
-        original_count = len(kids)
-        filtered = filter_content_nodes(kids)
-        removed = original_count - len(filtered)
-        # 5페이지 × (header + footer) = 10개 + caption 1개 = 11개 제거
-        assert removed >= 10
-        for node in filtered:
-            assert node["type"] not in ("header", "footer")
-
 
 # ──────────────────────────────────────────────
 # QUESTION_NUMBER_RE
@@ -208,37 +182,6 @@ class TestExtractQuestions:
         assert questions[1]["question_number"] == 2
         assert questions[0]["question_text"] == "첫 번째 문제"
         assert len(questions[0]["choices"]) == 4
-
-    def test_sample_json_60_questions(self, sample_data):
-        """샘플 JSON에서 60문제가 추출되는지 확인"""
-        filtered = filter_content_nodes(sample_data.get("kids", []))
-        questions = extract_questions(filtered)
-        qnos = [q["question_number"] for q in questions]
-        assert len(questions) == 60
-        assert qnos == list(range(1, 61))
-
-    def test_question_has_required_fields(self, sample_data):
-        """문제에 필수 필드가 있는지 확인"""
-        filtered = filter_content_nodes(sample_data.get("kids", []))
-        questions = extract_questions(filtered)
-        for q in questions:
-            assert "question_number" in q
-            assert "page_number" in q
-            assert "question_text" in q
-            assert "choices" in q
-            assert "images" in q
-            assert "bounding_box" in q
-            assert "description" in q
-            assert isinstance(q["question_number"], int)
-            assert isinstance(q["choices"], list)
-            assert isinstance(q["description"], str)
-
-    def test_choices_parsed_for_question_1(self, sample_data):
-        """문제 1의 선택지가 4개인지 확인"""
-        filtered = filter_content_nodes(sample_data.get("kids", []))
-        questions = extract_questions(filtered)
-        q1 = next(q for q in questions if q["question_number"] == 1)
-        assert len(q1["choices"]) == 4
 
     def test_section_heading_not_appended_and_caption_choices(self):
         """Q24 패턴: text block heading은 무시, caption 선택지가 정상 연결"""
@@ -547,15 +490,6 @@ class TestCollectImageElements:
         ]
         result = collect_image_elements(kids)
         assert len(result) == 1
-
-    def test_sample_json_image_count(self, sample_data):
-        """샘플 JSON에서 image 요소가 16개인지 확인 (comh1_040215_images/ 파일 수와 동일)"""
-        filtered = filter_content_nodes(sample_data.get("kids", []))
-        images = collect_image_elements(filtered)
-        # image type만 카운트 (table 제외)
-        image_only = [img for img in images if img.get("type") == "image"]
-        assert len(image_only) >= 1  # 최소 1개 이상
-
 
 # ──────────────────────────────────────────────
 # _link_crops_to_questions

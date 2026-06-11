@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-opendataloader JSON에서 문제별 구조화 JSON을 추출하는 실행 스크립트.
-
-사용 예:
-  # PDF 직접 입력 (권장)
-  python result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py \
-    --pdf tiger/sample/comh1_040215.pdf \
-    --out-dir output/comh1_040215_questions
-
-  # JSON이 이미 있는 경우
-  python result/pdf_split_answer_concept_extract/1-1_extract_questions_from_json.py \
-    --json tiger/sample/comh1_040215.json \
-    --pdf tiger/sample/comh1_040215.pdf \
-    --out-dir output/comh1_040215_questions
-"""
+"""opendataloader JSON에서 문제별 구조화 JSON을 추출하는 final 파서 보조 모듈."""
 
 import argparse
 import sys

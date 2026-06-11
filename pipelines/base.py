@@ -3,14 +3,10 @@
 
 """
 Usage:
-  python ./6_extract_all_text_and_save_latex_split_images.py
+  python final/parse_pdf.py --pdf ./data/test-1.pdf --output-dir ./final/output/test-1 --parser sinagong
 
 What it does:
-- GUI 파일 선택기로 여러 PDF를 선택
-- 각 PDF마다 output/<pdf파일명>/ 하위에 결과 저장
-  - output.tex
-  - latex_pages/*.png
-  - question_texts/*.txt
+- final/ 파서가 사용하는 공용 PDF 렌더링, OCR, DB-ready 보조 로직 제공
 """
 
 from __future__ import annotations
@@ -805,11 +801,11 @@ def resolve_segment_clips_for_state(
 
 def load_module_5():
     module_name = "extract_latex_split_images_module"
-    module_path = REPO_ROOT / "5_extract_all_text_and_save_latex_split_images.py"
+    module_path = REPO_ROOT / "pipelines" / "legacy_split_images.py"
 
     spec = importlib.util.spec_from_file_location(module_name, str(module_path))
     if spec is None or spec.loader is None:
-        raise RuntimeError("5번 모듈을 로드할 수 없습니다.")
+        raise RuntimeError("legacy split-images 모듈을 로드할 수 없습니다.")
 
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module

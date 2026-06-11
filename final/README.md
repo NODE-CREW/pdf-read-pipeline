@@ -4,8 +4,8 @@ PDF 시험지에서 문제, 선지, 이미지, 해설 보강 정보를 추출해
 
 ## 목적
 
-- 기존 파서를 삭제하거나 이동하지 않고 `final/` 안에 독립 복사본을 둔다.
-- `new/test1_parser.py` 기반 시나공 PDF 파서와 일반 PDF 구조 파서를 함께 지원한다.
+- 최종 실행 경로를 `final/` 안에 둔다.
+- 시나공 PDF 파서와 일반 PDF 구조 파서를 함께 지원한다.
 - 두 파서의 서로 다른 출력 형태를 하나의 최종 JSON 스키마로 정규화한다.
 - 이미지 caption, 힌트 해설, 선지 해설, 정답 추론이 필요한 경우 OpenAI-compatible ngrok endpoint로 보강한다.
 
@@ -34,7 +34,7 @@ final/
 
 ## 파서 기준
 
-- `sinagong`: `new/test1_parser.py` 기반 복사본인 `sinagong_pdf_parser.py`를 사용한다.
+- `sinagong`: `sinagong_pdf_parser.py`를 사용한다.
 - `normal`: 일반 PDF 구조 파서인 `normal_pdf_parser/`를 사용한다.
 - `--parser`를 생략하면 실행 중 `input()`으로 `sinagong` 또는 `normal`을 다시 묻는다.
 
